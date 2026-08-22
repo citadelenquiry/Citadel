@@ -1,0 +1,6 @@
+{
+  "name": "Citadel Group Real Estate",
+  "description": "Official luxury real estate and construction website for Citadel Group, featuring landmark residential & commercial projects, company story, contact portal, and interactive home loan EMI calculator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

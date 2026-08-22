@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-cinzel: "Cinzel", Georgia, serif;
+  --color-citadel-sand: #E8C2AF;
+  --color-citadel-sand-hover: #DFB29D;
+  --color-citadel-stone: #E6E1DC;
+  --color-citadel-dark: #1E1D1B;
+  --color-citadel-muted: #5C5A56;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F8F6F3;
+  color: #1E1D1B;
+  overflow-x: hidden;
+}
+
+.font-editorial {
+  font-family: var(--font-serif);
+}
+
+.font-brand {
+  font-family: var(--font-cinzel);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1ECE7;
+}
+::-webkit-scrollbar-thumb {
+  background: #CFC8C1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #AFA69E;
+}
