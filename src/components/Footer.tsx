@@ -163,16 +163,16 @@ export const Footer: React.FC<FooterProps> = ({
               </p>
               <div className="pt-2">
                 <a
-                  href="mailto:connect@citadelgroup.in"
+                  href="mailto:enquiry@thecitadelgroup.co"
                   className="text-xs sm:text-sm text-[#242321] font-medium hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all"
                 >
-                  connect@citadelgroup.in
+                  enquiry@thecitadelgroup.co
                 </a>
                 <a
-                  href="tel:+919822012345"
+                  href="tel:+919921666625"
                   className="text-xs text-[#6B6661] hover:text-[#A05C3B] mt-1 block"
                 >
-                  +91 98220 12345 / +91 (020) 2544-0000
+                  +91 9921666625
                 </a>
               </div>
             </div>
@@ -193,7 +193,7 @@ export const Footer: React.FC<FooterProps> = ({
                 Facebook
               </a>
               <a
-                href="https://wa.me/919822012345?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
+                href="https://wa.me/919921666625?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs sm:text-sm text-[#3E3C38] hover:text-[#A05C3B] underline underline-offset-2 block transition-colors"

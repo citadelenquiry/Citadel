@@ -56,7 +56,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     },
     {
       q: 'How do I schedule a site walkthrough for Janki Shreyas CHS?',
-      a: 'You can book a private walkthrough directly through our contact form above, or by calling our sales desk at +91 98220 12345. Site visits are arranged 7 days a week with prior slot confirmation.',
+      a: 'You can book a private walkthrough directly through our contact form above, or by calling our sales desk at +91 9921666625. Site visits are arranged 7 days a week with prior slot confirmation.',
     },
     {
       q: 'What is the redevelopment procedure for housing societies in Pune?',
@@ -64,7 +64,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     },
     {
       q: 'Are Citadel Group projects approved by major nationalized banks for home loans?',
-      a: 'Yes, all our projects possess verified MahaRERA certifications and are pre-approved for up to 80-90% home loan funding by HDFC Bank, SBI, ICICI Bank, Axis Bank, and Bank of Baroda.',
+      a: 'Yes, all our projects are fully approved by Pune Municipal authorities and statutory bodies, and are pre-approved for up to 80-90% home loan funding by HDFC Bank, SBI, ICICI Bank, Axis Bank, and Bank of Baroda.',
     },
   ];
 
@@ -125,16 +125,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     <div>
                       <strong className="text-[#1E1D1B] block">Email Desk:</strong>
                       <a
-                        href="mailto:connect@citadelgroup.in"
+                        href="mailto:enquiry@thecitadelgroup.co"
                         className="text-[#8A563D] hover:underline font-medium break-all block"
                       >
-                        connect@citadelgroup.in
-                      </a>
-                      <a
-                        href="mailto:sales@citadelgroup.in"
-                        className="text-[#7A7570] hover:text-[#8A563D] text-[11px] block mt-0.5"
-                      >
-                        sales@citadelgroup.in
+                        enquiry@thecitadelgroup.co
                       </a>
                     </div>
                   </div>
@@ -145,8 +139,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     </div>
                     <div>
                       <strong className="text-[#1E1D1B] block">Telephones:</strong>
-                      <a href="tel:+919822012345" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
-                        +91 98220 12345 (Direct / Sales)
+                      <a href="tel:+919921666625" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
+                        +91 9921666625 (Direct / Sales)
                       </a>
                       <a href="tel:+912025440000" className="hover:text-[#8A563D] block text-xs text-[#7A7570]">
                         +91 (020) 2544-0000 (Board Desk)
@@ -284,7 +278,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                             required
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            placeholder="+91 98220 12345"
+                            placeholder="+91 99216 66625"
                             className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden transition-colors"
                           />
                         </div>

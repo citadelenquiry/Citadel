@@ -53,7 +53,7 @@ Tagline: ${project.tagline}
 Category: ${project.category} (${project.status})
 Location: ${project.location}
 Address: ${project.fullAddress}
-${project.reraNumber ? `RERA No.: ${project.reraNumber}\n` : ''}Total Area: ${project.areaSqFt} | Structure: ${project.floors}
+Total Area: ${project.areaSqFt} | Structure: ${project.floors}
 
 -----------------------------------------------------
 ARCHITECTURAL OVERVIEW
@@ -89,7 +89,7 @@ ${project.specifications.map(s => `[${s.category}]\n${s.items.map(it => `  • $
 ENQUIRY & SALES DESK
 -----------------------------------------------------
 Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 98349 00805 | +91 77983 56666
+Phone: +91 9921666625
 Email: enquiry@thecitadelgroup.co
 Website: https://thecitadelgroup.co
 =====================================================`;
@@ -249,7 +249,7 @@ Website: https://thecitadelgroup.co
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98220 00000"
+                    placeholder="+91 99216 66625"
                     className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-xs text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden"
                   />
                 </div>
@@ -299,7 +299,7 @@ Website: https://thecitadelgroup.co
               </div>
 
               <p className="text-[10px] text-center text-[#8C8781]">
-                {project.reraNumber ? `MahaRERA: ${project.reraNumber} • ` : ''}Complete confidentiality & zero spam guaranteed.
+                Complete confidentiality & zero spam guaranteed.
               </p>
             </form>
           </div>

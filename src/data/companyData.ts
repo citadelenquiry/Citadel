@@ -24,10 +24,10 @@ export const companyProfileData = {
   headOffice: {
     title: 'Pune Office',
     address: 'Swapnapurti Apartments, Apt 2, 35/13+14C, Opp Hotel President, Prabhat Road, Lane 8, Erandwane, Pune – 411 004',
-    phone: '+91 98220 12345',
+    phone: '+91 9921666625',
     alternatePhone: '+91 20 2544 0000',
-    email: 'connect@citadelgroup.in',
-    salesEmail: 'sales@citadelgroup.in',
+    email: 'enquiry@thecitadelgroup.co',
+    salesEmail: 'enquiry@thecitadelgroup.co',
     timings: 'Monday - Saturday: 9:30 AM - 7:00 PM',
   },
   stats: {

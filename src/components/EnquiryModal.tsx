@@ -149,7 +149,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                       required
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+91 98220 00000"
+                      placeholder="+91 99216 66625"
                       className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden transition-colors"
                     />
                   </div>

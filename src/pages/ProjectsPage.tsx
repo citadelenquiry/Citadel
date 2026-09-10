@@ -139,7 +139,7 @@ Tagline: ${projectToDownload.tagline}
 Category: ${projectToDownload.category} (${projectToDownload.status})
 Location: ${projectToDownload.location}
 Address: ${projectToDownload.fullAddress}
-${projectToDownload.reraNumber ? `RERA No.: ${projectToDownload.reraNumber}\n` : ''}Total Area: ${projectToDownload.areaSqFt} | Structure: ${projectToDownload.floors}
+Total Area: ${projectToDownload.areaSqFt} | Structure: ${projectToDownload.floors}
 
 -----------------------------------------------------
 ARCHITECTURAL OVERVIEW
@@ -175,7 +175,7 @@ ${projectToDownload.specifications.map(s => `[${s.category}]\n${s.items.map(it =
 ENQUIRY & SALES DESK
 -----------------------------------------------------
 Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 98349 00805 | +91 77983 56666
+Phone: +91 9921666625
 Email: enquiry@thecitadelgroup.co
 Website: https://thecitadelgroup.co
 =====================================================`;
@@ -748,12 +748,6 @@ Website: https://thecitadelgroup.co
                 </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-3">
-                  {currentProject.reraNumber && (
-                    <div className="inline-flex items-center gap-1.5 bg-[#E8C2AF]/20 border border-[#E8C2AF]/40 backdrop-blur-md px-3 py-1 rounded-full text-xs text-[#E8C2AF] font-medium">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#E8C2AF]" />
-                      <span>RERA: {currentProject.reraNumber}</span>
-                    </div>
-                  )}
                   <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs text-white">
                     <Building className="w-3.5 h-3.5 text-[#E8C2AF]" />
                     <span>{currentProject.floors}</span>
