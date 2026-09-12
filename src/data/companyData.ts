@@ -19,12 +19,12 @@ export interface AssociatePartner {
 export const companyProfileData = {
   name: 'Citadel Group',
   tagline: 'Development & Redevelopment Specialists',
-  establishedExperience: 'Over 8+ Years of Specialized Experience',
+  establishedExperience: 'Over 10+ Years of Specialized Experience',
   locations: ['Pune', 'Mumbai'],
   headOffice: {
     title: 'Pune Office',
     address: 'Swapnapurti Apartments, Apt 2, 35/13+14C, Opp Hotel President, Prabhat Road, Lane 8, Erandwane, Pune – 411 004',
-    phone: '+91 9921666625',
+    phone: '+91 8779975270',
     alternatePhone: '+91 20 2544 0000',
     email: 'enquiry@thecitadelgroup.co',
     salesEmail: 'enquiry@thecitadelgroup.co',
@@ -35,7 +35,7 @@ export const companyProfileData = {
     puneOngoingSqFt: '3,00,000+',
     upcomingSqFt: '5,00,000+',
     mumbaiDevelopedSqFt: '3,37,000+',
-    yearsExperience: '8+',
+    yearsExperience: '10+',
     onTimeDelivery: '100%',
   },
   missionStatements: [

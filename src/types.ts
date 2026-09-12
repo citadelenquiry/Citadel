@@ -68,6 +68,7 @@ export interface EnquiryFormData {
   fullName: string;
   email: string;
   phone: string;
+  lookingFor?: 'Self (Customer)' | 'Agent' | 'Channel Partner' | string;
   projectId?: string;
   unitType?: string;
   budget?: string;

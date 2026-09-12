@@ -67,8 +67,7 @@ FLOOR PLANS & CONFIGURATIONS
 -----------------------------------------------------
 ${project.floorPlans.map((fp, i) => `
 [Layout ${i + 1}] ${fp.name} (${fp.type})
-• Built-Up Area: ${fp.areaSqFt} sq. ft.
-• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.
+${[2, 3, 4].includes(fp.bedrooms) ? '• Carpet & Built-Up Area: Available on Request' : `• Built-Up Area: ${fp.areaSqFt} sq. ft.\n• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.`}
 • Configuration: ${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies
 • Highlights:
 ${fp.highlights.map(h => `  - ${h}`).join('\n')}
@@ -89,7 +88,7 @@ ${project.specifications.map(s => `[${s.category}]\n${s.items.map(it => `  • $
 ENQUIRY & SALES DESK
 -----------------------------------------------------
 Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 9921666625
+Phone: +91 8779975270
 Email: enquiry@thecitadelgroup.co
 Website: https://thecitadelgroup.co
 =====================================================`;
@@ -249,7 +248,7 @@ Website: https://thecitadelgroup.co
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 99216 66625"
+                    placeholder="+91 87799 75270"
                     className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-xs text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden"
                   />
                 </div>

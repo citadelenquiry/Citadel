@@ -62,7 +62,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </h1>
 
           <p className="text-base sm:text-xl font-light text-[#E6E1DC] max-w-2xl mx-auto leading-relaxed">
-            Experienced & Reliable Builders, transforming metropolitan living across Pune and Mumbai.
+            Trusted & Reliable Builders, transforming metropolitan living across Pune and Mumbai.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -139,7 +139,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
 
             <p className="text-sm sm:text-base text-[#D4CFC9] leading-relaxed max-w-2xl mx-auto font-light">
-              Citadel Group maintains a strong presence in Pune. With over 8 years of experience, we specialise in development and redevelopment projects across metropolitan cities. Our team is composed of young, dynamic, and motivated professionals, supported by highly qualified partners and guided by industry experts serving as mentors and consultants.
+              Citadel Group maintains a strong presence in Pune. With over 10 years of experience, we specialise in development and redevelopment projects across metropolitan cities. Our team is composed of young, dynamic, and motivated professionals, supported by highly qualified partners and guided by industry experts serving as mentors and consultants.
             </p>
 
             <div className="pt-4 flex items-center justify-center">

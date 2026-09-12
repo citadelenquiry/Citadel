@@ -13,11 +13,20 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
   onClose,
   defaultProjectId,
 }) => {
+  const getInitialProjectId = (id?: string) => {
+    if (!id) return '';
+    const exists = projectsData.some(
+      (p) => p.id === id && (p.status === 'Ongoing' || p.status === 'Upcoming')
+    );
+    return exists ? id : '';
+  };
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
-    projectId: defaultProjectId || '',
+    lookingFor: 'Self (Customer)',
+    projectId: getInitialProjectId(defaultProjectId),
     unitType: '',
     message: '',
   });
@@ -31,7 +40,8 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
         fullName: '',
         email: '',
         phone: '',
-        projectId: defaultProjectId || '',
+        lookingFor: 'Self (Customer)',
+        projectId: getInitialProjectId(defaultProjectId),
         unitType: '',
         message: '',
       });
@@ -83,7 +93,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
               Thank You, {formData.fullName.split(' ')[0] || 'Sir/Madam'}!
             </h3>
             <p className="text-sm text-[#5C5752] max-w-sm mx-auto leading-relaxed">
-              Your inquiry {matchedProject ? (
+              Your quote request as <strong className="text-[#1E1D1B]">{formData.lookingFor}</strong> {matchedProject ? (
                 <>for <strong className="text-[#1E1D1B]">{matchedProject.title}</strong></>
               ) : (
                 <>for <strong className="text-[#1E1D1B]">Citadel Group Projects</strong></>
@@ -109,31 +119,50 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
           <div>
             <div className="mb-6">
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#8A563D] block mb-1">
-                CITADEL GROUP INQUIRIES
+                CITADEL GROUP • GET A QUOTE
               </span>
               <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-[#1E1D1B]">
-                Request Project Details & Consultation
+                Get a Quote & Project Consultation
               </h3>
               <p className="text-xs text-[#6B6661] mt-1">
-                Connect directly with our project advisory desk for floor plans, technical specifications, and brochure documents.
+                Connect directly with our advisory desk for price quotes, unit availability, floor plans, and technical specifications.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
-                  Full Name *
-                </label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-[#8C8781] absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                    Full Name *
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-[#8C8781] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      required
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      placeholder="e.g. Rahul Deshmukh"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                    Looking For *
+                  </label>
+                  <select
+                    id="enquiry-looking-for-select"
                     required
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    placeholder="e.g. Rahul Deshmukh"
-                    className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden transition-colors"
-                  />
+                    value={formData.lookingFor}
+                    onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden"
+                  >
+                    <option value="Self (Customer)">Self (Customer)</option>
+                    <option value="Agent">Agent</option>
+                    <option value="Channel Partner">Channel Partner</option>
+                  </select>
                 </div>
               </div>
 
@@ -149,7 +178,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                       required
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+91 99216 66625"
+                      placeholder="+91 87799 75270"
                       className="w-full pl-9 pr-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden transition-colors"
                     />
                   </div>
@@ -184,11 +213,24 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     className="w-full px-3 py-2.5 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden"
                   >
                     <option value="">Select Project (Optional)</option>
-                    {projectsData.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.title} ({p.category})
-                      </option>
-                    ))}
+                    <optgroup label="Ongoing Projects">
+                      {projectsData
+                        .filter((p) => p.status === 'Ongoing')
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title} ({p.location})
+                          </option>
+                        ))}
+                    </optgroup>
+                    <optgroup label="Upcoming Projects">
+                      {projectsData
+                        .filter((p) => p.status === 'Upcoming')
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title} ({p.location})
+                          </option>
+                        ))}
+                    </optgroup>
                   </select>
                 </div>
 
@@ -205,6 +247,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                     <option value="2 BHK Residence">2 BHK Residence</option>
                     <option value="3 BHK Residence">3 BHK Residence</option>
                     <option value="4 BHK Penthouse">4 BHK Penthouse</option>
+                    <option value="5 BHK Sky Mansion">5 BHK Sky Mansion</option>
                     <option value="Commercial Office Space">Commercial Office Space</option>
                     <option value="Society Redevelopment Proposal">Society Redevelopment Inquiry</option>
                   </select>
@@ -219,7 +262,7 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                   rows={2}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Ask about floor availability, payment plans, brochure..."
+                  placeholder="Ask about pricing quote, floor availability, payment plans, brochure..."
                   className="w-full px-3 py-2 bg-white border border-[#DDD6CE] rounded-lg text-sm text-[#1E1D1B] focus:border-[#A05C3B] focus:outline-hidden"
                 />
               </div>
@@ -231,10 +274,10 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
                 className="w-full flex items-center justify-center gap-2 bg-[#E8C2AF] hover:bg-[#DFB29D] text-[#1E1D1B] font-bold text-xs uppercase tracking-wider py-3 rounded-full shadow-xs transition-colors cursor-pointer mt-2 disabled:opacity-70"
               >
                 {loading ? (
-                  <span>SUBMITTING INQUIRY...</span>
+                  <span>SUBMITTING QUOTE REQUEST...</span>
                 ) : (
                   <>
-                    <span>SUBMIT INQUIRY</span>
+                    <span>GET A QUOTE / SUBMIT INQUIRY</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

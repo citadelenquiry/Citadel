@@ -30,6 +30,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     name: '',
     email: '',
     phone: '',
+    lookingFor: 'Self (Customer)',
     inquiryType: 'Home Purchase',
     project: 'Janki Shreyas CHS',
     preferredDate: '',
@@ -56,7 +57,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     },
     {
       q: 'How do I schedule a site walkthrough for Janki Shreyas CHS?',
-      a: 'You can book a private walkthrough directly through our contact form above, or by calling our sales desk at +91 9921666625. Site visits are arranged 7 days a week with prior slot confirmation.',
+      a: 'You can book a private walkthrough directly through our contact form above, or by calling our sales desk at +91 8779975270. Site visits are arranged 7 days a week with prior slot confirmation.',
     },
     {
       q: 'What is the redevelopment procedure for housing societies in Pune?',
@@ -139,8 +140,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     </div>
                     <div>
                       <strong className="text-[#1E1D1B] block">Telephones:</strong>
-                      <a href="tel:+919921666625" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
-                        +91 9921666625 (Direct / Sales)
+                      <a href="tel:+918779975270" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
+                        +91 8779975270 (Direct / Sales)
                       </a>
                       <a href="tel:+912025440000" className="hover:text-[#8A563D] block text-xs text-[#7A7570]">
                         +91 (020) 2544-0000 (Board Desk)
@@ -223,7 +224,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       Message Dispatched!
                     </h3>
                     <p className="text-sm text-[#5C5752] max-w-md mx-auto leading-relaxed">
-                      Thank you, <strong>{formData.name}</strong>. We have registered your request for{' '}
+                      Thank you, <strong>{formData.name}</strong>. We have registered your inquiry as{' '}
+                      <span className="font-semibold text-[#1E1D1B]">{formData.lookingFor}</span> for{' '}
                       <span className="font-semibold text-[#1E1D1B]">{formData.inquiryType}</span> regarding{' '}
                       <span className="font-semibold text-[#1E1D1B]">{formData.project}</span>.
                     </p>
@@ -278,7 +280,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                             required
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            placeholder="+91 99216 66625"
+                            placeholder="+91 87799 75270"
                             className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden transition-colors"
                           />
                         </div>
@@ -301,6 +303,23 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
                         <div>
                           <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                            Looking For *
+                          </label>
+                          <select
+                            value={formData.lookingFor}
+                            onChange={(e) => setFormData({ ...formData, lookingFor: e.target.value })}
+                            className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                          >
+                            <option value="Self (Customer)">Self (Customer)</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Channel Partner">Channel Partner</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
                             Inquiry Category
                           </label>
                           <select
@@ -315,9 +334,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                             <option value="Vendor / Partner">Vendor / Contractor Partnership</option>
                           </select>
                         </div>
-                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
                             Project of Interest
@@ -327,26 +344,39 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                             onChange={(e) => setFormData({ ...formData, project: e.target.value })}
                             className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
                           >
-                            {projectsData.map((p) => (
-                              <option key={p.id} value={p.title}>
-                                {p.title} ({p.location})
-                              </option>
-                            ))}
+                            <optgroup label="Ongoing Projects">
+                              {projectsData
+                                .filter((p) => p.status === 'Ongoing')
+                                .map((p) => (
+                                  <option key={p.id} value={p.title}>
+                                    {p.title} ({p.location})
+                                  </option>
+                                ))}
+                            </optgroup>
+                            <optgroup label="Upcoming Projects">
+                              {projectsData
+                                .filter((p) => p.status === 'Upcoming')
+                                .map((p) => (
+                                  <option key={p.id} value={p.title}>
+                                    {p.title} ({p.location})
+                                  </option>
+                                ))}
+                            </optgroup>
                             <option value="General Consultation">General Consultation</option>
                           </select>
                         </div>
+                      </div>
 
-                        <div>
-                          <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
-                            Preferred Site Visit Date (Optional)
-                          </label>
-                          <input
-                            type="date"
-                            value={formData.preferredDate}
-                            onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
-                            className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                          Preferred Site Visit Date (Optional)
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.preferredDate}
+                          onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
+                          className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                        />
                       </div>
 
                       <div>

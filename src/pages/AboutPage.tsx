@@ -42,7 +42,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             Excellence in Development & Redevelopment
           </h1>
           <p className="text-base sm:text-lg text-[#D9D3CD] max-w-2xl mx-auto font-light leading-relaxed">
-            With over 8 years of specialized experience, Citadel Group maintains a strong presence in Pune and Mumbai, transforming urban landscapes through civil engineering mastery, diligence, and integrity.
+            With over 10 years of specialized experience, Citadel Group maintains a strong presence in Pune and Mumbai, transforming urban landscapes through civil engineering mastery, diligence, and integrity.
           </p>
         </div>
       </section>
@@ -249,7 +249,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             PUNE HEAD OFFICE
           </span>
           <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-white">
-            Visit Our Erandwane / Prabhat Road Office
+            Visit Our Prabhat Road Office
           </h2>
           <div className="flex items-center justify-center gap-2 text-sm text-[#DDD6CE] max-w-xl mx-auto">
             <MapPin className="w-4 h-4 text-[#E8C2AF] shrink-0" />

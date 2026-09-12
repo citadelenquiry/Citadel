@@ -153,8 +153,7 @@ FLOOR PLANS & CONFIGURATIONS
 -----------------------------------------------------
 ${projectToDownload.floorPlans.map((fp, i) => `
 [Layout ${i + 1}] ${fp.name} (${fp.type})
-• Built-Up Area: ${fp.areaSqFt} sq. ft.
-• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.
+${[2, 3, 4].includes(fp.bedrooms) ? '• Carpet & Built-Up Area: Available on Request' : `• Built-Up Area: ${fp.areaSqFt} sq. ft.\n• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.`}
 • Configuration: ${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies
 • Highlights:
 ${fp.highlights.map(h => `  - ${h}`).join('\n')}
@@ -175,7 +174,7 @@ ${projectToDownload.specifications.map(s => `[${s.category}]\n${s.items.map(it =
 ENQUIRY & SALES DESK
 -----------------------------------------------------
 Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 9921666625
+Phone: +91 8779975270
 Email: enquiry@thecitadelgroup.co
 Website: https://thecitadelgroup.co
 =====================================================`;
@@ -1168,14 +1167,29 @@ Website: https://thecitadelgroup.co
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 bg-[#F8F6F3] p-4 rounded-xl border border-[#EBE5DE]">
-                    <div>
-                      <span className="text-[11px] text-[#7A7570] block">Super Built-up Area</span>
-                      <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.areaSqFt} sq. ft.</span>
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-[#7A7570] block">Carpet Area</span>
-                      <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.carpetAreaSqFt} sq. ft.</span>
-                    </div>
+                    {[2, 3, 4].includes(activeFloorPlan.bedrooms) ? (
+                      <>
+                        <div>
+                          <span className="text-[11px] text-[#7A7570] block">Configuration</span>
+                          <span className="text-base sm:text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.type}</span>
+                        </div>
+                        <div>
+                          <span className="text-[11px] text-[#7A7570] block">Carpet & Built-Up</span>
+                          <span className="text-xs sm:text-sm font-bold text-[#8A563D] mt-1 block">Available on Request</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <span className="text-[11px] text-[#7A7570] block">Super Built-up Area</span>
+                          <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.areaSqFt} sq. ft.</span>
+                        </div>
+                        <div>
+                          <span className="text-[11px] text-[#7A7570] block">Carpet Area</span>
+                          <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.carpetAreaSqFt} sq. ft.</span>
+                        </div>
+                      </>
+                    )}
                     <div>
                       <span className="text-[11px] text-[#7A7570] block">Bedrooms / Baths</span>
                       <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.bedrooms} Bed / {activeFloorPlan.bathrooms} Bath</span>
