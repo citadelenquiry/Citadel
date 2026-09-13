@@ -1,6 +1,6 @@
 import { Project } from '../types';
 
-export const projectsData: Project[] = [
+export const allProjectsData: Project[] = [
   // ==========================================
   // ONGOING PROJECTS IN PUNE
   // ==========================================
@@ -16,7 +16,7 @@ export const projectsData: Project[] = [
     areaSqFt: '2, 3 & 4 BHK Luxury Residences',
     floors: 'Multi-Storey Residential Tower',
     unitsCount: 'Premium 2, 3 & 4 BHK Residences',
-    reraNumber: '',
+    reraNumber: 'PR1260002601082',
     heroImage: '/janki-shreyas-elevation.jpg',
     gallery: [
       '/janki-shreyas-elevation.jpg',
@@ -248,7 +248,7 @@ export const projectsData: Project[] = [
     areaSqFt: '60,000 sq. ft.',
     floors: 'P + 7 Floors',
     unitsCount: '28 Premium 2 & 3 BHK Apartments',
-    reraNumber: '',
+    reraNumber: 'P52100078109',
     heroImage: '/friends-chs-elevation.jpeg',
     gallery: [
       '/friends-chs-elevation.jpeg',
@@ -358,6 +358,7 @@ export const projectsData: Project[] = [
     id: 'laxmi-parvati-chs',
     slug: 'laxmi-parvati-chs',
     title: 'Laxmi Parvati CHS',
+    hidden: true,
     tagline: 'P+7 Boutique Redevelopment at Taware Colony',
     category: 'Redevelopment',
     status: 'Ongoing',
@@ -602,9 +603,9 @@ export const projectsData: Project[] = [
     floors: '2B + G + 16 Floors',
     unitsCount: 'Retail Showrooms + Corporate Offices + Luxury Flats',
     reraNumber: '',
-    heroImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/Stellar-elevation.jpeg',
     gallery: [
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+      '/Stellar-elevation.jpeg',
       'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
     ],
     overviewText:
@@ -626,27 +627,53 @@ export const projectsData: Project[] = [
     floorPlans: [
       {
         id: 'fp-cs-1',
-        name: 'Prime Retail Suite',
-        type: 'Commercial Retail',
-        areaSqFt: 1800,
-        carpetAreaSqFt: 1450,
+        name: 'North Wing Floor Plan',
+        type: 'North Wing Architectural Plate',
+        areaSqFt: 3500,
+        carpetAreaSqFt: 2800,
         bedrooms: 0,
-        bathrooms: 1,
-        balconies: 0,
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80',
-        highlights: ['Double height 14ft ceiling', 'Front glass facade visibility', 'Dedicated customer parking'],
+        bathrooms: 4,
+        balconies: 2,
+        image: '/floor-plans/Stellar/Stellar-north-wing-floor-plan.png',
+        images: [
+          {
+            url: '/floor-plans/Stellar/Stellar-north-wing-floor-plan.png',
+            title: 'Stellar North Wing Architectural Floor Plan',
+            badge: 'Architectural Wing Layout',
+            description: 'Detailed architectural floor plan for the North Wing featuring optimal column spacing, central core lifts, and high-efficiency circulation.',
+          },
+        ],
+        highlights: [
+          'Optimized structural grid for high-efficiency column-free spaces',
+          'Dedicated high-speed elevator banks and service lobbies',
+          'Maximum perimeter window exposure for natural daylight',
+          'Seamless integration with commercial lobbies and utilities',
+        ],
       },
       {
         id: 'fp-cs-2',
-        name: '3 BHK Skyline Residence',
-        type: 'Residential 3 BHK',
-        areaSqFt: 1650,
-        carpetAreaSqFt: 1280,
-        bedrooms: 3,
-        bathrooms: 3,
+        name: 'South Wing Floor Plan',
+        type: 'South Wing Architectural Plate',
+        areaSqFt: 3450,
+        carpetAreaSqFt: 2750,
+        bedrooms: 0,
+        bathrooms: 4,
         balconies: 2,
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80',
-        highlights: ['Panoramic skyline view', 'Italian marble flooring in living', 'Smart home automation ready'],
+        image: '/floor-plans/Stellar/Stellar-south-wing-floorplan.png',
+        images: [
+          {
+            url: '/floor-plans/Stellar/Stellar-south-wing-floorplan.png',
+            title: 'Stellar South Wing Architectural Floor Plan',
+            badge: 'Architectural Wing Layout',
+            description: 'Detailed architectural floor plan for the South Wing featuring wide floor plates, dedicated fire exits, and premium utility provisions.',
+          },
+        ],
+        highlights: [
+          'Expansive floor plate designed for flexible modular configurations',
+          'Direct lobby access with dual stairwells and fire escape corridors',
+          'Premium ventilation channels and cross-air circulation',
+          'Advanced ducting corridors for central MEP infrastructure',
+        ],
       },
     ],
     amenities: [
@@ -671,9 +698,9 @@ export const projectsData: Project[] = [
     floors: 'P + 11 Floors',
     unitsCount: 'Super Luxury 3 & 4.5 BHK Master Suites',
     reraNumber: '',
-    heroImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/prabhat96-elevation.jpeg',
     gallery: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+      '/prabhat96-elevation.jpeg',
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
     ],
     overviewText:
@@ -702,8 +729,21 @@ export const projectsData: Project[] = [
         bedrooms: 4,
         bathrooms: 5,
         balconies: 3,
-        image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=80',
-        highlights: ['Private elevator lobby directly into foyer', 'Master bathroom with jacuzzi provision', 'Wrap-around balcony'],
+        image: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+        images: [
+          {
+            url: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+            title: '96 Prabhat Signature Floor Plan',
+            badge: 'Architectural Floor Plan',
+            description: 'Exclusive private floor plan showing only two residences per floor, private elevator foyer, grand living room, and spacious bedrooms.',
+          },
+        ],
+        highlights: [
+          'Private elevator lobby opening directly into private residence foyer',
+          'Expansive living salon with adjacent banquet dining area',
+          'Grand master suite with walk-in wardrobe and luxury bath provision',
+          'Expansive private sit-out balconies overlooking tree-lined Prabhat Road',
+        ],
       },
     ],
     amenities: [
@@ -719,6 +759,7 @@ export const projectsData: Project[] = [
     id: 'citadel-emerald',
     slug: 'citadel-emerald',
     title: 'Citadel Emerald',
+    hidden: true,
     tagline: '2,35,000 sq. ft. Grand Mixed-Use Outright Acquisition Landmark',
     category: 'Commercial',
     status: 'Upcoming',
@@ -786,9 +827,9 @@ export const projectsData: Project[] = [
     floors: 'P + 14 Floors',
     unitsCount: '52 Delivered Premium Residences',
     reraNumber: '',
-    heroImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/jai-rajkiran-elevation.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+      '/jai-rajkiran-elevation.jpg',
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
     ],
     overviewText:
@@ -810,10 +851,10 @@ export const projectsData: Project[] = [
     floorPlans: [
       {
         id: 'fp-jr-1',
-        name: '3 BHK Residence',
+        name: '3 BHK (906 Sq. Ft.)',
         type: '3 BHK Luxury',
-        areaSqFt: 1420,
-        carpetAreaSqFt: 1110,
+        areaSqFt: 906,
+        carpetAreaSqFt: 906,
         bedrooms: 3,
         bathrooms: 3,
         balconies: 2,
@@ -821,13 +862,13 @@ export const projectsData: Project[] = [
         images: [
           {
             url: '/floor-plans/jai-rajkiran/jai-rajkiran-3bhk-3d.jpg',
-            title: '3 BHK 3D Cut Section Layout',
+            title: '3 BHK (906 Sq. Ft.) 3D Cut Section Layout',
             badge: '3D Isometric Cutaway',
             description: 'Rendered isometric cut section illustrating open-concept living lounge, modern kitchen, and spacious master suite.',
           },
         ],
         highlights: [
-          'Expansive living and dining salon with wide sit-out balcony',
+          'Well-planned 906 sq. ft. luxury layout with expansive living and dining salon',
           'Grand master bedroom with private attached designer bathroom',
           'Modern modular kitchen layout with attached dry balcony',
           'Optimal cross-ventilation and Vaastu-compliant orientation',
@@ -835,10 +876,35 @@ export const projectsData: Project[] = [
       },
       {
         id: 'fp-jr-2',
-        name: '4 BHK Residence',
+        name: '3 BHK (1065 Sq. Ft.)',
+        type: '3 BHK Grand Luxury',
+        areaSqFt: 1065,
+        carpetAreaSqFt: 1065,
+        bedrooms: 3,
+        bathrooms: 3,
+        balconies: 2,
+        image: '/floor-plans/jai-rajkiran/jai-rajkiran-3bhk-type-b-3d.jpg',
+        images: [
+          {
+            url: '/floor-plans/jai-rajkiran/jai-rajkiran-3bhk-type-b-3d.jpg',
+            title: '3 BHK (1065 Sq. Ft.) 3D Cut Section Layout',
+            badge: '3D Isometric Cutaway',
+            description: 'Three-side open corner 3D layout featuring extended living lounge, twin master suites, and wrap-around balcony.',
+          },
+        ],
+        highlights: [
+          'Spacious 1065 sq. ft. corner layout offering maximum daylight and cross-ventilation',
+          'Twin master suites with attached luxury bath spaces and wardrobes',
+          'Extended chef-style kitchen with attached utility and storage area',
+          'Generous sun deck balcony with panoramic unobstructed views',
+        ],
+      },
+      {
+        id: 'fp-jr-3',
+        name: '4 BHK (1520 Sq. Ft.)',
         type: '4 BHK Ultra Luxury',
-        areaSqFt: 1850,
-        carpetAreaSqFt: 1450,
+        areaSqFt: 1520,
+        carpetAreaSqFt: 1520,
         bedrooms: 4,
         bathrooms: 4,
         balconies: 3,
@@ -846,13 +912,13 @@ export const projectsData: Project[] = [
         images: [
           {
             url: '/floor-plans/jai-rajkiran/jai-rajkiran-4bhk-3d.jpg',
-            title: '4 BHK 3D Cut Section Layout',
+            title: '4 BHK (1520 Sq. Ft.) 3D Cut Section Layout',
             badge: '3D Isometric Cutaway',
             description: 'Panoramic 3D isometric cut section showcasing expansive living spaces, dining deck, and private luxury suites.',
           },
         ],
         highlights: [
-          'Palatial living room with dedicated family entertainment zone',
+          'Sprawling 1520 sq. ft. palatial residence with dedicated family entertainment zone',
           'Spacious master suites featuring private balconies and attached bathrooms',
           'Gourmet chef kitchen with separate utility and service balcony',
           'Three-side open design ensuring abundant sunlight and ventilation',
@@ -881,9 +947,10 @@ export const projectsData: Project[] = [
     floors: 'P + 5 Floors',
     unitsCount: 'Retail Showrooms & Professional Corporate Offices',
     reraNumber: '',
-    heroImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/floor-plans/walvekar/walvekar-elevation.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+      '/floor-plans/walvekar/walvekar-elevation.jpg',
+      '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
     ],
     overviewText:
       'Walvekar Commercial is a 20,000 sq. ft., P+5 storey boutique commercial complex in Walvekar Nagar, Pune. Delivered as a Joint Venture project housing bustling retail shops and offices.',
@@ -896,7 +963,7 @@ export const projectsData: Project[] = [
         id: 'u-wc1',
         title: 'Operational Commercial Center',
         description: 'Retail stores and corporate offices fully active.',
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80',
+        image: '/floor-plans/walvekar/walvekar-elevation.jpg',
         date: 'Delivered',
         stage: 'Operational',
       },
@@ -904,15 +971,28 @@ export const projectsData: Project[] = [
     floorPlans: [
       {
         id: 'fp-wc-1',
-        name: 'Commercial Shop / Office Suite',
-        type: 'Commercial',
+        name: 'Office Spaces',
+        type: 'Commercial Office Space',
         areaSqFt: 650,
         carpetAreaSqFt: 510,
         bedrooms: 0,
         bathrooms: 1,
         balconies: 0,
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1000&q=80',
-        highlights: ['Glass road-facing display', 'Power backup', 'Attached washroom'],
+        image: '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
+        images: [
+          {
+            url: '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
+            title: 'Walvekar Commercial Office Spaces',
+            badge: 'Office Spaces & Layout',
+            description: 'Ready-to-occupy corporate office suites and retail spaces with generous natural illumination, modern fixtures, and prime road visibility.',
+          },
+        ],
+        highlights: [
+          'Optimized commercial office layouts with column-free space',
+          'Large window openings offering panoramic street and city views',
+          'Central power backup and dedicated electrical distribution points',
+          'Professional building reception with high-speed elevator access',
+        ],
       },
     ],
     amenities: [
@@ -936,9 +1016,9 @@ export const projectsData: Project[] = [
     floors: 'P + 5 Floors',
     unitsCount: '16 Completed Family Residences',
     reraNumber: '',
-    heroImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/anandshree-elevation.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+      '/anandshree-elevation.jpg',
     ],
     overviewText:
       'Anandshree CHS is a 20,000 sq. ft., P+5 storey society redevelopment successfully completed and delivered by Citadel Group in Walvekar Nagar, Pune.',
@@ -946,6 +1026,7 @@ export const projectsData: Project[] = [
       'Delivered with full municipal approvals, providing modern amenities, quality elevation, and enhanced carpet area to original society flat holders.',
     mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
     mapAddressDisplay: 'Walvekar Nagar, Pune',
+    googleMapsUrl: 'https://maps.app.goo.gl/Ki3JsPgHGJHGVD6b8?g_st=aw',
     liveUpdates: [
       {
         id: 'u-as1',
@@ -959,10 +1040,10 @@ export const projectsData: Project[] = [
     floorPlans: [
       {
         id: 'fp-as-1',
-        name: '2 BHK Residence',
+        name: '2 BHK (906 Sq. Ft.)',
         type: '2 BHK Smart',
-        areaSqFt: 880,
-        carpetAreaSqFt: 690,
+        areaSqFt: 906,
+        carpetAreaSqFt: 906,
         bedrooms: 2,
         bathrooms: 2,
         balconies: 1,
@@ -970,13 +1051,13 @@ export const projectsData: Project[] = [
         images: [
           {
             url: '/floor-plans/anandshree/anandshree-2bhk-3d.jpg',
-            title: '2 BHK 3D Cut Section Layout',
+            title: '2 BHK (906 Sq. Ft.) 3D Cut Section Layout',
             badge: '3D Isometric Cutaway',
             description: 'Isometric 3D layout displaying spacious living lounge, master bedroom suite, and kitchen utility.',
           },
         ],
         highlights: [
-          'Well-ventilated living lounge with private balcony access',
+          'Thoughtfully planned 906 sq. ft. living lounge with private balcony access',
           'Master bedroom suite with attached modern bathroom',
           'Efficient kitchen layout with dedicated utility area',
           'Vaastu-compliant planning with zero dead circulation space',
@@ -984,10 +1065,10 @@ export const projectsData: Project[] = [
       },
       {
         id: 'fp-as-2',
-        name: '3 BHK Residence',
+        name: '3 BHK (1225 Sq. Ft.)',
         type: '3 BHK Luxury',
-        areaSqFt: 1250,
-        carpetAreaSqFt: 980,
+        areaSqFt: 1225,
+        carpetAreaSqFt: 1225,
         bedrooms: 3,
         bathrooms: 3,
         balconies: 2,
@@ -995,13 +1076,13 @@ export const projectsData: Project[] = [
         images: [
           {
             url: '/floor-plans/anandshree/anandshree-3bhk-3d.jpg',
-            title: '3 BHK 3D Cut Section Layout',
+            title: '3 BHK (1225 Sq. Ft.) 3D Cut Section Layout',
             badge: '3D Isometric Cutaway',
             description: 'Detailed 3D cutaway showing master bedroom suite, spacious living/dining hall, and sit-out terrace.',
           },
         ],
         highlights: [
-          'Expansive living and dining room with scenic sit-out balcony',
+          'Expansive 1225 sq. ft. living and dining room with scenic sit-out balcony',
           'Spacious master bedroom with ensuite designer bathroom',
           'Well-planned secondary bedrooms with optimal natural lighting',
           'Contemporary kitchen with separate dry balcony and utility space',
@@ -1016,3 +1097,5 @@ export const projectsData: Project[] = [
     ],
   },
 ];
+
+export const projectsData: Project[] = allProjectsData.filter((project) => !project.hidden);

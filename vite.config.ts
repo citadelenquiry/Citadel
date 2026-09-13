@@ -1,11 +1,47 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import {defineConfig, Plugin} from 'vite';
+
+function adminApiPlugin(): Plugin {
+  return {
+    name: 'admin-api-plugin',
+    configureServer(server) {
+      server.middlewares.use('/api/admin/verify', (req, res) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', () => {
+            try {
+              const { password } = JSON.parse(body || '{}');
+              const correctPassword = process.env.ADMIN_PASSWORD || '#site@Admin';
+              res.setHeader('Content-Type', 'application/json');
+              if (password === correctPassword) {
+                res.statusCode = 200;
+                res.end(JSON.stringify({ success: true, authorized: true }));
+              } else {
+                res.statusCode = 401;
+                res.end(JSON.stringify({ success: false, message: 'Invalid Admin Password' }));
+              }
+            } catch {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ success: false, message: 'Bad request' }));
+            }
+          });
+        } else {
+          res.statusCode = 405;
+          res.end('Method Not Allowed');
+        }
+      });
+    },
+  };
+}
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), adminApiPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

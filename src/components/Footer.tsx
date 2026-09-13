@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
-import { ArrowDownRight, ChevronDown, ChevronUp, Mail, MapPin, Phone, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
+import { ArrowDownRight, ChevronDown, ChevronUp, Mail, MapPin, Phone, Instagram, Facebook, Linkedin, ArrowUp, Lock } from 'lucide-react';
 import { projectsData } from '../data/projectsData';
 import { companyProfileData } from '../data/companyData';
 
@@ -9,6 +9,7 @@ interface FooterProps {
   setCurrentPage: (page: Page) => void;
   onOpenEnquiry: (projectId?: string) => void;
   onSelectProject?: (projectId: string) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -16,6 +17,7 @@ export const Footer: React.FC<FooterProps> = ({
   setCurrentPage,
   onOpenEnquiry,
   onSelectProject,
+  onOpenAdmin,
 }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(false);
 
@@ -121,6 +123,20 @@ export const Footer: React.FC<FooterProps> = ({
 
               <div>
                 <button
+                  id="footer-nav-careers"
+                  onClick={() => handleNav('careers')}
+                  className={`text-xs sm:text-sm font-semibold tracking-wider transition-colors block text-left ${
+                    currentPage === 'careers'
+                      ? 'text-[#A05C3B] font-bold underline underline-offset-4'
+                      : 'text-[#3E3C38] hover:text-[#A05C3B]'
+                  }`}
+                >
+                  CAREERS
+                </button>
+              </div>
+
+              <div>
+                <button
                   id="footer-nav-contact"
                   onClick={() => handleNav('contact')}
                   className={`text-xs sm:text-sm font-semibold tracking-wider transition-colors block text-left ${
@@ -143,7 +159,7 @@ export const Footer: React.FC<FooterProps> = ({
                       : 'text-[#3E3C38] hover:text-[#A05C3B]'
                   }`}
                 >
-                  HOME LOAN CALCULATOR
+                  TOOLS
                 </button>
               </div>
             </nav>
@@ -226,8 +242,20 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Bottom Bar: Back to Top & Copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6B6661]">
-          <div className="order-2 sm:order-1">
+          <div className="order-2 sm:order-1 flex items-center gap-1.5">
             <span>© 2026 by CITADEL Group. All rights reserved.</span>
+            {onOpenAdmin && (
+              <button
+                id="admin-stealth-lock-trigger"
+                onClick={onOpenAdmin}
+                tabIndex={-1}
+                aria-label="Site Console"
+                title=""
+                className="inline-flex items-center text-[#6B6661] opacity-25 hover:opacity-35 transition-opacity p-0.5 cursor-default focus:outline-hidden"
+              >
+                <Lock className="w-2.5 h-2.5" />
+              </button>
+            )}
           </div>
 
           <div className="order-1 sm:order-2">

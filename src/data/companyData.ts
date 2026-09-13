@@ -84,6 +84,36 @@ export const companyProfileData = {
         'Act as a point of contact between clients, vendors, and team members',
       ],
     },
+    {
+      name: 'Rahul Shah',
+      role: 'Associate Partner',
+      category: 'associate' as const,
+      experienceYears: 30,
+      qualifications: 'Bachelor of Engineering (B.E.)',
+      initials: 'RS',
+      responsibilities: [
+        'Project development with a focus on quality',
+        'Manage public relations and stakeholder relationships',
+        'Lead procurement and vendor management',
+        'Ensuring efficient management for timely delivery of projects',
+        'Contributing to business development and Market Expansion',
+      ],
+    },
+    {
+      name: 'Chintan Chheda',
+      role: 'Associate Partner',
+      category: 'associate' as const,
+      experienceYears: 12,
+      qualifications: 'B.Com, MBA (Marketing)',
+      initials: 'CC',
+      responsibilities: [
+        'Sales and Business Development',
+        'Understanding Client Budgets, Expectations and Project Objectives',
+        'Assessing the commercial and practical feasibility of potential projects',
+        'Contributing to project concepts, positioning, planning, and development strategy',
+        'Evaluating location, demand, competition, pricing, project marketing & branding and overall market potential',
+      ],
+    },
   ] as TeamMember[],
   associates: [
     {

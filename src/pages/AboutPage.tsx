@@ -157,7 +157,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             </p>
           </div>
 
-          {/* Key Partners Grid (2 Real Partners) */}
+          {/* Key Partners & Associate Partners Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-5xl mx-auto">
             {companyProfileData.partners.map((partner) => (
               <div

@@ -1,4 +1,4 @@
-export type Page = 'home' | 'projects' | 'about' | 'contact' | 'calculator';
+export type Page = 'home' | 'projects' | 'about' | 'contact' | 'calculator' | 'careers';
 export type ProjectStage = 'Ongoing' | 'Completed' | 'Upcoming';
 export type ProjectsViewMode = 'hub' | 'stage' | 'detail';
 
@@ -45,12 +45,14 @@ export interface Project {
   floors: string;
   unitsCount: string;
   reraNumber: string;
+  hidden?: boolean;
   heroImage: string;
   gallery: string[];
   overviewText: string;
   detailedDescription: string;
   mapEmbedQuery: string;
   mapAddressDisplay: string;
+  googleMapsUrl?: string;
   liveUpdates: ProjectLiveUpdate[];
   floorPlans: FloorPlan[];
   amenities: {

@@ -1,0 +1,681 @@
+import React, { useState, useEffect } from 'react';
+import {
+  X,
+  HardHat,
+  Plus,
+  Trash2,
+  Edit2,
+  Copy,
+  Check,
+  RotateCcw,
+  ExternalLink,
+  Upload,
+  LogOut,
+  Calendar,
+  Image as ImageIcon,
+  CheckCircle2,
+  ChevronDown,
+} from 'lucide-react';
+import { Project, ProjectLiveUpdate } from '../types';
+import { projectsData } from '../data/projectsData';
+import { projectUpdatesService } from '../services/projectUpdatesService';
+import { adminAuthService } from '../services/adminAuthService';
+
+interface AdminPanelModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectProjectOnSite?: (projectId: string) => void;
+}
+
+const COMMON_STAGES = [
+  'Demolition & Site Clearance',
+  'Excavation & Shoring',
+  'Piling & Foundation',
+  'Plinth & Substructure',
+  'RCC Slab Concreting',
+  'Brickwork & Masonry',
+  'Internal & External Plastering',
+  'Electrical & Plumbing',
+  'Flooring & Tiling',
+  'Elevations & Painting',
+  'Terrace & Waterproofing',
+  'Finishing & Snagging',
+  'OC Granted & Handover',
+];
+
+const SAMPLE_SITE_PHOTOS = [
+  {
+    label: 'RCC Slab Concreting',
+    url: 'https://images.unsplash.com/photo-1541888946425-d0fbb180c5f7?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Foundation & Steel Work',
+    url: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Exterior Elevation Framing',
+    url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80',
+  },
+  {
+    label: 'Interior Finishing & Plaster',
+    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+  },
+];
+
+export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
+  isOpen,
+  onClose,
+  onSelectProjectOnSite,
+}) => {
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(projectsData[0]?.id || '');
+  const [updates, setUpdates] = useState<ProjectLiveUpdate[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'manager' | 'code'>('manager');
+  const [copied, setCopied] = useState(false);
+  const [feedbackMsg, setFeedbackMsg] = useState('');
+
+  // Form State
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [formTitle, setFormTitle] = useState('');
+  const [formStage, setFormStage] = useState('RCC Slab Concreting');
+  const [formDate, setFormDate] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [formImage, setFormImage] = useState('');
+
+  // Reload updates when project changes
+  const loadUpdates = (pId: string) => {
+    const list = projectUpdatesService.getLiveUpdates(pId);
+    setUpdates(list);
+  };
+
+  useEffect(() => {
+    if (isOpen && selectedProjectId) {
+      loadUpdates(selectedProjectId);
+    }
+  }, [isOpen, selectedProjectId]);
+
+  // Subscribe to updates service
+  useEffect(() => {
+    const unsub = projectUpdatesService.subscribe(() => {
+      if (selectedProjectId) {
+        loadUpdates(selectedProjectId);
+      }
+    });
+    return unsub;
+  }, [selectedProjectId]);
+
+  if (!isOpen) return null;
+
+  const currentProject = projectsData.find((p) => p.id === selectedProjectId) || projectsData[0];
+
+  const handleOpenAdd = () => {
+    setEditingCardId(null);
+    setFormTitle('');
+    setFormStage('RCC Slab Concreting');
+    const now = new Date();
+    const monthYear = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    setFormDate(monthYear);
+    setFormDescription('');
+    setFormImage(SAMPLE_SITE_PHOTOS[0].url);
+    setIsEditing(true);
+  };
+
+  const handleOpenEdit = (card: ProjectLiveUpdate) => {
+    setEditingCardId(card.id);
+    setFormTitle(card.title);
+    setFormStage(card.stage);
+    setFormDate(card.date);
+    setFormDescription(card.description);
+    setFormImage(card.image);
+    setIsEditing(true);
+  };
+
+  const handleSaveForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formTitle.trim()) return;
+
+    if (editingCardId) {
+      // Edit existing
+      projectUpdatesService.editUpdate(selectedProjectId, {
+        id: editingCardId,
+        title: formTitle.trim(),
+        stage: formStage,
+        date: formDate.trim(),
+        description: formDescription.trim(),
+        image: formImage.trim() || SAMPLE_SITE_PHOTOS[0].url,
+      });
+      showFeedback('Milestone card updated successfully!');
+    } else {
+      // Add new
+      projectUpdatesService.addUpdate(selectedProjectId, {
+        title: formTitle.trim(),
+        stage: formStage,
+        date: formDate.trim(),
+        description: formDescription.trim(),
+        image: formImage.trim() || SAMPLE_SITE_PHOTOS[0].url,
+      });
+      showFeedback('New milestone card added to project!');
+    }
+
+    setIsEditing(false);
+  };
+
+  const handleDelete = (cardId: string) => {
+    if (window.confirm('Are you sure you want to delete this construction milestone card?')) {
+      projectUpdatesService.deleteUpdate(selectedProjectId, cardId);
+      showFeedback('Milestone card removed.');
+    }
+  };
+
+  const handleResetToDefault = () => {
+    if (window.confirm(`Reset "${currentProject.title}" live updates back to code factory defaults?`)) {
+      projectUpdatesService.resetToDefault(selectedProjectId);
+      showFeedback('Reset to default code data.');
+    }
+  };
+
+  const showFeedback = (msg: string) => {
+    setFeedbackMsg(msg);
+    setTimeout(() => setFeedbackMsg(''), 3500);
+  };
+
+  const handleCopyCode = () => {
+    const code = projectUpdatesService.generateCodeSnippet(selectedProjectId);
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormImage(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLogout = () => {
+    adminAuthService.logout();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="relative w-full max-w-5xl bg-[#FCFAF8] rounded-3xl border border-[#E6E1DC] shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+        {/* 1. TOP HEADER */}
+        <div className="px-6 py-4 border-b border-[#E8E2DA] bg-[#F4EFEA] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#8A563D] text-white flex items-center justify-center shadow-xs">
+              <HardHat className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A563D]">
+                  CITADEL SITE ADMIN
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold bg-[#E5F7EB] text-[#1E7E34] px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1E7E34] animate-pulse" />
+                  Live Sync Active
+                </span>
+              </div>
+              <h2 className="font-editorial text-lg sm:text-xl font-bold text-[#1E1D1B] leading-tight">
+                On-Site Live Construction Progress Manager
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleLogout}
+              className="text-xs font-semibold text-[#6E6A65] hover:text-[#1E1D1B] px-3 py-1.5 rounded-lg hover:bg-white/80 transition-colors flex items-center gap-1.5"
+              title="Lock & Exit Admin"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Log Out</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="text-[#6E6A65] hover:text-[#1E1D1B] p-2 rounded-full hover:bg-white/80 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* 2. PROJECT SELECTOR & TABS BAR */}
+        <div className="px-6 py-3 bg-white border-b border-[#EAE4DC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Project Dropdown */}
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <label className="text-xs font-bold text-[#3C3A36] uppercase tracking-wider whitespace-nowrap">
+              Project:
+            </label>
+            <div className="relative flex-1 sm:w-72">
+              <select
+                value={selectedProjectId}
+                onChange={(e) => {
+                  setSelectedProjectId(e.target.value);
+                  setIsEditing(false);
+                }}
+                className="w-full appearance-none pl-3 pr-8 py-2 bg-[#FAF8F5] border border-[#D8D1C7] rounded-xl text-xs font-semibold text-[#1E1D1B] focus:border-[#8A563D] focus:outline-hidden cursor-pointer"
+              >
+                {projectsData.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.title} ({p.status} • {p.location})
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 text-[#7A7570] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+
+            {onSelectProjectOnSite && (
+              <button
+                onClick={() => {
+                  onSelectProjectOnSite(selectedProjectId);
+                  onClose();
+                }}
+                className="text-[11px] font-semibold text-[#8A563D] hover:underline flex items-center gap-1 whitespace-nowrap"
+                title="View on public site"
+              >
+                <span>View on site</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Tab Switcher & Actions */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <div className="flex bg-[#F2ECE6] p-1 rounded-xl">
+              <button
+                onClick={() => setActiveTab('manager')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                  activeTab === 'manager'
+                    ? 'bg-white text-[#1E1D1B] shadow-xs'
+                    : 'text-[#6E6A65] hover:text-[#1E1D1B]'
+                }`}
+              >
+                Cards ({updates.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('code')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+                  activeTab === 'code'
+                    ? 'bg-white text-[#1E1D1B] shadow-xs'
+                    : 'text-[#6E6A65] hover:text-[#1E1D1B]'
+                }`}
+              >
+                Code Snippet
+              </button>
+            </div>
+
+            {activeTab === 'manager' && !isEditing && (
+              <button
+                onClick={handleOpenAdd}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Milestone</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 3. FEEDBACK TOAST */}
+        {feedbackMsg && (
+          <div className="bg-[#E7F7ED] border-b border-[#C8EAD3] px-6 py-2 text-xs font-semibold text-[#1C7430] flex items-center justify-between animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>{feedbackMsg}</span>
+            </div>
+            <span className="text-[11px] text-[#28A745]">Visible live on website now</span>
+          </div>
+        )}
+
+        {/* 4. MAIN BODY CONTENT */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#FAF8F5]">
+          {activeTab === 'manager' ? (
+            <div>
+              {/* EDIT / ADD FORM MODAL OVERLAY OR IN-PLACE FORM */}
+              {isEditing ? (
+                <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-sm mb-6 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#F0EBE6]">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D] block">
+                        {editingCardId ? 'UPDATE MILESTONE' : 'NEW ON-SITE PROGRESS CARD'}
+                      </span>
+                      <h3 className="font-editorial text-xl font-bold text-[#1E1D1B]">
+                        {editingCardId ? 'Edit Milestone Card' : `Add Live Update for ${currentProject.title}`}
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setIsEditing(false)}
+                      className="text-xs text-[#7A7570] hover:text-[#1E1D1B] px-2.5 py-1 rounded-lg hover:bg-[#F2ECE6]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveForm} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Milestone Title */}
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                          Milestone Title *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formTitle}
+                          onChange={(e) => setFormTitle(e.target.value)}
+                          placeholder="e.g. 5th Floor RCC Slab Concreting Complete"
+                          className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs sm:text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                        />
+                      </div>
+
+                      {/* Construction Stage */}
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                          Construction Stage Badge *
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            required
+                            list="stages-datalist"
+                            value={formStage}
+                            onChange={(e) => setFormStage(e.target.value)}
+                            placeholder="Select or type custom stage"
+                            className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs sm:text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                          />
+                          <datalist id="stages-datalist">
+                            {COMMON_STAGES.map((stg) => (
+                              <option key={stg} value={stg} />
+                            ))}
+                          </datalist>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Date / Month */}
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                          Date / Timeline Tag *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formDate}
+                          onChange={(e) => setFormDate(e.target.value)}
+                          placeholder="e.g. September 2026 or Week 3, Oct 2026"
+                          className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs sm:text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                        />
+                      </div>
+
+                      {/* Photo Source URL */}
+                      <div>
+                        <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                          Site Photo (URL or Upload)
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={formImage}
+                            onChange={(e) => setFormImage(e.target.value)}
+                            placeholder="Image URL or choose sample below"
+                            className="flex-1 px-3.5 py-2.5 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden"
+                          />
+                          <label
+                            className="px-3 py-2 bg-[#EFEAE6] hover:bg-[#E5DFD7] text-[#3C3A36] rounded-xl text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                            title="Upload image from device"
+                          >
+                            <Upload className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Upload</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Photo Presets */}
+                    <div>
+                      <span className="block text-[11px] font-semibold text-[#6E6A65] mb-1.5">
+                        Quick Construction Site Photo Presets:
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {SAMPLE_SITE_PHOTOS.map((photo, pIdx) => (
+                          <button
+                            key={pIdx}
+                            type="button"
+                            onClick={() => setFormImage(photo.url)}
+                            className={`p-1.5 rounded-xl border text-left flex items-center gap-2 transition-all cursor-pointer ${
+                              formImage === photo.url
+                                ? 'border-[#8A563D] bg-[#F7F2EC]'
+                                : 'border-[#E6E1DC] bg-[#FAF8F5] hover:bg-white'
+                            }`}
+                          >
+                            <img
+                              src={photo.url}
+                              alt={photo.label}
+                              className="w-8 h-8 rounded-lg object-cover"
+                            />
+                            <span className="text-[10px] font-medium text-[#2C2B29] truncate">
+                              {photo.label}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                      <label className="block text-xs font-semibold text-[#3C3A36] mb-1">
+                        Site Engineer Progress Description *
+                      </label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={formDescription}
+                        onChange={(e) => setFormDescription(e.target.value)}
+                        placeholder="Detailed technical progress: e.g., High-grade M30 concrete poured with complete quality cube test clearances. Electrical conduits laid successfully before shuttering removal."
+                        className="w-full px-3.5 py-2.5 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs sm:text-sm text-[#1E1D1B] focus:border-[#8A563D] focus:bg-white focus:outline-hidden resize-none"
+                      />
+                    </div>
+
+                    {/* Form Action Buttons */}
+                    <div className="pt-2 flex items-center justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditing(false)}
+                        className="px-4 py-2 bg-[#F2ECE6] text-[#4E4B47] text-xs font-semibold rounded-xl hover:bg-[#EAE3DC] transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+                      >
+                        {editingCardId ? 'Save Changes' : 'Add Milestone Card'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : null}
+
+              {/* LIST OF CARDS */}
+              {updates.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-[#DDD6CE] p-8">
+                  <div className="w-14 h-14 rounded-full bg-[#F5EFE9] text-[#8A563D] flex items-center justify-center mx-auto mb-3">
+                    <HardHat className="w-7 h-7" />
+                  </div>
+                  <h4 className="font-editorial text-xl font-bold text-[#1E1D1B]">
+                    No Live Updates for {currentProject.title}
+                  </h4>
+                  <p className="text-xs text-[#6E6A65] max-w-md mx-auto mt-1 mb-5">
+                    Currently, this project does not display an On-Site Live Progress section. 
+                    Add your first milestone card above to immediately publish this section on the live project page!
+                  </p>
+                  <button
+                    onClick={handleOpenAdd}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#8A563D] text-white text-xs font-semibold rounded-xl hover:bg-[#734732] transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add First Milestone Card</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs text-[#6E6A65] pb-1">
+                    <span>
+                      Showing <strong>{updates.length}</strong> active progress milestones for{' '}
+                      <strong className="text-[#1E1D1B]">{currentProject.title}</strong>
+                    </span>
+                    <button
+                      onClick={handleResetToDefault}
+                      className="text-[11px] text-[#8A563D] hover:underline flex items-center gap-1"
+                      title="Revert to initial data"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Reset to factory defaults</span>
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {updates.map((card, idx) => (
+                      <div
+                        key={card.id}
+                        className="bg-white rounded-2xl overflow-hidden border border-[#E6E1DC] shadow-xs flex flex-col justify-between group hover:shadow-md transition-shadow"
+                      >
+                        {/* Image & Badges */}
+                        <div className="relative h-40 bg-[#E5DFD7] overflow-hidden">
+                          <img
+                            src={card.image}
+                            alt={card.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute top-2 left-2 bg-[#1E1D1B]/90 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+                            {card.stage}
+                          </div>
+                          <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-xs text-[#E8C2AF] text-[10px] font-medium px-2 py-0.5 rounded shadow-xs">
+                            {card.date}
+                          </div>
+                        </div>
+
+                        {/* Card Text */}
+                        <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                          <div>
+                            <div className="flex items-center gap-1.5 text-[10px] text-[#8C8781] mb-1">
+                              <span>Milestone #{idx + 1}</span>
+                            </div>
+                            <h4 className="font-editorial text-base font-bold text-[#1E1D1B] leading-snug">
+                              {card.title}
+                            </h4>
+                            <p className="text-xs text-[#5E5954] mt-1.5 line-clamp-3 leading-relaxed">
+                              {card.description}
+                            </p>
+                          </div>
+
+                          {/* Action Toolbar */}
+                          <div className="pt-3 border-t border-[#F0EBE6] flex items-center justify-between">
+                            <span className="text-[10px] font-medium text-[#1E7E34] flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" />
+                              <span>Live on Website</span>
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => handleOpenEdit(card)}
+                                className="p-1.5 text-[#6E6A65] hover:text-[#8A563D] hover:bg-[#FAF8F5] rounded-lg transition-colors"
+                                title="Edit milestone card"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(card.id)}
+                                className="p-1.5 text-[#6E6A65] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete milestone card"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* CODE EXPORT VIEW */
+            <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0EBE6] pb-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D] block">
+                    CODEBASE EXPORT / REPO PERSISTENCE
+                  </span>
+                  <h3 className="font-editorial text-xl font-bold text-[#1E1D1B]">
+                    TypeScript Code for projectsData.ts
+                  </h3>
+                  <p className="text-xs text-[#6E6A65] mt-0.5">
+                    Changes are already saved in the browser. To permanently bake these updates into your project code repository, copy and paste this block into <code className="bg-[#F0EBE6] px-1 py-0.5 rounded text-[#1E1D1B]">src/data/projectsData.ts</code> under <code className="text-[#8A563D]">{selectedProjectId}</code>.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleCopyCode}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-xl transition-all shadow-xs cursor-pointer shrink-0"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Copied to Clipboard!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Code Snippet</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="relative">
+                <pre className="bg-[#1E1D1B] text-[#E8C2AF] text-xs p-4 rounded-xl overflow-x-auto max-h-[380px] font-mono leading-relaxed select-all">
+                  {projectUpdatesService.generateCodeSnippet(selectedProjectId)}
+                </pre>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 5. FOOTER STATUS BAR */}
+        <div className="px-6 py-3 bg-[#F4EFEA] border-t border-[#E8E2DA] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#6E6A65]">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#1E7E34]" />
+            <span>
+              Real-time synchronization active. Any edits immediately refresh the public carousel.
+            </span>
+          </div>
+          <div>
+            <button
+              onClick={onClose}
+              className="px-4 py-1.5 bg-[#E6E1DC] hover:bg-[#DDD6CE] text-[#1E1D1B] font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+            >
+              Done & Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

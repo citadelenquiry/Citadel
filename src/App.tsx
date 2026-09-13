@@ -12,7 +12,11 @@ import { ProjectsPage } from './pages/ProjectsPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { CalculatorPage } from './pages/CalculatorPage';
+import { CareersPage } from './pages/CareersPage';
 import { EnquiryModal } from './components/EnquiryModal';
+import { AdminAuthModal } from './components/AdminAuthModal';
+import { AdminPanelModal } from './components/AdminPanelModal';
+import { adminAuthService } from './services/adminAuthService';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -21,6 +25,16 @@ export default function App() {
   const [projectsViewMode, setProjectsViewMode] = useState<ProjectsViewMode>('hub');
   const [isEnquiryOpen, setIsEnquiryOpen] = useState<boolean>(false);
   const [enquiryProjectId, setEnquiryProjectId] = useState<string>('');
+  const [isAdminAuthOpen, setIsAdminAuthOpen] = useState<boolean>(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState<boolean>(false);
+
+  const handleOpenAdmin = () => {
+    if (adminAuthService.isAuthenticated()) {
+      setIsAdminPanelOpen(true);
+    } else {
+      setIsAdminAuthOpen(true);
+    }
+  };
 
   const handleOpenEnquiry = (projectId?: string) => {
     setEnquiryProjectId(projectId || '');
@@ -105,6 +119,13 @@ export default function App() {
             onOpenEnquiry={handleOpenEnquiry}
           />
         )}
+
+        {currentPage === 'careers' && (
+          <CareersPage
+            setCurrentPage={handleNavChange}
+            onOpenEnquiry={handleOpenEnquiry}
+          />
+        )}
       </main>
 
       {/* Main Global Footer */}
@@ -113,6 +134,7 @@ export default function App() {
         setCurrentPage={handleNavChange}
         onOpenEnquiry={handleOpenEnquiry}
         onSelectProject={handleSelectProject}
+        onOpenAdmin={handleOpenAdmin}
       />
 
       {/* Global Quick Enquiry / Quote Modal */}
@@ -120,6 +142,23 @@ export default function App() {
         isOpen={isEnquiryOpen}
         onClose={() => setIsEnquiryOpen(false)}
         defaultProjectId={enquiryProjectId}
+      />
+
+      {/* Admin Authentication Modal */}
+      <AdminAuthModal
+        isOpen={isAdminAuthOpen}
+        onClose={() => setIsAdminAuthOpen(false)}
+        onAuthenticated={() => {
+          setIsAdminAuthOpen(false);
+          setIsAdminPanelOpen(true);
+        }}
+      />
+
+      {/* Admin On-Site Live Progress & Milestones Manager */}
+      <AdminPanelModal
+        isOpen={isAdminPanelOpen}
+        onClose={() => setIsAdminPanelOpen(false)}
+        onSelectProjectOnSite={handleSelectProject}
       />
     </div>
   );

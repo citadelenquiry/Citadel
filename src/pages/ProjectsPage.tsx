@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Project, Page, ProjectStage, ProjectsViewMode } from '../types';
 import { projectsData } from '../data/projectsData';
+import { projectUpdatesService } from '../services/projectUpdatesService';
 import {
   ChevronLeft,
   ChevronRight,
@@ -49,9 +50,21 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onOpenEnquiry,
   setCurrentPage,
 }) => {
-  // Current active project
-  const currentProject =
+  // Current active project with live updates applied
+  const baseProject =
     projectsData.find((p) => p.id === selectedProjectId) || projectsData[0];
+  const [updatesVersion, setUpdatesVersion] = useState(0);
+
+  useEffect(() => {
+    const unsub = projectUpdatesService.subscribe(() => {
+      setUpdatesVersion((v) => v + 1);
+    });
+    return unsub;
+  }, []);
+
+  const currentProject = useMemo(() => {
+    return projectUpdatesService.getProjectWithUpdates(baseProject);
+  }, [baseProject, updatesVersion]);
 
   // Slideshow state for the Hub view
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -140,7 +153,7 @@ Category: ${projectToDownload.category} (${projectToDownload.status})
 Location: ${projectToDownload.location}
 Address: ${projectToDownload.fullAddress}
 Total Area: ${projectToDownload.areaSqFt} | Structure: ${projectToDownload.floors}
-
+${projectToDownload.reraNumber ? `MahaRERA Registration No: ${projectToDownload.reraNumber}\n` : ''}
 -----------------------------------------------------
 ARCHITECTURAL OVERVIEW
 -----------------------------------------------------
@@ -153,8 +166,8 @@ FLOOR PLANS & CONFIGURATIONS
 -----------------------------------------------------
 ${projectToDownload.floorPlans.map((fp, i) => `
 [Layout ${i + 1}] ${fp.name} (${fp.type})
-${[2, 3, 4].includes(fp.bedrooms) ? '• Carpet & Built-Up Area: Available on Request' : `• Built-Up Area: ${fp.areaSqFt} sq. ft.\n• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.`}
-• Configuration: ${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies
+• Total / Built-Up Area: ${fp.areaSqFt ? `${fp.areaSqFt} sq. ft.` : 'Available on Request'}
+${fp.carpetAreaSqFt && fp.carpetAreaSqFt !== fp.areaSqFt ? `• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.\n` : ''}• Configuration: ${fp.bedrooms > 0 ? `${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies` : `${fp.type}`}
 • Highlights:
 ${fp.highlights.map(h => `  - ${h}`).join('\n')}
 `).join('\n')}
@@ -663,6 +676,12 @@ Website: https://thecitadelgroup.co
                           <span className="text-[11px] font-medium text-[#8C8781]">Total Area</span>
                           <span className="font-bold text-[#8A563D]">{project.areaSqFt}</span>
                         </div>
+                        {project.reraNumber && (
+                          <div className="flex items-center justify-between text-xs text-[#5C5752]">
+                            <span className="text-[11px] font-medium text-[#8C8781]">MahaRERA</span>
+                            <span className="font-bold text-[#8A563D] text-[11px]">{project.reraNumber}</span>
+                          </div>
+                        )}
 
                         <div className="pt-3 flex items-center justify-between text-xs font-bold text-[#8A563D]">
                           <span>View Project Details</span>
@@ -759,6 +778,12 @@ Website: https://thecitadelgroup.co
                     <MapPin className="w-3.5 h-3.5 text-[#E8C2AF]" />
                     <span>{currentProject.location}</span>
                   </div>
+                  {currentProject.reraNumber && (
+                    <div className="inline-flex items-center gap-1.5 bg-[#8A563D] px-3.5 py-1 rounded-full text-xs text-white font-semibold shadow-xs">
+                      <FileCheck className="w-3.5 h-3.5 text-[#E8C2AF]" />
+                      <span>MahaRERA: {currentProject.reraNumber}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -786,9 +811,12 @@ Website: https://thecitadelgroup.co
                         </span>
                       </div>
                       <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          currentProject.mapEmbedQuery
-                        )}`}
+                        href={
+                          currentProject.googleMapsUrl ||
+                          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            currentProject.mapEmbedQuery
+                          )}`
+                        }
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs text-[#E8C2AF] hover:underline flex items-center gap-1 font-medium"
@@ -818,9 +846,12 @@ Website: https://thecitadelgroup.co
                           {currentProject.title}
                         </div>
                         <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                            currentProject.mapEmbedQuery
-                          )}`}
+                          href={
+                            currentProject.googleMapsUrl ||
+                            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                              currentProject.mapEmbedQuery
+                            )}`
+                          }
                           target="_blank"
                           rel="noreferrer"
                           className="text-[10px] text-[#8A563D] hover:underline font-semibold flex items-center justify-center gap-1 mt-0.5"
@@ -961,13 +992,15 @@ Website: https://thecitadelgroup.co
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center max-w-2xl mx-auto mb-10">
                 <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#8A563D] block mb-1">
-                  ARCHITECTURAL BLUEPRINTS
+                  {currentProject.id === 'walvekar-commercial' ? 'COMMERCIAL SPACES & LAYOUT' : 'ARCHITECTURAL BLUEPRINTS'}
                 </span>
                 <h2 className="font-editorial text-3xl sm:text-4xl font-bold text-[#1E1D1B]">
-                  Floor Plans & Layout Options
+                  {currentProject.id === 'walvekar-commercial' ? 'Office Spaces & Layout Options' : 'Floor Plans & Layout Options'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#6E6A65] mt-2">
-                  Explore master layouts designed with zero dead space and optimal cross-ventilation.
+                  {currentProject.id === 'walvekar-commercial'
+                    ? 'Explore delivered commercial office suites and showroom floor layouts at Walvekar Commercial.'
+                    : 'Explore master layouts designed with zero dead space and optimal cross-ventilation.'}
                 </p>
               </div>
 
@@ -1100,13 +1133,15 @@ Website: https://thecitadelgroup.co
                         </div>
                         <div className="space-y-1 max-w-xs">
                           <span className="text-[11px] font-bold uppercase tracking-widest text-[#E8C2AF] block">
-                            CONFIDENTIAL ARCHITECTURAL DRAWINGS
+                            {currentProject.id === 'walvekar-commercial' ? 'DELIVERED COMMERCIAL PREMISES' : 'CONFIDENTIAL ARCHITECTURAL DRAWINGS'}
                           </span>
                           <h3 className="font-editorial text-xl sm:text-2xl font-bold text-white">
-                            View full floor plans
+                            {currentProject.id === 'walvekar-commercial' ? 'View office spaces' : 'View full floor plans'}
                           </h3>
                           <p className="text-xs text-[#DDD6CE]">
-                            Enter your contact details to instantly unlock full high-resolution floor layouts, 3D cutaways and dimension sheets.
+                            {currentProject.id === 'walvekar-commercial'
+                              ? 'Enter your contact details to view high-resolution photography and layout views of the office spaces.'
+                              : 'Enter your contact details to instantly unlock full high-resolution floor layouts, 3D cutaways and dimension sheets.'}
                           </p>
                         </div>
 
@@ -1167,37 +1202,51 @@ Website: https://thecitadelgroup.co
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 bg-[#F8F6F3] p-4 rounded-xl border border-[#EBE5DE]">
-                    {[2, 3, 4].includes(activeFloorPlan.bedrooms) ? (
+                    <div>
+                      <span className="text-[11px] text-[#7A7570] block">
+                        {activeFloorPlan.bedrooms > 0 ? 'Total / Built-Up Area' : 'Super Built-up Area'}
+                      </span>
+                      <span className="text-lg font-bold text-[#1E1D1B]">
+                        {activeFloorPlan.areaSqFt ? `${activeFloorPlan.areaSqFt} sq. ft.` : 'Available on Request'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-[#7A7570] block">
+                        {activeFloorPlan.carpetAreaSqFt && activeFloorPlan.carpetAreaSqFt !== activeFloorPlan.areaSqFt
+                          ? 'Carpet Area'
+                          : 'Configuration'}
+                      </span>
+                      <span className="text-base sm:text-lg font-bold text-[#1E1D1B]">
+                        {activeFloorPlan.carpetAreaSqFt && activeFloorPlan.carpetAreaSqFt !== activeFloorPlan.areaSqFt
+                          ? `${activeFloorPlan.carpetAreaSqFt} sq. ft.`
+                          : activeFloorPlan.type}
+                      </span>
+                    </div>
+                    {activeFloorPlan.bedrooms > 0 ? (
                       <>
                         <div>
-                          <span className="text-[11px] text-[#7A7570] block">Configuration</span>
-                          <span className="text-base sm:text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.type}</span>
+                          <span className="text-[11px] text-[#7A7570] block">Bedrooms / Baths</span>
+                          <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.bedrooms} Bed / {activeFloorPlan.bathrooms} Bath</span>
                         </div>
                         <div>
-                          <span className="text-[11px] text-[#7A7570] block">Carpet & Built-Up</span>
-                          <span className="text-xs sm:text-sm font-bold text-[#8A563D] mt-1 block">Available on Request</span>
+                          <span className="text-[11px] text-[#7A7570] block">Balconies</span>
+                          <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.balconies} Private Sit-outs</span>
                         </div>
                       </>
                     ) : (
                       <>
                         <div>
-                          <span className="text-[11px] text-[#7A7570] block">Super Built-up Area</span>
-                          <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.areaSqFt} sq. ft.</span>
+                          <span className="text-[11px] text-[#7A7570] block">Usage Classification</span>
+                          <span className="text-sm font-semibold text-[#1E1D1B]">Commercial Office / Retail</span>
                         </div>
                         <div>
-                          <span className="text-[11px] text-[#7A7570] block">Carpet Area</span>
-                          <span className="text-lg font-bold text-[#1E1D1B]">{activeFloorPlan.carpetAreaSqFt} sq. ft.</span>
+                          <span className="text-[11px] text-[#7A7570] block">Washroom & Utilities</span>
+                          <span className="text-sm font-semibold text-[#1E1D1B]">
+                            {activeFloorPlan.bathrooms > 0 ? `${activeFloorPlan.bathrooms} Attached Washroom` : 'Common Floor Restrooms'}
+                          </span>
                         </div>
                       </>
                     )}
-                    <div>
-                      <span className="text-[11px] text-[#7A7570] block">Bedrooms / Baths</span>
-                      <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.bedrooms} Bed / {activeFloorPlan.bathrooms} Bath</span>
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-[#7A7570] block">Balconies</span>
-                      <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.balconies} Private Sit-outs</span>
-                    </div>
                   </div>
 
                   <div className="space-y-2">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Page, ProjectStage } from '../types';
 import { Menu, X, ArrowDownRight, ChevronDown } from 'lucide-react';
-import { projectsData } from '../data/projectsData';
 import { CitadelLogo } from './CitadelLogo';
 
 interface NavbarProps {
@@ -12,21 +11,11 @@ interface NavbarProps {
   onSelectStage?: (stage: ProjectStage) => void;
 }
 
-const formatNavbarLocation = (locationStr: string): string => {
-  const parts = locationStr.split(',').map((p) => p.trim()).filter(Boolean);
-  if (parts.length >= 2) {
-    const area = parts[0];
-    const city = parts[parts.length - 1];
-    return `${area}, ${city}`;
-  }
-  return locationStr;
-};
-
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   setCurrentPage,
   onOpenEnquiry,
-  onSelectProject,
+  onSelectProject: _onSelectProject,
   onSelectStage,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -49,8 +38,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'HOME', page: 'home' },
     { label: 'PROJECTS', page: 'projects', hasDropdown: true },
     { label: 'ABOUT US', page: 'about' },
+    { label: 'CAREERS', page: 'careers' },
     { label: 'CONTACT US', page: 'contact' },
-    { label: 'HOME LOAN CALCULATOR', page: 'calculator' },
+    { label: 'TOOLS', page: 'calculator' },
   ];
 
   const handleNavClick = (page: Page) => {
@@ -63,15 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleStageSelect = (stage: ProjectStage) => {
     if (onSelectStage) {
       onSelectStage(stage);
-    }
-    setProjectsDropdownOpen(false);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleProjectSelect = (projectId: string) => {
-    if (onSelectProject) {
-      onSelectProject(projectId);
     }
     setProjectsDropdownOpen(false);
     setMobileMenuOpen(false);
@@ -125,106 +106,72 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                     {/* Projects Dropdown Menu */}
                     {projectsDropdownOpen && (
-                      <div className="absolute top-full left-0 w-80 bg-[#FCFAF8] rounded-xl shadow-xl border border-[#E6E1DC] py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="absolute top-full left-0 w-60 bg-[#FCFAF8] rounded-xl shadow-xl border border-[#E6E1DC] py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                         {/* 1. UPCOMING */}
-                        <div className="px-3 pt-1 pb-1">
-                          <button
-                            onClick={() => handleStageSelect('Upcoming')}
-                            className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D] flex items-center justify-between w-full hover:underline"
-                          >
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#8A563D]" />
-                              <span>UPCOMING PROJECTS</span>
+                        <button
+                          id="dropdown-stage-upcoming"
+                          onClick={() => handleStageSelect('Upcoming')}
+                          className="w-full text-left px-4 py-2.5 hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-[#8A563D]" />
+                            <span className="text-xs font-semibold text-[#1E1D1B] group-hover:text-[#8A563D] tracking-wide">
+                              Upcoming
                             </span>
-                            <span className="text-[9px] text-[#8C8781]">View All →</span>
-                          </button>
-                          <div className="mt-1 space-y-0.5">
-                            {projectsData.filter(p => p.status === 'Upcoming').map((project) => (
-                              <button
-                                key={project.id}
-                                id={`dropdown-proj-${project.id}`}
-                                onClick={() => handleProjectSelect(project.id)}
-                                className="w-full text-left px-2 py-1 rounded-md hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group/item"
-                              >
-                                <span className="text-xs font-semibold text-[#1E1D1B] group-hover/item:text-[#A05C3B] truncate">
-                                  {project.title}
-                                </span>
-                                <span className="text-[10px] text-[#8C8781] shrink-0 ml-2">{formatNavbarLocation(project.location)}</span>
-                              </button>
-                            ))}
                           </div>
-                        </div>
+                          <span className="text-[10px] text-[#8C8781] group-hover:text-[#8A563D] group-hover:translate-x-0.5 transition-all">
+                            View →
+                          </span>
+                        </button>
 
-                        <div className="border-t border-[#F0EBE6] my-1" />
+                        <div className="border-t border-[#F0EBE6] mx-2" />
 
                         {/* 2. ONGOING */}
-                        <div className="px-3 pt-1 pb-1">
-                          <button
-                            onClick={() => handleStageSelect('Ongoing')}
-                            className="text-[10px] font-bold uppercase tracking-wider text-[#A05C3B] flex items-center justify-between w-full hover:underline"
-                          >
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#A05C3B]" />
-                              <span>ONGOING PROJECTS</span>
+                        <button
+                          id="dropdown-stage-ongoing"
+                          onClick={() => handleStageSelect('Ongoing')}
+                          className="w-full text-left px-4 py-2.5 hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-[#A05C3B]" />
+                            <span className="text-xs font-semibold text-[#1E1D1B] group-hover:text-[#A05C3B] tracking-wide">
+                              Ongoing
                             </span>
-                            <span className="text-[9px] text-[#8C8781]">View All →</span>
-                          </button>
-                          <div className="mt-1 space-y-0.5">
-                            {projectsData.filter(p => p.status === 'Ongoing').map((project) => (
-                              <button
-                                key={project.id}
-                                id={`dropdown-proj-${project.id}`}
-                                onClick={() => handleProjectSelect(project.id)}
-                                className="w-full text-left px-2 py-1 rounded-md hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group/item"
-                              >
-                                <span className="text-xs font-semibold text-[#1E1D1B] group-hover/item:text-[#A05C3B] truncate">
-                                  {project.title}
-                                </span>
-                                <span className="text-[10px] text-[#8C8781] shrink-0 ml-2">{formatNavbarLocation(project.location)}</span>
-                              </button>
-                            ))}
                           </div>
-                        </div>
+                          <span className="text-[10px] text-[#8C8781] group-hover:text-[#A05C3B] group-hover:translate-x-0.5 transition-all">
+                            View →
+                          </span>
+                        </button>
 
-                        <div className="border-t border-[#F0EBE6] my-1" />
+                        <div className="border-t border-[#F0EBE6] mx-2" />
 
                         {/* 3. COMPLETED */}
-                        <div className="px-3 pt-1 pb-1">
-                          <button
-                            onClick={() => handleStageSelect('Completed')}
-                            className="text-[10px] font-bold uppercase tracking-wider text-[#5A5550] flex items-center justify-between w-full hover:underline"
-                          >
-                            <span className="flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#5A5550]" />
-                              <span>COMPLETED PROJECTS</span>
+                        <button
+                          id="dropdown-stage-completed"
+                          onClick={() => handleStageSelect('Completed')}
+                          className="w-full text-left px-4 py-2.5 hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-2 h-2 rounded-full bg-[#5A5550]" />
+                            <span className="text-xs font-semibold text-[#1E1D1B] group-hover:text-[#5A5550] tracking-wide">
+                              Completed
                             </span>
-                            <span className="text-[9px] text-[#8C8781]">View All →</span>
-                          </button>
-                          <div className="mt-1 space-y-0.5">
-                            {projectsData.filter(p => p.status === 'Completed').map((project) => (
-                              <button
-                                key={project.id}
-                                id={`dropdown-proj-${project.id}`}
-                                onClick={() => handleProjectSelect(project.id)}
-                                className="w-full text-left px-2 py-1 rounded-md hover:bg-[#F2ECE6] transition-colors flex items-center justify-between group/item"
-                              >
-                                <span className="text-xs font-semibold text-[#1E1D1B] group-hover/item:text-[#A05C3B] truncate">
-                                  {project.title}
-                                </span>
-                                <span className="text-[10px] text-[#8C8781] shrink-0 ml-2">{formatNavbarLocation(project.location)}</span>
-                              </button>
-                            ))}
                           </div>
-                        </div>
+                          <span className="text-[10px] text-[#8C8781] group-hover:text-[#5A5550] group-hover:translate-x-0.5 transition-all">
+                            View →
+                          </span>
+                        </button>
 
-                        <div className="border-t border-[#F0EBE6] px-3 pt-1.5 pb-1">
-                          <button
-                            onClick={() => handleNavClick('projects')}
-                            className="w-full text-center text-xs font-semibold text-[#A05C3B] hover:underline py-0.5"
-                          >
-                            Explore Projects Overview →
-                          </button>
-                        </div>
+                        <div className="border-t border-[#F0EBE6] mx-2 my-1" />
+
+                        {/* All Projects Overview Link */}
+                        <button
+                          id="dropdown-stage-all"
+                          onClick={() => handleNavClick('projects')}
+                          className="w-full text-left px-4 py-2 text-[11px] font-medium text-[#8C8781] hover:text-[#A05C3B] hover:bg-[#F2ECE6] transition-colors"
+                        >
+                          All Projects Overview →
+                        </button>
                       </div>
                     )}
                   </div>
@@ -307,69 +254,51 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
 
                 {item.hasDropdown && (
-                  <div className="pl-3 pr-2 py-2 space-y-2.5 bg-[#F3EDE6]/60 rounded-xl my-1">
+                  <div className="pl-3 pr-2 py-2 space-y-1 bg-[#F3EDE6]/60 rounded-xl my-1">
                     {/* Upcoming */}
-                    <div>
-                      <button
-                        onClick={() => handleStageSelect('Upcoming')}
-                        className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D] flex items-center justify-between w-full mb-1"
-                      >
+                    <button
+                      onClick={() => handleStageSelect('Upcoming')}
+                      className="w-full text-left py-2 px-2 text-xs font-semibold text-[#2C2B29] hover:text-[#8A563D] flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#8A563D]" />
                         <span>Upcoming</span>
-                        <span className="text-[9px] text-[#8C8781]">View All →</span>
-                      </button>
-                      {projectsData.filter(p => p.status === 'Upcoming').map((p) => (
-                        <button
-                          key={p.id}
-                          onClick={() => handleProjectSelect(p.id)}
-                          className="w-full text-left py-0.5 text-xs text-[#3E3B37] hover:text-[#A05C3B] flex items-center justify-between"
-                        >
-                          <span className="truncate">• {p.title}</span>
-                          <span className="text-[10px] text-[#8C8781] shrink-0 ml-1">{formatNavbarLocation(p.location)}</span>
-                        </button>
-                      ))}
-                    </div>
+                      </span>
+                      <span className="text-[10px] text-[#8C8781]">→</span>
+                    </button>
 
                     {/* Ongoing */}
-                    <div>
-                      <button
-                        onClick={() => handleStageSelect('Ongoing')}
-                        className="text-[10px] font-bold uppercase tracking-wider text-[#A05C3B] flex items-center justify-between w-full mb-1"
-                      >
+                    <button
+                      onClick={() => handleStageSelect('Ongoing')}
+                      className="w-full text-left py-2 px-2 text-xs font-semibold text-[#2C2B29] hover:text-[#A05C3B] flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#A05C3B]" />
                         <span>Ongoing</span>
-                        <span className="text-[9px] text-[#8C8781]">View All →</span>
-                      </button>
-                      {projectsData.filter(p => p.status === 'Ongoing').map((p) => (
-                        <button
-                          key={p.id}
-                          onClick={() => handleProjectSelect(p.id)}
-                          className="w-full text-left py-0.5 text-xs text-[#3E3B37] hover:text-[#A05C3B] flex items-center justify-between"
-                        >
-                          <span className="truncate">• {p.title}</span>
-                          <span className="text-[10px] text-[#8C8781] shrink-0 ml-1">{formatNavbarLocation(p.location)}</span>
-                        </button>
-                      ))}
-                    </div>
+                      </span>
+                      <span className="text-[10px] text-[#8C8781]">→</span>
+                    </button>
 
                     {/* Completed */}
-                    <div>
-                      <button
-                        onClick={() => handleStageSelect('Completed')}
-                        className="text-[10px] font-bold uppercase tracking-wider text-[#5A5550] flex items-center justify-between w-full mb-1"
-                      >
+                    <button
+                      onClick={() => handleStageSelect('Completed')}
+                      className="w-full text-left py-2 px-2 text-xs font-semibold text-[#2C2B29] hover:text-[#5A5550] flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#5A5550]" />
                         <span>Completed</span>
-                        <span className="text-[9px] text-[#8C8781]">View All →</span>
-                      </button>
-                      {projectsData.filter(p => p.status === 'Completed').map((p) => (
-                        <button
-                          key={p.id}
-                          onClick={() => handleProjectSelect(p.id)}
-                          className="w-full text-left py-0.5 text-xs text-[#3E3B37] hover:text-[#A05C3B] flex items-center justify-between"
-                        >
-                          <span className="truncate">• {p.title}</span>
-                          <span className="text-[10px] text-[#8C8781] shrink-0 ml-1">{formatNavbarLocation(p.location)}</span>
-                        </button>
-                      ))}
-                    </div>
+                      </span>
+                      <span className="text-[10px] text-[#8C8781]">→</span>
+                    </button>
+
+                    <div className="border-t border-[#EAE3DC] pt-1" />
+
+                    <button
+                      onClick={() => handleNavClick('projects')}
+                      className="w-full text-left py-1.5 px-2 text-xs font-medium text-[#8C8781] hover:text-[#A05C3B]"
+                    >
+                      All Projects Overview →
+                    </button>
                   </div>
                 )}
               </div>
