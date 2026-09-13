@@ -1,0 +1,27 @@
+# =======================================================
+# GitLab Pages CI/CD Pipeline
+# Automatically builds and deploys Citadel Group to GitLab Pages
+# =======================================================
+
+image: node:20-alpine
+
+pages:
+  stage: deploy
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline || npm install
+  script:
+    - npm run build
+    # Vite bundles everything into dist/. GitLab Pages expects static files in public/
+    - rm -rf public
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
