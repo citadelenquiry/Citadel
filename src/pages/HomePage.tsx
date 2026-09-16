@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Page, ProjectStage } from '../types';
 import { ArrowRight, MessageSquare } from 'lucide-react';
 import { companyProfileData } from '../data/companyData';
+import { getAssetUrl } from '../utils/assets';
 
 interface HomePageProps {
   setCurrentPage: (page: Page) => void;
@@ -45,9 +46,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             playsInline
             className="w-full h-full object-cover opacity-75 scale-100 transition-opacity duration-700"
           >
-            <source src="/citadel-hero-video.mp4" type="video/mp4" />
-            <source src="/jay-rajkiran-walkthrough.mp4" type="video/mp4" />
-            <source src="/hero-video.mp4" type="video/mp4" />
+            <source src={getAssetUrl('citadel-hero-video.mp4')} type="video/mp4" />
+            <source src={getAssetUrl('jay-rajkiran-walkthrough.mp4')} type="video/mp4" />
+            <source src={getAssetUrl('hero-video.mp4')} type="video/mp4" />
             <source src="https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-building-architecture-41544-large.mp4" type="video/mp4" />
           </video>
 

@@ -1,5 +1,6 @@
 import { Project, ProjectLiveUpdate } from '../types';
 import { allProjectsData, projectsData } from '../data/projectsData';
+import { getAssetUrl } from '../utils/assets';
 
 const STORAGE_KEY = 'citadel_project_live_updates';
 const EVENT_KEY = 'citadel_live_updates_changed';
@@ -34,11 +35,15 @@ export const projectUpdatesService = {
    */
   getLiveUpdates(projectId: string): ProjectLiveUpdate[] {
     const overrides = getStoredOverrides();
-    if (overrides[projectId] !== undefined) {
-      return overrides[projectId];
-    }
-    const found = allProjectsData.find((p) => p.id === projectId);
-    return found ? [...found.liveUpdates] : [];
+    const rawList =
+      overrides[projectId] !== undefined
+        ? overrides[projectId]
+        : (allProjectsData.find((p) => p.id === projectId)?.liveUpdates || []);
+
+    return rawList.map((item) => ({
+      ...item,
+      image: getAssetUrl(item.image),
+    }));
   },
 
   /**

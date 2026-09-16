@@ -1,6 +1,7 @@
 import { Project } from '../types';
+import { getAssetUrl } from '../utils/assets';
 
-export const allProjectsData: Project[] = [
+const rawProjectsData: Project[] = [
   // ==========================================
   // ONGOING PROJECTS IN PUNE
   // ==========================================
@@ -1097,5 +1098,27 @@ export const allProjectsData: Project[] = [
     ],
   },
 ];
+
+function normalizeProjectAssets(project: Project): Project {
+  return {
+    ...project,
+    heroImage: getAssetUrl(project.heroImage),
+    gallery: project.gallery.map((img) => getAssetUrl(img)),
+    liveUpdates: (project.liveUpdates || []).map((u) => ({
+      ...u,
+      image: getAssetUrl(u.image),
+    })),
+    floorPlans: (project.floorPlans || []).map((fp) => ({
+      ...fp,
+      image: getAssetUrl(fp.image),
+      images: fp.images?.map((img) => ({
+        ...img,
+        url: getAssetUrl(img.url),
+      })),
+    })),
+  };
+}
+
+export const allProjectsData: Project[] = rawProjectsData.map(normalizeProjectAssets);
 
 export const projectsData: Project[] = allProjectsData.filter((project) => !project.hidden);

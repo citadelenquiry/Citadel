@@ -1,4 +1,5 @@
 import React from 'react';
+import { getAssetUrl } from '../utils/assets';
 
 interface CitadelLogoProps {
   variant?: 'light' | 'dark' | 'color';
@@ -12,7 +13,7 @@ export const CitadelLogo: React.FC<CitadelLogoProps> = ({
   size = 'md',
   className = '',
 }) => {
-  const logoSrc = '/citadel-logo.jpeg';
+  const logoSrc = getAssetUrl('citadel-logo.jpeg');
 
   // Sizing for the logo image on navbar
   const sizeClasses = {
