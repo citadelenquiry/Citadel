@@ -826,25 +826,23 @@ Website: https://thecitadelgroup.co
                       </a>
                     </div>
 
-                    {/* Dark Cartographic Style Simulation / Preview */}
-                    <div className="relative h-44 sm:h-52 bg-[#1A1918] rounded-xl overflow-hidden border border-[#3E3C38] flex items-center justify-center">
-                      <div
-                        className="absolute inset-0 opacity-40 bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80')`,
-                        }}
+                    {/* Interactive Google Map Embed Card */}
+                    <div className="relative h-56 sm:h-64 bg-[#1A1918] rounded-xl overflow-hidden border border-[#3E3C38]">
+                      <iframe
+                        title={`${currentProject.title} Google Map Location`}
+                        width="100%"
+                        height="100%"
+                        className="w-full h-full border-0 filter saturate-[0.9] contrast-[1.05]"
+                        loading="lazy"
+                        allowFullScreen
+                        referrerPolicy="no-referrer-when-downgrade"
+                        src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                          currentProject.mapEmbedQuery
+                        )}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                       />
-                      <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="0" y1="40" x2="100%" y2="80" stroke="#FFF" strokeWidth="2" />
-                        <line x1="0" y1="120" x2="100%" y2="100" stroke="#FFF" strokeWidth="1.5" />
-                        <line x1="80" y1="0" x2="120" y2="100%" stroke="#FFF" strokeWidth="1" />
-                        <line x1="220" y1="0" x2="200" y2="100%" stroke="#FFF" strokeWidth="2" />
-                      </svg>
 
-                      <div className="relative z-10 bg-white text-[#1E1D1B] rounded-lg shadow-xl px-4 py-2 text-center max-w-[200px] border border-[#CCC]">
-                        <div className="text-[11px] font-bold truncate">
-                          {currentProject.title}
-                        </div>
+                      {/* Direct Maps Action Chip */}
+                      <div className="absolute bottom-2.5 right-2.5 z-10">
                         <a
                           href={
                             currentProject.googleMapsUrl ||
@@ -854,10 +852,11 @@ Website: https://thecitadelgroup.co
                           }
                           target="_blank"
                           rel="noreferrer"
-                          className="text-[10px] text-[#8A563D] hover:underline font-semibold flex items-center justify-center gap-1 mt-0.5"
+                          className="bg-[#1E1D1B]/95 hover:bg-[#1E1D1B] text-[#F8F6F3] border border-[#3E3C38] text-[11px] font-medium py-1.5 px-3 rounded-lg shadow-lg flex items-center gap-1.5 transition-all duration-200 hover:text-[#E8C2AF] backdrop-blur-xs"
                         >
-                          <span>Open in Maps</span>
-                          <ArrowDownRight className="w-2.5 h-2.5" />
+                          <MapPin className="w-3.5 h-3.5 text-[#E8C2AF]" />
+                          <span>Open in Google Maps</span>
+                          <ArrowDownRight className="w-3 h-3 text-[#E8C2AF]" />
                         </a>
                       </div>
                     </div>

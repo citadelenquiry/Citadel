@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
 import { projectsData } from '../data/projectsData';
+import { sheetsWebhookService } from '../services/sheetsWebhookService';
 import {
   MapPin,
   Mail,
@@ -41,13 +42,24 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   const [loading, setLoading] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+
+    const details = `Looking For: ${formData.lookingFor}${formData.preferredDate ? ` | Preferred Date: ${formData.preferredDate}` : ''}`;
+
+    await sheetsWebhookService.submitLead({
+      formType: `Contact Page - ${formData.inquiryType || 'General Inquiry'}`,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      projectOrRole: formData.project || 'General Inquiry',
+      details,
+      message: formData.message || '',
+    });
+
+    setLoading(false);
+    setSubmitted(true);
   };
 
   const faqs = [

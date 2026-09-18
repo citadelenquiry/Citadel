@@ -12,8 +12,8 @@ const rawProjectsData: Project[] = [
     tagline: 'City Living, Crowned with Elegance',
     category: 'Residential',
     status: 'Ongoing',
-    location: 'Erandwane, Pune',
-    fullAddress: 'Erandwane, Near Nal Stop Metro Station, Pune',
+    location: 'Law College Road, Pune',
+    fullAddress: 'Janki Apartment, Near Abhinav School, Law College Road, Pune, Maharashtra 411038',
     areaSqFt: '2, 3 & 4 BHK Luxury Residences',
     floors: 'Multi-Storey Residential Tower',
     unitsCount: 'Premium 2, 3 & 4 BHK Residences',
@@ -29,8 +29,9 @@ const rawProjectsData: Project[] = [
       'Janki Shreyas CHS is a premium residential development by Citadel Group, designed for families and professionals seeking refined living without compromise. Intelligent layouts, superior materials and meticulous detailing ensure comfort, privacy and long term value.',
     detailedDescription:
       'Luxury Homes Crafted for Elevated Living — An address that brings Comfort, Connectivity and Class together. Built to Last. Built with Integrity. At Citadel Group, quality is non-negotiable.',
-    mapEmbedQuery: 'Nal Stop Metro Station, Karve Road, Erandwane, Pune, Maharashtra 411004',
-    mapAddressDisplay: 'Erandwane, Near Nal Stop Metro Station, Pune',
+    mapEmbedQuery: 'Janki Apartment, Law College Road, Near Abhinav School, Pune, Maharashtra 411038',
+    mapAddressDisplay: 'Law College Road, Near Abhinav School, Pune – 411038',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Janki+Apartment+Near+Abhinav+School+Law+College+Road+Pune+Maharashtra+411038',
     liveUpdates: [],
     floorPlans: [
       {
@@ -245,7 +246,7 @@ const rawProjectsData: Project[] = [
     category: 'Redevelopment',
     status: 'Ongoing',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Plot 18, Walvekar Nagar, Pune – 411009',
+    fullAddress: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '60,000 sq. ft.',
     floors: 'P + 7 Floors',
     unitsCount: '28 Premium 2 & 3 BHK Apartments',
@@ -260,8 +261,9 @@ const rawProjectsData: Project[] = [
       'Friends CHS is a 60,000 sq. ft. contemporary residential redevelopment located in Walvekar Nagar, Pune. Structured as Podium + 7 residential floors with high ventilation, optimal light intake, and zero dead space.',
     detailedDescription:
       'Under active construction by Citadel Group. The development replaces an aged cooperative housing society with an earthquake-resistant, amenity-rich luxury residential building offering upgraded carpet areas to existing and new home owners.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=25+Late+Vishwas+Balaji+Walavekar+Path+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-fr1',
@@ -364,7 +366,7 @@ const rawProjectsData: Project[] = [
     category: 'Redevelopment',
     status: 'Ongoing',
     location: 'Taware Colony, Pune',
-    fullAddress: 'Taware Colony, Off Pune-Satara Road, Pune – 411009',
+    fullAddress: 'Taware Colony, Off Pune-Satara Road, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '55,000 sq. ft.',
     floors: 'P + 7 Floors',
     unitsCount: '24 Luxury Residences',
@@ -378,8 +380,9 @@ const rawProjectsData: Project[] = [
       'Laxmi Parvati CHS is a 55,000 sq. ft. redevelopment project in Taware Colony, Pune. Designed for contemporary urban living with P+7 floors, elegant entrance foyer, and smart amenities.',
     detailedDescription:
       'Developed by Citadel Group with uncompromising engineering precision. The building maximizes natural sunlight and wind flow, offering premium 2 and 3 BHK layout options with top-grade construction materials.',
-    mapEmbedQuery: 'Taware Colony, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Taware Colony, Pune',
+    mapEmbedQuery: 'Taware Colony, Off Pune-Satara Road, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Taware Colony, Off Pune-Satara Road, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Taware+Colony+Off+Pune-Satara+Road+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-lp1',
@@ -442,8 +445,8 @@ const rawProjectsData: Project[] = [
     tagline: 'Palatial 5 BHK Sky Residences & Penthouses',
     category: 'Redevelopment',
     status: 'Ongoing',
-    location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Proposed Residential Redevelopment Scheme of Manisha Bungalow, Walvekar Nagar, Pune – 411009',
+    location: 'Parvati Paytha, Pune',
+    fullAddress: '16, Shiv Darshan Rd, Chhatrapti Sambhaji Housing Society, Sant Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '25,000 sq. ft.',
     floors: 'P + 7 Floors',
     unitsCount: 'Exclusive Single-Floor 5 BHK Residences',
@@ -458,8 +461,9 @@ const rawProjectsData: Project[] = [
       'Proposed Residential Redevelopment Scheme of Manisha Bungalow — an ultra-exclusive P+7 low-density residential landmark in Walvekar Nagar, Pune. Designed by Master Stroke Architects (Ar. Sandeep Bawdekar), offering sprawling 5 BHK sky mansions featuring private entrance lobbies, dedicated family entertainment suites, grand sit-out balconies, and expansive master suites with walk-in dressing rooms.',
     detailedDescription:
       'Crafted with single-unit per floor exclusivity, Manisha CHS provides unparalleled privacy, four-sided cross ventilation, and custom interior flexibility. Features earthquake-resistant RCC design, private elevator access directly into apartment lobbies, separate dry utilities, and dedicated pooja sanctums.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: '16, Shiv Darshan Rd, Chhatrapti Sambhaji Housing Society, Sant Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: '16, Shiv Darshan Rd, Sant Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=16+Shiv+Darshan+Rd+Chhatrapti+Sambhaji+Housing+Society+Sant+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-m1',
@@ -599,7 +603,7 @@ const rawProjectsData: Project[] = [
     category: 'Commercial',
     status: 'Upcoming',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Main Arterial Road, Walvekar Nagar, Pune – 411009',
+    fullAddress: 'FVJ3+VP9, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '2,05,000 sq. ft.',
     floors: '2B + G + 16 Floors',
     unitsCount: 'Retail Showrooms + Corporate Offices + Luxury Flats',
@@ -613,8 +617,9 @@ const rawProjectsData: Project[] = [
       'Citadel Stellar is an upcoming mega mixed-use development spanning 2,05,000 sq. ft. in Walvekar Nagar, Pune. Undertaken as a strategic Joint Venture with Landowners.',
     detailedDescription:
       'Combining Grade-A commercial showrooms on lower floors with signature residential suites on upper floors. Features double-height glass lobbies, high-speed capsule lifts, and automated parking.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: 'FVJ3+VP9, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Walvekar Nagar, Parvati Paytha, Pune – 411009 (Plus Code: FVJ3+VP9)',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=FVJ3%2BVP9+Pune+Maharashtra',
     liveUpdates: [
       {
         id: 'u-cs1',
@@ -694,7 +699,7 @@ const rawProjectsData: Project[] = [
     category: 'Residential',
     status: 'Upcoming',
     location: 'Prabhat Road, Pune',
-    fullAddress: 'Lane 8, Prabhat Road, Erandwane, Pune – 411004',
+    fullAddress: 'GR7Q+PQ7, Lane 8, Prabhat Road, Erandwane, Pune, Maharashtra 411004',
     areaSqFt: '60,000 sq. ft.',
     floors: 'P + 11 Floors',
     unitsCount: 'Super Luxury 3 & 4.5 BHK Master Suites',
@@ -708,8 +713,9 @@ const rawProjectsData: Project[] = [
       '96 Prabhat is a 60,000 sq. ft. signature luxury residential address situated in the ultra-prestigious Prabhat Road, Lane 8. A Joint Venture with landowner offering supreme privacy and classic Pune elegance.',
     detailedDescription:
       'Designed for Pune’s discerning elite who value heritage, tranquility, and refined architecture. Only two private apartments per floor with private elevators, expansive viewing terraces, and smart home integration.',
-    mapEmbedQuery: 'Prabhat Road, Erandwane, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Lane 8, Prabhat Road, Erandwane, Pune',
+    mapEmbedQuery: 'GR7Q+PQ7, Lane 8, Prabhat Road, Erandwane, Pune, Maharashtra 411004',
+    mapAddressDisplay: 'Lane 8, Prabhat Road, Erandwane, Pune – 411004 (Plus Code: GR7Q+PQ7)',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=GR7Q%2BPQ7+Pune+Maharashtra',
     liveUpdates: [
       {
         id: 'u-96p1',
@@ -765,7 +771,7 @@ const rawProjectsData: Project[] = [
     category: 'Commercial',
     status: 'Upcoming',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Walvekar Nagar, Pune – 411009',
+    fullAddress: 'Walvekar Nagar, Parvati Paytha, Pune – 411009',
     areaSqFt: '2,35,000 sq. ft.',
     floors: '3B + G + 18 Floors',
     unitsCount: 'Grand Retail Boulevard + Commercial & Luxury Residential Floors',
@@ -778,8 +784,9 @@ const rawProjectsData: Project[] = [
       'Citadel Emerald is a massive 2,35,000 sq. ft. commercial and residential master development on outright purchased land in Walvekar Nagar. Set to be an architectural beacon in South Pune.',
     detailedDescription:
       'Acquired outright by Citadel Group for comprehensive modern urban development. Boasts ultra-modern glass façades, multi-level retail shopping, Grade-A corporate suites, and premium residences.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: 'Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-ce1',
@@ -823,7 +830,7 @@ const rawProjectsData: Project[] = [
     category: 'Redevelopment',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Walvekar Nagar, Pune – 411009',
+    fullAddress: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '70,000 sq. ft.',
     floors: 'P + 14 Floors',
     unitsCount: '52 Delivered Premium Residences',
@@ -837,8 +844,9 @@ const rawProjectsData: Project[] = [
       'Jai Rajkiran CHS is a 70,000 sq. ft., P+14 storey completed society redevelopment project delivered by Citadel Group in Walvekar Nagar, Pune. 100% occupied with complete Occupancy Certificate.',
     detailedDescription:
       'Successfully revitalized an older society into an iconic 14-storey tower with earthquake-resistant structure, solar water heating, puzzle car parking, and beautiful landscaped terraces.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=43+Sri+Ashok+Pawar+Path+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-jr1',
@@ -943,7 +951,7 @@ const rawProjectsData: Project[] = [
     category: 'Commercial',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Shingate Building, Walvekar Nagar, Pune – 411009',
+    fullAddress: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '20,000 sq. ft.',
     floors: 'P + 5 Floors',
     unitsCount: 'Retail Showrooms & Professional Corporate Offices',
@@ -957,8 +965,9 @@ const rawProjectsData: Project[] = [
       'Walvekar Commercial is a 20,000 sq. ft., P+5 storey boutique commercial complex in Walvekar Nagar, Pune. Delivered as a Joint Venture project housing bustling retail shops and offices.',
     detailedDescription:
       'Features high street glass retail frontage, modern elevator systems, and dedicated commercial car parking for corporate occupants and visiting clientele.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=FVJ4%2BWQX+Vasant+Baug+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-wc1',
@@ -1012,7 +1021,7 @@ const rawProjectsData: Project[] = [
     category: 'Redevelopment',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Walvekar Nagar, Pune – 411009',
+    fullAddress: 'Plot no 40, FVM4+6HJ, Anand Shree HSG Society, 40, Sri Ashok Pawar Path, Darshan - II Co-operative HSG Society, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '20,000 sq. ft.',
     floors: 'P + 5 Floors',
     unitsCount: '16 Completed Family Residences',
@@ -1025,8 +1034,8 @@ const rawProjectsData: Project[] = [
       'Anandshree CHS is a 20,000 sq. ft., P+5 storey society redevelopment successfully completed and delivered by Citadel Group in Walvekar Nagar, Pune.',
     detailedDescription:
       'Delivered with full municipal approvals, providing modern amenities, quality elevation, and enhanced carpet area to original society flat holders.',
-    mapEmbedQuery: 'Walvekar Nagar, Pune, Maharashtra, India',
-    mapAddressDisplay: 'Walvekar Nagar, Pune',
+    mapEmbedQuery: 'Plot no 40, Anand Shree HSG Society, 40, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Plot no 40, Anand Shree HSG Society, Walvekar Nagar, Parvati Paytha, Pune – 411009',
     googleMapsUrl: 'https://maps.app.goo.gl/Ki3JsPgHGJHGVD6b8?g_st=aw',
     liveUpdates: [
       {

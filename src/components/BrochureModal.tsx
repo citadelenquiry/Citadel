@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Download, FileText, CheckCircle, Mail, Phone, User, MessageSquare, Eye } from 'lucide-react';
 import { Project } from '../types';
+import { sheetsWebhookService } from '../services/sheetsWebhookService';
 
 interface BrochureModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleDownload = (e: React.FormEvent) => {
+  const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsDownloading(true);
 
@@ -40,6 +41,17 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
     if (onUnlock) {
       onUnlock();
     }
+
+    // Submit lead to Google Sheets Webhook
+    await sheetsWebhookService.submitLead({
+      formType: mode === 'floorplans' ? 'Architectural Plans Unlock' : 'Brochure Download',
+      name: `${firstName} ${lastName}`.trim(),
+      phone: phone,
+      email: email,
+      projectOrRole: project.title,
+      details: `Project Location: ${project.location} | Category: ${project.category} (${project.status})`,
+      message: message || (mode === 'floorplans' ? 'Requested floor plans and layout access' : 'Downloaded project dossier'),
+    });
 
     // Trigger instant client-side download of a formatted project dossier summary
     try {

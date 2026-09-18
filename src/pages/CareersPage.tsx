@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
 import { Briefcase, Send, CheckCircle2, Mail, MapPin } from 'lucide-react';
+import { sheetsWebhookService } from '../services/sheetsWebhookService';
 
 interface CareersPageProps {
   setCurrentPage?: (page: Page) => void;
@@ -21,13 +22,24 @@ export const CareersPage: React.FC<CareersPageProps> = ({ setCurrentPage }) => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 600);
+
+    const details = `Experience: ${formData.experience}${formData.portfolioUrl ? ` | Portfolio/LinkedIn: ${formData.portfolioUrl}` : ''}`;
+
+    await sheetsWebhookService.submitLead({
+      formType: 'Careers Application',
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      projectOrRole: formData.role || 'Job Applicant',
+      details,
+      message: formData.message || '',
+    });
+
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {

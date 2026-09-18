@@ -15,11 +15,19 @@ import {
   Image as ImageIcon,
   CheckCircle2,
   ChevronDown,
+  FileSpreadsheet,
+  Send,
+  Download,
+  AlertCircle,
 } from 'lucide-react';
 import { Project, ProjectLiveUpdate } from '../types';
 import { projectsData } from '../data/projectsData';
 import { projectUpdatesService } from '../services/projectUpdatesService';
 import { adminAuthService } from '../services/adminAuthService';
+import {
+  sheetsWebhookService,
+  StoredLeadRecord,
+} from '../services/sheetsWebhookService';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -70,9 +78,16 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projectsData[0]?.id || '');
   const [updates, setUpdates] = useState<ProjectLiveUpdate[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'manager' | 'code'>('manager');
+  const [activeTab, setActiveTab] = useState<'manager' | 'code' | 'leads'>('manager');
   const [copied, setCopied] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+
+  // Leads & Google Sheet Webhook State
+  const [storedLeads, setStoredLeads] = useState<StoredLeadRecord[]>([]);
+  const [webhookUrlInput, setWebhookUrlInput] = useState('');
+  const [isEditingWebhookUrl, setIsEditingWebhookUrl] = useState(false);
+  const [isTestingWebhook, setIsTestingWebhook] = useState(false);
+  const [leadsFilter, setLeadsFilter] = useState('all');
 
   // Form State
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
@@ -103,6 +118,81 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     });
     return unsub;
   }, [selectedProjectId]);
+
+  // Load and subscribe to stored leads
+  useEffect(() => {
+    if (isOpen) {
+      setStoredLeads(sheetsWebhookService.getStoredLeads());
+      setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+      const unsub = sheetsWebhookService.subscribe(() => {
+        setStoredLeads(sheetsWebhookService.getStoredLeads());
+        setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+      });
+      return unsub;
+    }
+  }, [isOpen]);
+
+  const handleSendTestLead = async () => {
+    setIsTestingWebhook(true);
+    setFeedbackMsg('Dispatching test row to Google Sheet...');
+    const result = await sheetsWebhookService.submitLead({
+      formType: 'Admin Verification Test',
+      name: 'Citadel Operations Desk',
+      phone: '+91 87799 75270',
+      email: 'enquiry@thecitadelgroup.co',
+      projectOrRole: currentProject.title,
+      details: 'Automated connectivity test from Admin Panel',
+      message: 'Testing live row append to Google Sheet at ' + new Date().toLocaleTimeString(),
+    });
+    setIsTestingWebhook(false);
+    if (result.success) {
+      setFeedbackMsg('Test lead dispatched! Row appended to Google Sheet.');
+    } else {
+      setFeedbackMsg('Dispatched with note: ' + (result.error || 'Check access settings'));
+    }
+    setTimeout(() => setFeedbackMsg(''), 4000);
+  };
+
+  const handleSaveWebhookUrl = () => {
+    sheetsWebhookService.setCustomWebhookUrl(webhookUrlInput);
+    setIsEditingWebhookUrl(false);
+    setFeedbackMsg('Google Sheet Webhook URL saved successfully.');
+    setTimeout(() => setFeedbackMsg(''), 3000);
+  };
+
+  const handleResetWebhookUrl = () => {
+    sheetsWebhookService.resetWebhookUrl();
+    setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+    setIsEditingWebhookUrl(false);
+    setFeedbackMsg('Webhook URL reset to primary deployment default.');
+    setTimeout(() => setFeedbackMsg(''), 3000);
+  };
+
+  const handleExportLeadsCsv = () => {
+    if (storedLeads.length === 0) {
+      alert('No leads recorded in local log yet.');
+      return;
+    }
+    const headers = ['Date & Time', 'Type', 'Name', 'Phone', 'Email', 'Project / Role', 'Details / Budget', 'Message'];
+    const rows = storedLeads.map((l) => [
+      `"${l.timestamp.replace(/"/g, '""')}"`,
+      `"${l.formType.replace(/"/g, '""')}"`,
+      `"${l.name.replace(/"/g, '""')}"`,
+      `"${l.phone.replace(/"/g, '""')}"`,
+      `"${l.email.replace(/"/g, '""')}"`,
+      `"${(l.projectOrRole || '').replace(/"/g, '""')}"`,
+      `"${(l.details || '').replace(/"/g, '""')}"`,
+      `"${(l.message || '').replace(/"/g, '""')}"`,
+    ]);
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `citadel-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   if (!isOpen) return null;
 
@@ -300,6 +390,17 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 }`}
               >
                 Cards ({updates.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('leads')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                  activeTab === 'leads'
+                    ? 'bg-white text-[#1E1D1B] shadow-xs'
+                    : 'text-[#6E6A65] hover:text-[#1E1D1B]'
+                }`}
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#1E7E34]" />
+                <span>Google Sheet Leads ({storedLeads.length})</span>
               </button>
               <button
                 onClick={() => setActiveTab('code')}
@@ -614,6 +715,248 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   </div>
                 </div>
               )}
+            </div>
+          ) : activeTab === 'leads' ? (
+            /* GOOGLE SHEETS & LEADS VIEW */
+            <div className="space-y-6">
+              {/* Webhook Configuration & Status Card */}
+              <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#F0EBE6] pb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#E5F7EB] text-[#1E7E34] flex items-center justify-center shrink-0 mt-0.5">
+                      <FileSpreadsheet className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E7E34]">
+                          GOOGLE APPS SCRIPT WEBHOOK CONNECTED
+                        </span>
+                        <span className="w-2 h-2 rounded-full bg-[#1E7E34] animate-pulse" />
+                      </div>
+                      <h3 className="font-editorial text-xl font-bold text-[#1E1D1B]">
+                        Direct Google Sheets Lead Synchronization
+                      </h3>
+                      <p className="text-xs text-[#6E6A65] mt-0.5">
+                        Every enquiry from the Quote Modal, Contact Page, Brochure Downloads, and Careers Form is forwarded directly to your Google Sheet.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={handleSendTestLead}
+                      disabled={isTestingWebhook}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#1E7E34] hover:bg-[#166527] text-white text-xs font-semibold rounded-xl transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>{isTestingWebhook ? 'Dispatching Test...' : 'Send Test Lead'}</span>
+                    </button>
+                    <button
+                      onClick={handleExportLeadsCsv}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-xl transition-all shadow-xs cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Export CSV ({storedLeads.length})</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Webhook URL bar */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-[#3C3A36]">Active Google Apps Script Webhook Endpoint:</span>
+                    {!isEditingWebhookUrl ? (
+                      <button
+                        onClick={() => setIsEditingWebhookUrl(true)}
+                        className="text-[#8A563D] font-semibold hover:underline cursor-pointer"
+                      >
+                        Edit URL
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleSaveWebhookUrl}
+                          className="text-[#1E7E34] font-bold hover:underline cursor-pointer"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={handleResetWebhookUrl}
+                          className="text-[#8A563D] hover:underline cursor-pointer"
+                        >
+                          Reset Default
+                        </button>
+                        <button
+                          onClick={() => {
+                            setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+                            setIsEditingWebhookUrl(false);
+                          }}
+                          className="text-[#7A7570] hover:underline cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {!isEditingWebhookUrl ? (
+                    <div className="p-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs font-mono text-[#5C5752] break-all select-all flex items-center justify-between gap-2">
+                      <span className="truncate">{sheetsWebhookService.getWebhookUrl()}</span>
+                      <span className="text-[10px] font-sans font-semibold bg-[#E5F7EB] text-[#1E7E34] px-2 py-0.5 rounded-full shrink-0">
+                        Active
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        value={webhookUrlInput}
+                        onChange={(e) => setWebhookUrlInput(e.target.value)}
+                        placeholder="https://script.google.com/macros/s/.../exec"
+                        className="flex-1 px-3 py-2 bg-white border border-[#8A563D] rounded-xl text-xs font-mono text-[#1E1D1B] focus:outline-hidden"
+                      />
+                      <button
+                        onClick={handleSaveWebhookUrl}
+                        className="px-4 py-2 bg-[#8A563D] text-white font-semibold text-xs rounded-xl"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Important deployment tip banner */}
+                <div className="p-3 bg-[#FFF9E6] border border-[#FFE082] rounded-xl text-xs text-[#7A5B00] flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-[#C47F00] shrink-0 mt-0.5" />
+                  <div className="leading-relaxed">
+                    <strong>Apps Script Access Setting:</strong> Ensure in your Google Apps Script deployment under <em>"Who has access"</em>, you have selected <strong>"Anyone"</strong>. This permits public inquiries from clients without asking them to sign into a Google account.
+                  </div>
+                </div>
+              </div>
+
+              {/* Recorded Leads Feed & History */}
+              <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0EBE6] pb-3">
+                  <div>
+                    <h4 className="font-editorial text-lg font-bold text-[#1E1D1B]">
+                      Recent Submissions & Lead Audit Log
+                    </h4>
+                    <p className="text-xs text-[#6E6A65]">
+                      Local mirror of inquiries dispatched to your Google Sheet ({storedLeads.length} total recorded)
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={leadsFilter}
+                      onChange={(e) => setLeadsFilter(e.target.value)}
+                      className="px-3 py-1.5 bg-[#FAF8F5] border border-[#D8D1C7] rounded-lg text-xs font-semibold text-[#1E1D1B]"
+                    >
+                      <option value="all">All Submissions</option>
+                      <option value="quote">Quotes & Consultations</option>
+                      <option value="contact">Contact Messages</option>
+                      <option value="careers">Careers Applications</option>
+                      <option value="brochure">Brochure / Floorplans</option>
+                    </select>
+
+                    {storedLeads.length > 0 && (
+                      <button
+                        onClick={() => {
+                          if (confirm('Clear local history log? Leads in Google Sheet are unaffected.')) {
+                            sheetsWebhookService.clearStoredLeads();
+                          }
+                        }}
+                        className="text-xs text-[#8A563D] hover:underline whitespace-nowrap cursor-pointer"
+                      >
+                        Clear Log
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {storedLeads.length === 0 ? (
+                  <div className="py-12 text-center text-[#7A7570] space-y-2">
+                    <FileSpreadsheet className="w-10 h-10 mx-auto text-[#D8D1C7]" />
+                    <p className="text-sm font-semibold text-[#3C3A36]">No inquiries submitted yet</p>
+                    <p className="text-xs text-[#8C8781] max-w-sm mx-auto">
+                      Whenever visitors fill in the Get a Quote modal, Contact Form, Careers Application, or Brochure download, their details will stream directly to your connected Google Sheet.
+                    </p>
+                    <button
+                      onClick={handleSendTestLead}
+                      className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FAF8F5] border border-[#DDD6CE] hover:bg-[#F2ECE6] text-[#1E1D1B] text-xs font-semibold rounded-lg cursor-pointer"
+                    >
+                      <Send className="w-3 h-3 text-[#1E7E34]" />
+                      <span>Send a Sample Test Lead</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+                    {storedLeads
+                      .filter((lead) => {
+                        if (leadsFilter === 'all') return true;
+                        const lower = lead.formType.toLowerCase();
+                        if (leadsFilter === 'quote') return lower.includes('quote') || lower.includes('consultation');
+                        if (leadsFilter === 'contact') return lower.includes('contact');
+                        if (leadsFilter === 'careers') return lower.includes('career');
+                        if (leadsFilter === 'brochure') return lower.includes('brochure') || lower.includes('plan');
+                        return true;
+                      })
+                      .map((lead) => (
+                        <div
+                          key={lead.id}
+                          className="p-4 rounded-xl border border-[#EDE7E1] bg-[#FAF8F5] hover:bg-[#F7F3EE] transition-colors space-y-2"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E8C2AF]/40 text-[#8A563D]">
+                                {lead.formType}
+                              </span>
+                              <span className="font-bold text-sm text-[#1E1D1B]">{lead.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-[#7A7570]">
+                              <span>{lead.timestamp}</span>
+                              <span className="inline-flex items-center gap-1 text-[10px] text-[#1E7E34] bg-[#E5F7EB] px-2 py-0.5 rounded-full font-medium">
+                                <CheckCircle2 className="w-3 h-3" />
+                                Synced to Sheet
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-[#5C5752] pt-1">
+                            <div>
+                              <strong className="text-[#3C3A36]">Phone:</strong>{' '}
+                              <a href={`tel:${lead.phone}`} className="text-[#8A563D] hover:underline font-medium">
+                                {lead.phone}
+                              </a>
+                            </div>
+                            <div>
+                              <strong className="text-[#3C3A36]">Email:</strong>{' '}
+                              <a href={`mailto:${lead.email}`} className="text-[#8A563D] hover:underline font-medium">
+                                {lead.email}
+                              </a>
+                            </div>
+                            <div>
+                              <strong className="text-[#3C3A36]">Project / Role:</strong>{' '}
+                              <span className="font-medium text-[#1E1D1B]">{lead.projectOrRole || 'General'}</span>
+                            </div>
+                          </div>
+
+                          {lead.details && (
+                            <div className="text-xs text-[#6E6A65] bg-white p-2 rounded-lg border border-[#EDE7E1]">
+                              <strong className="text-[#3C3A36]">Details:</strong> {lead.details}
+                            </div>
+                          )}
+
+                          {lead.message && (
+                            <div className="text-xs text-[#3C3A36] italic bg-white p-2.5 rounded-lg border border-[#EDE7E1]">
+                              "{lead.message}"
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             /* CODE EXPORT VIEW */

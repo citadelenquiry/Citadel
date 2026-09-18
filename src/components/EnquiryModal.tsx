@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, ArrowRight, Phone, Mail, User } from 'lucide-react';
 import { projectsData } from '../data/projectsData';
+import { sheetsWebhookService } from '../services/sheetsWebhookService';
 
 interface EnquiryModalProps {
   isOpen: boolean;
@@ -51,13 +52,26 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+
+    const matched = projectsData.find((p) => p.id === formData.projectId);
+    const projectOrRole = matched ? matched.title : (formData.projectId || 'All Citadel Projects');
+    const details = `Looking For: ${formData.lookingFor}${formData.unitType ? ` | Unit: ${formData.unitType}` : ''}`;
+
+    await sheetsWebhookService.submitLead({
+      formType: 'Get a Quote / Project Consultation',
+      name: formData.fullName,
+      phone: formData.phone,
+      email: formData.email,
+      projectOrRole,
+      details,
+      message: formData.message || '',
+    });
+
+    setLoading(false);
+    setSubmitted(true);
   };
 
   const resetAndClose = () => {
