@@ -35,6 +35,179 @@ function adminApiPlugin(): Plugin {
           res.end('Method Not Allowed');
         }
       });
+
+      server.middlewares.use('/api/sheets/test', (req, res) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', async () => {
+            try {
+              const { webhookUrl } = JSON.parse(body || '{}');
+              const targetUrl =
+                webhookUrl ||
+                process.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL ||
+                'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
+
+              const gRes = await fetch(targetUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                  formType: 'Admin Diagnostic Probe',
+                  name: 'Citadel Operations Test',
+                  phone: '+91 87799 75270',
+                  email: 'test@thecitadelgroup.co',
+                  projectOrRole: 'Connectivity Diagnostics',
+                  details: 'Testing Google Apps Script authorization',
+                  message: 'Automated diagnostic check from Citadel server',
+                }),
+                redirect: 'follow',
+              });
+
+              const text = await gRes.text();
+              res.setHeader('Content-Type', 'application/json');
+
+              if (
+                gRes.status === 401 ||
+                text.includes('accounts.google.com') ||
+                text.includes('Page not found') ||
+                text.includes('Sorry, unable to open the file at present')
+              ) {
+                res.statusCode = 200;
+                res.end(
+                  JSON.stringify({
+                    success: false,
+                    statusCode: 401,
+                    error:
+                      "Google Apps Script returned HTTP 401 Unauthorized ('Sorry, unable to open the file at present'). In Google Apps Script, click Deploy > Manage deployments > Edit > ensure 'Execute as: Me' and 'Who has access: Anyone'.",
+                  })
+                );
+                return;
+              }
+
+              if (gRes.ok || text.includes('success') || text.includes('Row added')) {
+                res.statusCode = 200;
+                res.end(
+                  JSON.stringify({
+                    success: true,
+                    statusCode: gRes.status,
+                    message: 'Connected successfully to Google Sheet! Row appended.',
+                  })
+                );
+                return;
+              }
+
+              res.statusCode = 200;
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  statusCode: gRes.status,
+                  error: `Google Apps Script returned HTTP ${gRes.status}: ${text.slice(0, 160)}`,
+                })
+              );
+            } catch (err: any) {
+              res.setHeader('Content-Type', 'application/json');
+              res.statusCode = 200;
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  error: err?.message || 'Network error reaching Google Apps Script',
+                })
+              );
+            }
+          });
+        } else {
+          res.statusCode = 405;
+          res.end('Method Not Allowed');
+        }
+      });
+
+      server.middlewares.use('/api/lead/submit', (req, res) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', async () => {
+            try {
+              const payload = JSON.parse(body || '{}');
+              const targetUrl =
+                payload.webhookUrl ||
+                process.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL ||
+                'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
+
+              const gRes = await fetch(targetUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                  formType: payload.formType || 'General Enquiry',
+                  name: payload.name || '',
+                  phone: payload.phone || '',
+                  email: payload.email || '',
+                  projectOrRole: payload.projectOrRole || '',
+                  details: payload.details || '',
+                  message: payload.message || '',
+                }),
+                redirect: 'follow',
+              });
+
+              const text = await gRes.text();
+              res.setHeader('Content-Type', 'application/json');
+
+              if (
+                gRes.status === 401 ||
+                text.includes('accounts.google.com') ||
+                text.includes('Page not found') ||
+                text.includes('Sorry, unable to open the file at present')
+              ) {
+                res.statusCode = 200;
+                res.end(
+                  JSON.stringify({
+                    success: false,
+                    statusCode: 401,
+                    error:
+                      "Google Apps Script returned HTTP 401 Unauthorized ('Sorry, unable to open the file at present'). In Google Apps Script, click Deploy > Manage deployments > Edit > set 'Who has access: Anyone'.",
+                  })
+                );
+                return;
+              }
+
+              if (gRes.ok || text.includes('success') || text.includes('Row added')) {
+                res.statusCode = 200;
+                res.end(
+                  JSON.stringify({
+                    success: true,
+                    statusCode: gRes.status,
+                  })
+                );
+                return;
+              }
+
+              res.statusCode = 200;
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  statusCode: gRes.status,
+                  error: `Google Apps Script returned HTTP ${gRes.status}`,
+                })
+              );
+            } catch (err: any) {
+              res.setHeader('Content-Type', 'application/json');
+              res.statusCode = 200;
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  error: err?.message || 'Network error reaching Google Apps Script',
+                })
+              );
+            }
+          });
+        } else {
+          res.statusCode = 405;
+          res.end('Method Not Allowed');
+        }
+      });
     },
   };
 }

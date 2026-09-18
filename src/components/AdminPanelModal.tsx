@@ -19,6 +19,9 @@ import {
   Send,
   Download,
   AlertCircle,
+  RefreshCw,
+  AlertTriangle,
+  Code2,
 } from 'lucide-react';
 import { Project, ProjectLiveUpdate } from '../types';
 import { projectsData } from '../data/projectsData';
@@ -27,6 +30,7 @@ import { adminAuthService } from '../services/adminAuthService';
 import {
   sheetsWebhookService,
   StoredLeadRecord,
+  WebhookTestResult,
 } from '../services/sheetsWebhookService';
 
 interface AdminPanelModalProps {
@@ -34,6 +38,67 @@ interface AdminPanelModalProps {
   onClose: () => void;
   onSelectProjectOnSite?: (projectId: string) => void;
 }
+
+const APPS_SCRIPT_TEMPLATE = `// Google Apps Script (Code.gs) for Citadel Group Leads Integration
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getActiveSheet();
+    
+    // Auto-create and style headers if sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Timestamp",
+        "Form Type",
+        "Name",
+        "Phone",
+        "Email",
+        "Project / Role",
+        "Details",
+        "Message"
+      ]);
+      sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackground("#E8C2AF");
+    }
+    
+    var data = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (err) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
+    }
+    
+    var timestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+    
+    sheet.appendRow([
+      timestamp,
+      data.formType || "Website Inquiry",
+      data.name || "",
+      data.phone || "",
+      data.email || "",
+      data.projectOrRole || "",
+      data.details || "",
+      data.message || ""
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "success", message: "Lead row added successfully" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: "active", message: "Citadel Webhook Endpoint is Running" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
 
 const COMMON_STAGES = [
   'Demolition & Site Clearance',
@@ -87,6 +152,12 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [webhookUrlInput, setWebhookUrlInput] = useState('');
   const [isEditingWebhookUrl, setIsEditingWebhookUrl] = useState(false);
   const [isTestingWebhook, setIsTestingWebhook] = useState(false);
+  const [isDiagnosing, setIsDiagnosing] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<WebhookTestResult | null>(null);
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [showScriptDetails, setShowScriptDetails] = useState(false);
+  const [isRetryingId, setIsRetryingId] = useState<string | null>(null);
+  const [isRetryingAll, setIsRetryingAll] = useState(false);
   const [leadsFilter, setLeadsFilter] = useState('all');
 
   // Form State
@@ -148,9 +219,49 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     if (result.success) {
       setFeedbackMsg('Test lead dispatched! Row appended to Google Sheet.');
     } else {
-      setFeedbackMsg('Dispatched with note: ' + (result.error || 'Check access settings'));
+      setFeedbackMsg('Submission notice: ' + (result.error || 'Check access settings'));
     }
-    setTimeout(() => setFeedbackMsg(''), 4000);
+    setTimeout(() => setFeedbackMsg(''), 5000);
+  };
+
+  const handleDiagnoseConnection = async () => {
+    setIsDiagnosing(true);
+    setDiagnosticResult(null);
+    const res = await sheetsWebhookService.testWebhookConnection(webhookUrlInput);
+    setDiagnosticResult(res);
+    setIsDiagnosing(false);
+  };
+
+  const handleRetryLead = async (leadId: string) => {
+    setIsRetryingId(leadId);
+    const res = await sheetsWebhookService.retryLead(leadId);
+    setIsRetryingId(null);
+    if (res.success) {
+      setFeedbackMsg('Lead synced successfully to Google Sheet!');
+    } else {
+      setFeedbackMsg('Sync failed: ' + (res.error || 'Check webhook access'));
+    }
+    setTimeout(() => setFeedbackMsg(''), 5000);
+  };
+
+  const handleRetryAllPending = async () => {
+    setIsRetryingAll(true);
+    const { count, failed } = await sheetsWebhookService.retryAllPending();
+    setIsRetryingAll(false);
+    if (failed === 0 && count > 0) {
+      setFeedbackMsg(`Successfully synced all ${count} pending lead(s) to Google Sheet!`);
+    } else if (count > 0) {
+      setFeedbackMsg(`Synced ${count} lead(s), ${failed} still failing.`);
+    } else {
+      setFeedbackMsg('Sync attempt failed. Please check Apps Script deployment access.');
+    }
+    setTimeout(() => setFeedbackMsg(''), 5000);
+  };
+
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(APPS_SCRIPT_TEMPLATE);
+    setCopiedScript(true);
+    setTimeout(() => setCopiedScript(false), 2500);
   };
 
   const handleSaveWebhookUrl = () => {
@@ -723,55 +834,111 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#F0EBE6] pb-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#E5F7EB] text-[#1E7E34] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-[#E8C2AF]/30 text-[#8A563D] flex items-center justify-center shrink-0 mt-0.5">
                       <FileSpreadsheet className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E7E34]">
-                          GOOGLE APPS SCRIPT WEBHOOK CONNECTED
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D]">
+                          GOOGLE SHEETS INTEGRATION
                         </span>
-                        <span className="w-2 h-2 rounded-full bg-[#1E7E34] animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-[#8A563D] animate-pulse" />
                       </div>
                       <h3 className="font-editorial text-xl font-bold text-[#1E1D1B]">
-                        Direct Google Sheets Lead Synchronization
+                        Google Sheets Lead Forwarding & Diagnostics
                       </h3>
                       <p className="text-xs text-[#6E6A65] mt-0.5">
-                        Every enquiry from the Quote Modal, Contact Page, Brochure Downloads, and Careers Form is forwarded directly to your Google Sheet.
+                        Inquiries from Quote Modals, Contact Page, Brochure Downloads, and Careers flow directly to your Google Sheet and are mirrored in the local audit log.
                       </p>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <button
+                      onClick={handleDiagnoseConnection}
+                      disabled={isDiagnosing}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF8F5] border border-[#D8D1C7] hover:bg-[#F2ECE6] text-[#1E1D1B] text-xs font-semibold rounded-xl transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 text-[#8A563D] ${isDiagnosing ? 'animate-spin' : ''}`} />
+                      <span>{isDiagnosing ? 'Testing Connection...' : 'Test Connection'}</span>
+                    </button>
+                    <button
                       onClick={handleSendTestLead}
                       disabled={isTestingWebhook}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#1E7E34] hover:bg-[#166527] text-white text-xs font-semibold rounded-xl transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-xl transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{isTestingWebhook ? 'Dispatching Test...' : 'Send Test Lead'}</span>
+                      <span>{isTestingWebhook ? 'Dispatching...' : 'Send Test Lead'}</span>
                     </button>
                     <button
                       onClick={handleExportLeadsCsv}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-xl transition-all shadow-xs cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF8F5] border border-[#D8D1C7] hover:bg-[#F2ECE6] text-[#1E1D1B] text-xs font-semibold rounded-xl transition-all shadow-xs cursor-pointer"
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download className="w-3.5 h-3.5 text-[#8A563D]" />
                       <span>Export CSV ({storedLeads.length})</span>
                     </button>
                   </div>
                 </div>
+
+                {/* Diagnostic Result Banner (if tested) */}
+                {diagnosticResult && (
+                  <div
+                    className={`p-4 rounded-xl border text-xs leading-relaxed flex items-start gap-3 ${
+                      diagnosticResult.success
+                        ? 'bg-[#EBF9EE] border-[#C3ECCB] text-[#1E7E34]'
+                        : 'bg-[#FFF5F0] border-[#F4D2C3] text-[#8A563D]'
+                    }`}
+                  >
+                    {diagnosticResult.success ? (
+                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-[#1E7E34]" />
+                    ) : (
+                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#8A563D]" />
+                    )}
+                    <div className="flex-1 space-y-1">
+                      <div className="font-bold text-sm">
+                        {diagnosticResult.success
+                          ? 'Endpoint Verified & Connected!'
+                          : `Connection Issue: HTTP ${diagnosticResult.statusCode || 'Error'}`}
+                      </div>
+                      <p>
+                        {diagnosticResult.message ||
+                          diagnosticResult.error ||
+                          'Check your Google Apps Script permissions.'}
+                      </p>
+                      {!diagnosticResult.success && (
+                        <div className="pt-1">
+                          <button
+                            onClick={() => setShowScriptDetails(true)}
+                            className="font-semibold text-[#8A563D] underline hover:text-[#5C3928] cursor-pointer"
+                          >
+                            Open Setup Guide & Copy Apps Script Code &rarr;
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Webhook URL bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-[#3C3A36]">Active Google Apps Script Webhook Endpoint:</span>
                     {!isEditingWebhookUrl ? (
-                      <button
-                        onClick={() => setIsEditingWebhookUrl(true)}
-                        className="text-[#8A563D] font-semibold hover:underline cursor-pointer"
-                      >
-                        Edit URL
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => setShowScriptDetails(!showScriptDetails)}
+                          className="text-[#8A563D] font-semibold hover:underline cursor-pointer flex items-center gap-1"
+                        >
+                          <Code2 className="w-3.5 h-3.5" />
+                          <span>{showScriptDetails ? 'Hide Setup Script' : 'View Setup Script (Code.gs)'}</span>
+                        </button>
+                        <button
+                          onClick={() => setIsEditingWebhookUrl(true)}
+                          className="text-[#8A563D] font-semibold hover:underline cursor-pointer"
+                        >
+                          Edit URL
+                        </button>
+                      </div>
                     ) : (
                       <div className="flex items-center gap-2">
                         <button
@@ -802,8 +969,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   {!isEditingWebhookUrl ? (
                     <div className="p-3 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl text-xs font-mono text-[#5C5752] break-all select-all flex items-center justify-between gap-2">
                       <span className="truncate">{sheetsWebhookService.getWebhookUrl()}</span>
-                      <span className="text-[10px] font-sans font-semibold bg-[#E5F7EB] text-[#1E7E34] px-2 py-0.5 rounded-full shrink-0">
-                        Active
+                      <span className="text-[10px] font-sans font-semibold bg-[#FAF0EB] text-[#8A563D] px-2 py-0.5 rounded-full shrink-0">
+                        Current
                       </span>
                     </div>
                   ) : (
@@ -819,17 +986,72 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                         onClick={handleSaveWebhookUrl}
                         className="px-4 py-2 bg-[#8A563D] text-white font-semibold text-xs rounded-xl"
                       >
-                        Save
+                        Save URL
                       </button>
                     </div>
                   )}
                 </div>
 
+                {/* Setup Guide & Code Snippet Box (Collapsible) */}
+                {showScriptDetails && (
+                  <div className="p-4 bg-[#FAF8F5] border border-[#DDD6CE] rounded-xl space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Code2 className="w-4 h-4 text-[#8A563D]" />
+                        <h4 className="font-bold text-xs text-[#1E1D1B]">
+                          Google Apps Script (Code.gs) for your Google Sheet
+                        </h4>
+                      </div>
+                      <button
+                        onClick={handleCopyScript}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-lg shadow-xs cursor-pointer"
+                      >
+                        {copiedScript ? (
+                          <>
+                            <Check className="w-3 h-3" />
+                            <span>Copied Code.gs!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy Code.gs</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="text-xs text-[#5C5752] space-y-1.5">
+                      <p className="font-semibold text-[#1E1D1B]">Quick 4-Step Setup:</p>
+                      <ol className="list-decimal list-inside space-y-1 pl-1">
+                        <li>
+                          Open your target Google Sheet &rarr; click <strong>Extensions &gt; Apps Script</strong>.
+                        </li>
+                        <li>
+                          Paste the script code below into <code>Code.gs</code> and click <strong>Save (💾)</strong>.
+                        </li>
+                        <li>
+                          Click <strong>Deploy &gt; New deployment</strong> (or <em>Manage deployments &gt; Edit</em>) &rarr; select type <strong>Web app</strong>.
+                        </li>
+                        <li>
+                          Set <strong>Execute as:</strong> <code>Me</code> and <strong>Who has access:</strong> <code>Anyone</code> (<strong>Essential</strong>, so public leads aren't blocked by 401).
+                        </li>
+                        <li>
+                          Copy the generated Web App URL and paste it into the <strong>Edit URL</strong> field above.
+                        </li>
+                      </ol>
+                    </div>
+
+                    <pre className="bg-[#1E1D1B] text-[#E8C2AF] text-[11px] p-3 rounded-lg overflow-x-auto max-h-[220px] font-mono leading-relaxed select-all">
+                      {APPS_SCRIPT_TEMPLATE}
+                    </pre>
+                  </div>
+                )}
+
                 {/* Important deployment tip banner */}
                 <div className="p-3 bg-[#FFF9E6] border border-[#FFE082] rounded-xl text-xs text-[#7A5B00] flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 text-[#C47F00] shrink-0 mt-0.5" />
                   <div className="leading-relaxed">
-                    <strong>Apps Script Access Setting:</strong> Ensure in your Google Apps Script deployment under <em>"Who has access"</em>, you have selected <strong>"Anyone"</strong>. This permits public inquiries from clients without asking them to sign into a Google account.
+                    <strong>Why did an enquiry fail to reach Google Sheets?</strong> When Google Apps Script responds with <em>HTTP 401 ("Sorry, unable to open the file at present")</em>, it means the Web App deployment permission is set to private instead of <strong>"Who has access: Anyone"</strong>. Check the setup guide above to set access to <strong>"Anyone"</strong>. All inquiries are safely stored in your browser audit log below so no leads are ever lost!
                   </div>
                 </div>
               </div>
@@ -842,11 +1064,22 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                       Recent Submissions & Lead Audit Log
                     </h4>
                     <p className="text-xs text-[#6E6A65]">
-                      Local mirror of inquiries dispatched to your Google Sheet ({storedLeads.length} total recorded)
+                      Local mirror of inquiries ({storedLeads.length} total recorded)
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {storedLeads.some((l) => l.status === 'local_only') && (
+                      <button
+                        onClick={handleRetryAllPending}
+                        disabled={isRetryingAll}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-lg transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                      >
+                        <RefreshCw className={`w-3 h-3 ${isRetryingAll ? 'animate-spin' : ''}`} />
+                        <span>{isRetryingAll ? 'Syncing...' : 'Sync All Pending to Sheet'}</span>
+                      </button>
+                    )}
+
                     <select
                       value={leadsFilter}
                       onChange={(e) => setLeadsFilter(e.target.value)}
@@ -862,7 +1095,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                     {storedLeads.length > 0 && (
                       <button
                         onClick={() => {
-                          if (confirm('Clear local history log? Leads in Google Sheet are unaffected.')) {
+                          if (confirm('Clear local history log? Leads already in Google Sheet are unaffected.')) {
                             sheetsWebhookService.clearStoredLeads();
                           }
                         }}
@@ -874,18 +1107,40 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   </div>
                 </div>
 
+                {/* Pending leads notice banner */}
+                {storedLeads.some((l) => l.status === 'local_only') && (
+                  <div className="p-3 bg-[#FFF5F0] border border-[#F4D2C3] rounded-xl text-xs text-[#8A563D] flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-[#8A563D]" />
+                      <span>
+                        <strong>
+                          {storedLeads.filter((l) => l.status === 'local_only').length} lead(s)
+                        </strong>{' '}
+                        are preserved in this browser log awaiting synchronization with Google Sheets.
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleRetryAllPending}
+                      disabled={isRetryingAll}
+                      className="font-bold underline hover:text-[#5C3928] whitespace-nowrap cursor-pointer"
+                    >
+                      Retry Sync Now
+                    </button>
+                  </div>
+                )}
+
                 {storedLeads.length === 0 ? (
                   <div className="py-12 text-center text-[#7A7570] space-y-2">
                     <FileSpreadsheet className="w-10 h-10 mx-auto text-[#D8D1C7]" />
                     <p className="text-sm font-semibold text-[#3C3A36]">No inquiries submitted yet</p>
                     <p className="text-xs text-[#8C8781] max-w-sm mx-auto">
-                      Whenever visitors fill in the Get a Quote modal, Contact Form, Careers Application, or Brochure download, their details will stream directly to your connected Google Sheet.
+                      Whenever visitors submit an enquiry on the website, their details stream to your connected Google Sheet and remain permanently backed up in this local audit log.
                     </p>
                     <button
                       onClick={handleSendTestLead}
                       className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FAF8F5] border border-[#DDD6CE] hover:bg-[#F2ECE6] text-[#1E1D1B] text-xs font-semibold rounded-lg cursor-pointer"
                     >
-                      <Send className="w-3 h-3 text-[#1E7E34]" />
+                      <Send className="w-3 h-3 text-[#8A563D]" />
                       <span>Send a Sample Test Lead</span>
                     </button>
                   </div>
@@ -904,7 +1159,11 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                       .map((lead) => (
                         <div
                           key={lead.id}
-                          className="p-4 rounded-xl border border-[#EDE7E1] bg-[#FAF8F5] hover:bg-[#F7F3EE] transition-colors space-y-2"
+                          className={`p-4 rounded-xl border transition-colors space-y-2 ${
+                            lead.status === 'synced'
+                              ? 'border-[#EDE7E1] bg-[#FAF8F5] hover:bg-[#F7F3EE]'
+                              : 'border-[#F4D2C3] bg-[#FFFBF8] hover:bg-[#FFF6F0]'
+                          }`}
                         >
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
@@ -915,10 +1174,32 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                             </div>
                             <div className="flex items-center gap-2 text-xs text-[#7A7570]">
                               <span>{lead.timestamp}</span>
-                              <span className="inline-flex items-center gap-1 text-[10px] text-[#1E7E34] bg-[#E5F7EB] px-2 py-0.5 rounded-full font-medium">
-                                <CheckCircle2 className="w-3 h-3" />
-                                Synced to Sheet
-                              </span>
+                              {lead.status === 'synced' ? (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-[#1E7E34] bg-[#E5F7EB] px-2 py-0.5 rounded-full font-medium">
+                                  <CheckCircle2 className="w-3 h-3" />
+                                  Synced to Sheet
+                                </span>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="inline-flex items-center gap-1 text-[10px] text-[#8A563D] bg-[#FAF0EB] px-2 py-0.5 rounded-full font-medium"
+                                    title={lead.errorDetails || 'Pending Sync'}
+                                  >
+                                    <AlertCircle className="w-3 h-3" />
+                                    Saved Locally (Pending Sync)
+                                  </span>
+                                  <button
+                                    onClick={() => handleRetryLead(lead.id)}
+                                    disabled={isRetryingId === lead.id}
+                                    className="text-[11px] font-bold text-[#8A563D] hover:underline flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                                  >
+                                    <RefreshCw
+                                      className={`w-3 h-3 ${isRetryingId === lead.id ? 'animate-spin' : ''}`}
+                                    />
+                                    <span>Retry</span>
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
 
@@ -950,6 +1231,15 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                           {lead.message && (
                             <div className="text-xs text-[#3C3A36] italic bg-white p-2.5 rounded-lg border border-[#EDE7E1]">
                               "{lead.message}"
+                            </div>
+                          )}
+
+                          {lead.status === 'local_only' && lead.errorDetails && (
+                            <div className="text-[11px] text-[#8A563D] bg-[#FFF5F0] p-2 rounded-lg border border-[#F4D2C3] flex items-start gap-1.5">
+                              <AlertCircle className="w-3.5 h-3.5 text-[#8A563D] shrink-0 mt-0.5" />
+                              <div className="leading-tight">
+                                <strong>Status Details:</strong> {lead.errorDetails}
+                              </div>
                             </div>
                           )}
                         </div>

@@ -15,6 +15,13 @@ export interface StoredLeadRecord extends LeadSubmissionPayload {
   errorDetails?: string;
 }
 
+export interface WebhookTestResult {
+  success: boolean;
+  statusCode?: number;
+  message?: string;
+  error?: string;
+}
+
 const DEFAULT_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
 
@@ -65,6 +72,42 @@ class SheetsWebhookService {
     this.notify();
   }
 
+  public async testWebhookConnection(customUrl?: string): Promise<WebhookTestResult> {
+    const targetUrl = customUrl || this.getWebhookUrl();
+    try {
+      const resp = await fetch('/api/sheets/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhookUrl: targetUrl }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        return data;
+      }
+    } catch {
+      // Fallback if backend API is unreachable
+    }
+
+    // Direct browser attempt
+    try {
+      await fetch(targetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ test: true }),
+      });
+      return {
+        success: true,
+        message: 'Dispatched via browser no-cors channel.',
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Connection failure',
+      };
+    }
+  }
+
   public async submitLead(payload: LeadSubmissionPayload): Promise<{ success: boolean; error?: string }> {
     const webhookUrl = this.getWebhookUrl();
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -86,40 +129,65 @@ class SheetsWebhookService {
     let sendSuccess = true;
     let errorMessage: string | undefined;
 
+    // 1. Try via server proxy endpoint for verified delivery and accurate status
     try {
-      // Send directly to Google Apps Script Web App
-      // Using Content-Type: text/plain;charset=utf-8 & mode: 'no-cors' allows 
-      // cross-origin POST requests to Google Apps Script without preflight rejection,
-      // while delivering the raw JSON string into e.postData.contents
-      await fetch(webhookUrl, {
+      const apiResp = await fetch('/api/lead/submit', {
         method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          formType: leadRecord.formType,
-          name: leadRecord.name,
-          phone: leadRecord.phone,
-          email: leadRecord.email,
-          projectOrRole: leadRecord.projectOrRole,
-          details: leadRecord.details,
-          message: leadRecord.message,
+          ...payload,
+          webhookUrl,
         }),
       });
-    } catch (err: any) {
-      console.warn('Webhook transmission encountered an issue:', err);
-      sendSuccess = false;
-      errorMessage = err?.message || 'Network issue during submission';
-      leadRecord.status = 'local_only';
-      leadRecord.errorDetails = errorMessage;
+
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        if (data.success) {
+          sendSuccess = true;
+          leadRecord.status = 'synced';
+        } else {
+          sendSuccess = false;
+          errorMessage = data.error || 'Google Sheets Webhook rejected transmission';
+          leadRecord.status = 'local_only';
+          leadRecord.errorDetails = errorMessage;
+        }
+      } else {
+        throw new Error(`Server returned HTTP ${apiResp.status}`);
+      }
+    } catch (proxyErr: any) {
+      // 2. Direct browser fallback using no-cors
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({
+            formType: leadRecord.formType,
+            name: leadRecord.name,
+            phone: leadRecord.phone,
+            email: leadRecord.email,
+            projectOrRole: leadRecord.projectOrRole,
+            details: leadRecord.details,
+            message: leadRecord.message,
+          }),
+        });
+        sendSuccess = true;
+        leadRecord.status = 'synced';
+      } catch (err: any) {
+        console.warn('Direct webhook transmission encountered an issue:', err);
+        sendSuccess = false;
+        errorMessage = err?.message || 'Network issue during submission';
+        leadRecord.status = 'local_only';
+        leadRecord.errorDetails = errorMessage;
+      }
     }
 
-    // Always preserve lead record in browser storage for safety and auditability
+    // Always preserve lead record in local storage for safety and auditability
     try {
       const currentLeads = this.getStoredLeads();
       currentLeads.unshift(leadRecord);
-      // Keep up to 200 recent leads
       if (currentLeads.length > 200) currentLeads.length = 200;
       localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(currentLeads));
       this.notify();
@@ -128,6 +196,84 @@ class SheetsWebhookService {
     }
 
     return { success: sendSuccess, error: errorMessage };
+  }
+
+  public async retryLead(leadId: string): Promise<{ success: boolean; error?: string }> {
+    const leads = this.getStoredLeads();
+    const targetIndex = leads.findIndex((l) => l.id === leadId);
+    if (targetIndex === -1) return { success: false, error: 'Lead not found' };
+
+    const lead = leads[targetIndex];
+    const webhookUrl = this.getWebhookUrl();
+
+    try {
+      const apiResp = await fetch('/api/lead/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formType: lead.formType,
+          name: lead.name,
+          phone: lead.phone,
+          email: lead.email,
+          projectOrRole: lead.projectOrRole,
+          details: lead.details,
+          message: lead.message,
+          webhookUrl,
+        }),
+      });
+
+      if (apiResp.ok) {
+        const data = await apiResp.json();
+        if (data.success) {
+          leads[targetIndex].status = 'synced';
+          leads[targetIndex].errorDetails = undefined;
+          localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+          this.notify();
+          return { success: true };
+        } else {
+          leads[targetIndex].errorDetails = data.error;
+          localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+          this.notify();
+          return { success: false, error: data.error };
+        }
+      }
+    } catch (err: any) {
+      // Direct browser fallback
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(lead),
+        });
+        leads[targetIndex].status = 'synced';
+        leads[targetIndex].errorDetails = undefined;
+        localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+        this.notify();
+        return { success: true };
+      } catch (directErr: any) {
+        return { success: false, error: directErr?.message };
+      }
+    }
+
+    return { success: false, error: 'Transmission failed' };
+  }
+
+  public async retryAllPending(): Promise<{ count: number; failed: number }> {
+    const leads = this.getStoredLeads();
+    let count = 0;
+    let failed = 0;
+    for (const lead of leads) {
+      if (lead.status === 'local_only') {
+        const res = await this.retryLead(lead.id);
+        if (res.success) {
+          count++;
+        } else {
+          failed++;
+        }
+      }
+    }
+    return { count, failed };
   }
 
   public subscribe(listener: () => void): () => void {
@@ -149,3 +295,4 @@ class SheetsWebhookService {
 }
 
 export const sheetsWebhookService = new SheetsWebhookService();
+
