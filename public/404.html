@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citadel Group Real Estate</title>
+    <link rel="icon" type="image/jpeg" href="citadel-logo.jpeg" />
+    <script>
+      // Single Page Application routing for GitHub Pages
+      // Detects project repository subpath and redirects to root preserving path and query
+      (function () {
+        var location = window.location;
+        var pathname = location.pathname;
+        var pathSegments = pathname.split('/').filter(Boolean);
+        
+        // If hosted on GitHub Pages user site or project site (e.g. /Citadel/...)
+        var repoName = pathSegments.length > 0 ? pathSegments[0] : '';
+        var isSubpath = repoName && !repoName.includes('.');
+        var basePath = isSubpath ? '/' + repoName + '/' : '/';
+
+        var query = location.search ? location.search : '';
+        var hash = location.hash ? location.hash : '';
+
+        // Immediate redirect to base path
+        location.replace(basePath + query + hash);
+      })();
+    </script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #F8F6F3;
+        color: #1E1D1B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        text-align: center;
+      }
+      .card {
+        padding: 2rem;
+      }
+      a {
+        color: #B87333;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Redirecting to Citadel Group...</h2>
+      <p>If you are not redirected automatically, <a href="./">click here to enter</a>.</p>
+    </div>
+  </body>
+</html>
