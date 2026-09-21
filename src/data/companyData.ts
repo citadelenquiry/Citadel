@@ -6,6 +6,7 @@ export interface TeamMember {
   qualifications: string;
   initials: string;
   responsibilities: string[];
+  photo?: string;
 }
 
 export interface AssociatePartner {
@@ -60,6 +61,7 @@ export const companyProfileData = {
       experienceYears: 22,
       qualifications: 'Bachelor of Engineering (B.E.)',
       initials: 'NM',
+      photo: '/partners/nikhil-mahajani.jpeg',
       responsibilities: [
         'Technical guidance and overall project management',
         'Construction & time management',
@@ -76,6 +78,7 @@ export const companyProfileData = {
       experienceYears: 11,
       qualifications: 'Partner',
       initials: 'SM',
+      photo: '/partners/suvarna-mahajani.jpeg',
       responsibilities: [
         'Understand design requirements from flat holders',
         'Suggest changes, additions, and alterations',
@@ -91,6 +94,7 @@ export const companyProfileData = {
       experienceYears: 30,
       qualifications: 'Bachelor of Engineering (B.E.)',
       initials: 'RS',
+      photo: '/partners/rahul-shah.jpeg',
       responsibilities: [
         'Project development with a focus on quality',
         'Manage public relations and stakeholder relationships',
@@ -106,6 +110,7 @@ export const companyProfileData = {
       experienceYears: 12,
       qualifications: 'B.Com, MBA (Marketing)',
       initials: 'CC',
+      photo: '/partners/chintan-chheda.png',
       responsibilities: [
         'Sales and Business Development',
         'Understanding Client Budgets, Expectations and Project Objectives',

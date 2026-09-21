@@ -262,8 +262,8 @@ const rawProjectsData: Project[] = [
     detailedDescription:
       'Under active construction by Citadel Group. The development replaces an aged cooperative housing society with an earthquake-resistant, amenity-rich luxury residential building offering upgraded carpet areas to existing and new home owners.',
     mapEmbedQuery: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=25+Late+Vishwas+Balaji+Walavekar+Path+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
+    mapAddressDisplay: '25, Late Vishwas Balaji Walavekar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=25%2C+Late+Vishwas+Balaji+Walavekar+Path%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-fr1',
@@ -462,8 +462,8 @@ const rawProjectsData: Project[] = [
     detailedDescription:
       'Crafted with single-unit per floor exclusivity, Manisha CHS provides unparalleled privacy, four-sided cross ventilation, and custom interior flexibility. Features earthquake-resistant RCC design, private elevator access directly into apartment lobbies, separate dry utilities, and dedicated pooja sanctums.',
     mapEmbedQuery: '16, Shiv Darshan Rd, Chhatrapti Sambhaji Housing Society, Sant Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: '16, Shiv Darshan Rd, Sant Nagar, Parvati Paytha, Pune – 411009',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=16+Shiv+Darshan+Rd+Chhatrapti+Sambhaji+Housing+Society+Sant+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
+    mapAddressDisplay: '16, Shiv Darshan Rd, Chhatrapti Sambhaji Housing Society, Sant Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=16%2C+Shiv+Darshan+Rd%2C+Chhatrapti+Sambhaji+Housing+Society%2C+Sant+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-m1',
@@ -603,7 +603,7 @@ const rawProjectsData: Project[] = [
     category: 'Commercial',
     status: 'Upcoming',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'FVJ3+VP9, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    fullAddress: 'FVJ3+VP9 Pune, Maharashtra',
     areaSqFt: '2,05,000 sq. ft.',
     floors: '2B + G + 16 Floors',
     unitsCount: 'Retail Showrooms + Corporate Offices + Luxury Flats',
@@ -617,9 +617,9 @@ const rawProjectsData: Project[] = [
       'Citadel Stellar is an upcoming mega mixed-use development spanning 2,05,000 sq. ft. in Walvekar Nagar, Pune. Undertaken as a strategic Joint Venture with Landowners.',
     detailedDescription:
       'Combining Grade-A commercial showrooms on lower floors with signature residential suites on upper floors. Features double-height glass lobbies, high-speed capsule lifts, and automated parking.',
-    mapEmbedQuery: 'FVJ3+VP9, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: 'Walvekar Nagar, Parvati Paytha, Pune – 411009 (Plus Code: FVJ3+VP9)',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=FVJ3%2BVP9+Pune+Maharashtra',
+    mapEmbedQuery: 'FVJ3+VP9 Pune, Maharashtra',
+    mapAddressDisplay: 'FVJ3+VP9 Pune, Maharashtra',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=FVJ3%2BVP9+Pune%2C+Maharashtra',
     liveUpdates: [
       {
         id: 'u-cs1',
@@ -699,7 +699,7 @@ const rawProjectsData: Project[] = [
     category: 'Residential',
     status: 'Upcoming',
     location: 'Prabhat Road, Pune',
-    fullAddress: 'GR7Q+PQ7, Lane 8, Prabhat Road, Erandwane, Pune, Maharashtra 411004',
+    fullAddress: 'GR7Q+PQ7 Pune, Maharashtra',
     areaSqFt: '60,000 sq. ft.',
     floors: 'P + 11 Floors',
     unitsCount: 'Super Luxury 3 & 4.5 BHK Master Suites',
@@ -713,9 +713,9 @@ const rawProjectsData: Project[] = [
       '96 Prabhat is a 60,000 sq. ft. signature luxury residential address situated in the ultra-prestigious Prabhat Road, Lane 8. A Joint Venture with landowner offering supreme privacy and classic Pune elegance.',
     detailedDescription:
       'Designed for Pune’s discerning elite who value heritage, tranquility, and refined architecture. Only two private apartments per floor with private elevators, expansive viewing terraces, and smart home integration.',
-    mapEmbedQuery: 'GR7Q+PQ7, Lane 8, Prabhat Road, Erandwane, Pune, Maharashtra 411004',
-    mapAddressDisplay: 'Lane 8, Prabhat Road, Erandwane, Pune – 411004 (Plus Code: GR7Q+PQ7)',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=GR7Q%2BPQ7+Pune+Maharashtra',
+    mapEmbedQuery: 'GR7Q+PQ7 Pune, Maharashtra',
+    mapAddressDisplay: 'GR7Q+PQ7 Pune, Maharashtra',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=GR7Q%2BPQ7+Pune%2C+Maharashtra',
     liveUpdates: [
       {
         id: 'u-96p1',

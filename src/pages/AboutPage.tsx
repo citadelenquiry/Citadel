@@ -11,6 +11,7 @@ import {
   Compass,
 } from 'lucide-react';
 import { companyProfileData } from '../data/companyData';
+import { getAssetUrl } from '../utils/assets';
 
 interface AboutPageProps {
   setCurrentPage: (page: Page) => void;
@@ -166,8 +167,20 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               >
                 <div className="space-y-5">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-[#FAF1EC] border-2 border-[#E8C2AF] text-[#8A563D] font-editorial text-2xl font-bold flex items-center justify-center shrink-0">
-                      {partner.initials}
+                    <div className="relative w-18 h-22 sm:w-20 sm:h-24 rounded-2xl overflow-hidden bg-[#FAF1EC] border-2 border-[#E8C2AF] text-[#8A563D] shrink-0 shadow-xs flex items-center justify-center">
+                      <span className="font-editorial text-2xl font-bold select-none">
+                        {partner.initials}
+                      </span>
+                      {partner.photo && (
+                        <img
+                          src={getAssetUrl(partner.photo)}
+                          alt={partner.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      )}
                     </div>
                     <div>
                       <h3 className="font-editorial text-2xl font-bold text-[#1E1D1B]">
