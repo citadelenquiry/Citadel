@@ -212,36 +212,9 @@ function adminApiPlugin(): Plugin {
   };
 }
 
-function getBaseUrl(): string {
-  // 1. If explicit VITE_BASE_PATH is provided and non-empty
-  if (process.env.VITE_BASE_PATH && process.env.VITE_BASE_PATH.trim() !== '') {
-    const custom = process.env.VITE_BASE_PATH.trim();
-    // If VITE_BASE_PATH is '/' but running in GitHub Actions on a project repo, prefer repo subpath
-    if (custom === '/' && process.env.GITHUB_REPOSITORY) {
-      const repo = process.env.GITHUB_REPOSITORY.split('/')[1];
-      if (repo && !repo.toLowerCase().endsWith('.github.io')) {
-        return `/${repo}/`;
-      }
-    }
-    return custom.endsWith('/') ? custom : `${custom}/`;
-  }
-
-  // 2. If running inside GitHub Actions, automatically resolve repo subpath (e.g. /Citadel/)
-  if (process.env.GITHUB_REPOSITORY) {
-    const repo = process.env.GITHUB_REPOSITORY.split('/')[1];
-    if (repo && !repo.toLowerCase().endsWith('.github.io')) {
-      return `/${repo}/`;
-    }
-    return '/';
-  }
-
-  // 3. Fallback for AI Studio preview and local dev
-  return './';
-}
-
 export default defineConfig(() => {
   return {
-    base: getBaseUrl(),
+    base: process.env.VITE_BASE_PATH || './',
     plugins: [react(), tailwindcss(), adminApiPlugin()],
     resolve: {
       alias: {
