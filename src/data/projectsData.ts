@@ -13,7 +13,7 @@ const rawProjectsData: Project[] = [
     category: 'Residential',
     status: 'Ongoing',
     location: 'Law College Road, Pune',
-    fullAddress: 'Janki Apartment, Near Abhinav School, Law College Road, Pune, Maharashtra 411038',
+    fullAddress: 'Law College Road, Near Abhinav School, Janki Apartment, Pune, Maharashtra 411038',
     areaSqFt: '2, 3 & 4 BHK Luxury Residences',
     floors: 'Multi-Storey Residential Tower',
     unitsCount: 'Premium 2, 3 & 4 BHK Residences',
@@ -29,9 +29,9 @@ const rawProjectsData: Project[] = [
       'Janki Shreyas CHS is a premium residential development by Citadel Group, designed for families and professionals seeking refined living without compromise. Intelligent layouts, superior materials and meticulous detailing ensure comfort, privacy and long term value.',
     detailedDescription:
       'Luxury Homes Crafted for Elevated Living — An address that brings Comfort, Connectivity and Class together. Built to Last. Built with Integrity. At Citadel Group, quality is non-negotiable.',
-    mapEmbedQuery: 'Janki Apartment, Law College Road, Near Abhinav School, Pune, Maharashtra 411038',
-    mapAddressDisplay: 'Law College Road, Near Abhinav School, Pune – 411038',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Janki+Apartment+Near+Abhinav+School+Law+College+Road+Pune+Maharashtra+411038',
+    mapEmbedQuery: 'Law College Road, Near Abhinav School, Janki Apartment, Pune, Maharashtra 411038',
+    mapAddressDisplay: 'Law College Road, Near Abhinav School, Janki Apartment, Pune – 411038',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Law+College+Road%2C+Near+Abhinav+School%2C+Janki+Apartment%2C+Pune%2C+Maharashtra+411038',
     liveUpdates: [],
     floorPlans: [
       {
@@ -830,7 +830,7 @@ const rawProjectsData: Project[] = [
     category: 'Redevelopment',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    fullAddress: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '70,000 sq. ft.',
     floors: 'P + 14 Floors',
     unitsCount: '52 Delivered Premium Residences',
@@ -844,9 +844,9 @@ const rawProjectsData: Project[] = [
       'Jai Rajkiran CHS is a 70,000 sq. ft., P+14 storey completed society redevelopment project delivered by Citadel Group in Walvekar Nagar, Pune. 100% occupied with complete Occupancy Certificate.',
     detailedDescription:
       'Successfully revitalized an older society into an iconic 14-storey tower with earthquake-resistant structure, solar water heating, puzzle car parking, and beautiful landscaped terraces.',
-    mapEmbedQuery: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: '43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=43+Sri+Ashok+Pawar+Path+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
+    mapEmbedQuery: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Jai+rajkiran+Society%2C+43%2C+Sri+Ashok+Pawar+Path%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-jr1',
@@ -946,12 +946,12 @@ const rawProjectsData: Project[] = [
   {
     id: 'walvekar-commercial',
     slug: 'walvekar-commercial',
-    title: 'Walvekar Commercial',
+    title: 'Walvekar Commercials',
     tagline: 'P+5 Grade-A Delivered Commercial Centre at Walvekar Nagar',
     category: 'Commercial',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    fullAddress: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '20,000 sq. ft.',
     floors: 'P + 5 Floors',
     unitsCount: 'Retail Showrooms & Professional Corporate Offices',
@@ -965,9 +965,9 @@ const rawProjectsData: Project[] = [
       'Walvekar Commercial is a 20,000 sq. ft., P+5 storey boutique commercial complex in Walvekar Nagar, Pune. Delivered as a Joint Venture project housing bustling retail shops and offices.',
     detailedDescription:
       'Features high street glass retail frontage, modern elevator systems, and dedicated commercial car parking for corporate occupants and visiting clientele.',
-    mapEmbedQuery: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: 'FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune – 411009',
-    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=FVJ4%2BWQX+Vasant+Baug+Walvekar+Nagar+Parvati+Paytha+Pune+Maharashtra+411009',
+    mapEmbedQuery: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Walvekar+Commercials%2C+FVJ4%2BWQX%2C+Vasant+Baug%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-wc1',
@@ -1034,9 +1034,9 @@ const rawProjectsData: Project[] = [
       'Anandshree CHS is a 20,000 sq. ft., P+5 storey society redevelopment successfully completed and delivered by Citadel Group in Walvekar Nagar, Pune.',
     detailedDescription:
       'Delivered with full municipal approvals, providing modern amenities, quality elevation, and enhanced carpet area to original society flat holders.',
-    mapEmbedQuery: 'Plot no 40, Anand Shree HSG Society, 40, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: 'Plot no 40, Anand Shree HSG Society, Walvekar Nagar, Parvati Paytha, Pune – 411009',
-    googleMapsUrl: 'https://maps.app.goo.gl/Ki3JsPgHGJHGVD6b8?g_st=aw',
+    mapEmbedQuery: 'Plot no 40, FVM4+6HJ, Anand Shree HSG Society, 40, Sri Ashok Pawar Path, Darshan - II Co-operative HSG Society, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    mapAddressDisplay: 'Plot no 40, FVM4+6HJ, Anand Shree HSG Society, 40, Sri Ashok Pawar Path, Darshan - II Co-operative HSG Society, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Plot+no+40%2C+FVM4%2B6HJ%2C+Anand+Shree+HSG+Society%2C+40%2C+Sri+Ashok+Pawar+Path%2C+Darshan+-+II+Co-operative+HSG+Society%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
         id: 'u-as1',
