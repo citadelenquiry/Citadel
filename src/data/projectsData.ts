@@ -1026,9 +1026,9 @@ const rawProjectsData: Project[] = [
     floors: 'P + 5 Floors',
     unitsCount: '16 Completed Family Residences',
     reraNumber: '',
-    heroImage: '/anandshree-elevation.jpg',
+    heroImage: '/anandshree-elevation.jpeg',
     gallery: [
-      '/anandshree-elevation.jpg',
+      '/anandshree-elevation.jpeg',
     ],
     overviewText:
       'Anandshree CHS is a 20,000 sq. ft., P+5 storey society redevelopment successfully completed and delivered by Citadel Group in Walvekar Nagar, Pune.',
