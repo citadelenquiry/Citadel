@@ -107,19 +107,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   };
   const [brochureModalMode, setBrochureModalMode] = useState<'brochure' | 'floorplans'>('brochure');
   const [liveUpdateSlideIndex, setLiveUpdateSlideIndex] = useState(0);
-  const [isUnlocked, setIsUnlocked] = useState(true);
-
-  // Check lead unlock state
-  useEffect(() => {
-    try {
-      const unlocked = sessionStorage.getItem('citadel_lead_unlocked') === 'true';
-      if (unlocked) {
-        setIsUnlocked(true);
-      }
-    } catch {
-      // safe fallback
-    }
-  }, []);
+  // Floor plans are blurred by default on every fresh site load until enquiry form is filled
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
   // Auto-advance slideshow on Hub view
   useEffect(() => {
@@ -132,77 +121,41 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
   const handleUnlockSession = () => {
     setIsUnlocked(true);
-    try {
-      sessionStorage.setItem('citadel_lead_unlocked', 'true');
-    } catch {
-      // ignore
-    }
   };
 
-  const handleBrochureClick = (projectToDownload: Project = currentProject) => {
+  const handleBrochureClick = async (projectToDownload: Project = currentProject) => {
     if (isUnlocked) {
       try {
-        const brochureContent = `=====================================================
-CITADEL REAL ESTATE & REDEVELOPMENT
-Official Project Dossier & Floor Plans
-=====================================================
-
-Project Name: ${projectToDownload.title}
-Tagline: ${projectToDownload.tagline}
-Category: ${projectToDownload.category} (${projectToDownload.status})
-Location: ${projectToDownload.location}
-Address: ${projectToDownload.fullAddress}
-Total Area: ${projectToDownload.areaSqFt} | Structure: ${projectToDownload.floors}
-${projectToDownload.reraNumber ? `MahaRERA Registration No: ${projectToDownload.reraNumber}\n` : ''}
------------------------------------------------------
-ARCHITECTURAL OVERVIEW
------------------------------------------------------
-${projectToDownload.overviewText}
-
-${projectToDownload.detailedDescription}
-
------------------------------------------------------
-FLOOR PLANS & CONFIGURATIONS
------------------------------------------------------
-${projectToDownload.floorPlans.map((fp, i) => `
-[Layout ${i + 1}] ${fp.name} (${fp.type})
-• Total / Built-Up Area: ${fp.areaSqFt ? `${fp.areaSqFt} sq. ft.` : 'Available on Request'}
-${fp.carpetAreaSqFt && fp.carpetAreaSqFt !== fp.areaSqFt ? `• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.\n` : ''}• Configuration: ${fp.bedrooms > 0 ? `${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies` : `${fp.type}`}
-• Highlights:
-${fp.highlights.map(h => `  - ${h}`).join('\n')}
-`).join('\n')}
-
------------------------------------------------------
-KEY AMENITIES
------------------------------------------------------
-${projectToDownload.amenities.map(a => `• ${a.title}: ${a.description}`).join('\n')}
-
-${projectToDownload.specifications && projectToDownload.specifications.length > 0 ? `
------------------------------------------------------
-QUALITY STANDARDS & SPECIFICATIONS
------------------------------------------------------
-${projectToDownload.specifications.map(s => `[${s.category}]\n${s.items.map(it => `  • ${it}`).join('\n')}`).join('\n\n')}
-` : ''}
------------------------------------------------------
-ENQUIRY & SALES DESK
------------------------------------------------------
-Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 8779975270
-Email: enquiry@thecitadelgroup.co
-Website: https://thecitadelgroup.co
-=====================================================`;
-
-        const blob = new Blob([brochureContent], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
+        const elevationUrl = projectToDownload.heroImage || projectToDownload.gallery[0];
+        const resp = await fetch(elevationUrl);
+        if (resp.ok) {
+          const blob = await resp.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          const ext = elevationUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg';
+          link.download = `${projectToDownload.slug}-elevation.${ext}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        } else {
+          const link = document.createElement('a');
+          link.href = elevationUrl;
+          link.download = `${projectToDownload.slug}-elevation.jpeg`;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch {
         const link = document.createElement('a');
-        link.href = url;
-        link.download = `${projectToDownload.slug}-official-dossier.txt`;
+        link.href = projectToDownload.heroImage || projectToDownload.gallery[0];
+        link.download = `${projectToDownload.slug}-elevation.jpeg`;
+        link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      } catch {
-        // fallback
       }
     }
     setBrochureModalMode('brochure');

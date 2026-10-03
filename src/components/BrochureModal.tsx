@@ -33,12 +33,6 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
     e.preventDefault();
     setIsDownloading(true);
 
-    try {
-      sessionStorage.setItem('citadel_lead_unlocked', 'true');
-    } catch {
-      // safe fallback
-    }
-
     if (onUnlock) {
       onUnlock();
     }
@@ -51,74 +45,43 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
       email: email,
       projectOrRole: project.title,
       details: `Project Location: ${project.location} | Category: ${project.category} (${project.status})`,
-      message: message || (mode === 'floorplans' ? 'Requested floor plans and layout access' : 'Downloaded project dossier'),
+      message: message || (mode === 'floorplans' ? 'Requested floor plans and layout access' : 'Downloaded project architectural elevation and brochure'),
       notificationEmail: CITADEL_WHATSAPP_CONFIG.notificationEmail,
       whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
     });
 
-    // Trigger instant client-side download of a formatted project dossier summary
+    // Trigger instant client-side download of the official architectural elevation image
     try {
-      const brochureContent = `=====================================================
-CITADEL REAL ESTATE & REDEVELOPMENT
-Official Project Dossier & Floor Plans
-=====================================================
-
-Project Name: ${project.title}
-Tagline: ${project.tagline}
-Category: ${project.category} (${project.status})
-Location: ${project.location}
-Address: ${project.fullAddress}
-Total Area: ${project.areaSqFt} | Structure: ${project.floors}
-
------------------------------------------------------
-ARCHITECTURAL OVERVIEW
------------------------------------------------------
-${project.overviewText}
-
-${project.detailedDescription}
-
------------------------------------------------------
-FLOOR PLANS & CONFIGURATIONS
------------------------------------------------------
-${project.floorPlans.map((fp, i) => `
-[Layout ${i + 1}] ${fp.name} (${fp.type})
-${[2, 3, 4].includes(fp.bedrooms) ? '• Carpet & Built-Up Area: Available on Request' : `• Built-Up Area: ${fp.areaSqFt} sq. ft.\n• Carpet Area: ${fp.carpetAreaSqFt} sq. ft.`}
-• Configuration: ${fp.bedrooms} BHK | ${fp.bathrooms} Baths | ${fp.balconies} Balconies
-• Highlights:
-${fp.highlights.map(h => `  - ${h}`).join('\n')}
-`).join('\n')}
-
------------------------------------------------------
-KEY AMENITIES
------------------------------------------------------
-${project.amenities.map(a => `• ${a.title}: ${a.description}`).join('\n')}
-
-${project.specifications && project.specifications.length > 0 ? `
------------------------------------------------------
-QUALITY STANDARDS & SPECIFICATIONS
------------------------------------------------------
-${project.specifications.map(s => `[${s.category}]\n${s.items.map(it => `  • ${it}`).join('\n')}`).join('\n\n')}
-` : ''}
------------------------------------------------------
-ENQUIRY & SALES DESK
------------------------------------------------------
-Citadel Group, Erandwane, Near Nal Stop Metro Station, Pune
-Phone: +91 8779975270
-Email: enquiry@thecitadelgroup.co
-Website: https://thecitadelgroup.co
-=====================================================`;
-
-      const blob = new Blob([brochureContent], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
+      const elevationUrl = project.heroImage || project.gallery[0];
+      const resp = await fetch(elevationUrl);
+      if (resp.ok) {
+        const blob = await resp.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        const ext = elevationUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg';
+        link.download = `${project.slug}-elevation.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      } else {
+        const link = document.createElement('a');
+        link.href = elevationUrl;
+        link.download = `${project.slug}-elevation.jpeg`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch {
       const link = document.createElement('a');
-      link.href = url;
-      link.download = `${project.slug}-official-dossier.txt`;
+      link.href = project.heroImage || project.gallery[0];
+      link.download = `${project.slug}-elevation.jpeg`;
+      link.target = '_blank';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch {
-      // continue
     }
 
     setTimeout(() => {
@@ -155,18 +118,18 @@ Website: https://thecitadelgroup.co
               <CheckCircle className="w-8 h-8 text-[#A05C3B]" />
             </div>
             <h3 className="font-editorial text-2xl font-bold text-[#1E1D1B]">
-              {mode === 'floorplans' ? 'Floor Plans Unlocked!' : 'E-Brochure Ready!'}
+              {mode === 'floorplans' ? 'Floor Plans Unlocked!' : 'Elevation Image & Dossier Downloaded!'}
             </h3>
             <p className="text-xs text-[#5C5752] leading-relaxed">
-              Thank you, <strong className="text-[#1E1D1B]">{firstName}</strong>! You now have full access to high-resolution floor plans and project specifications for <strong>{project.title}</strong>. A copy has been dispatched to <span className="font-medium text-[#1E1D1B]">{email}</span>.
+              Thank you, <strong className="text-[#1E1D1B]">{firstName}</strong>! The official architectural elevation render for <strong>{project.title}</strong> has been downloaded to your device, and floor plans are now unlocked.
             </p>
             <div className="bg-[#EFE9E2] p-4 rounded-xl text-left text-xs space-y-2 border border-[#E2DBD3]">
               <div className="flex items-center gap-2 text-[#1E1D1B] font-semibold">
                 <FileText className="w-4 h-4 text-[#A05C3B]" />
-                <span>{project.title} - Official Architectural Dossier</span>
+                <span>{project.title} - Architectural Elevation & Plans</span>
               </div>
               <p className="text-[11px] text-[#6B6661]">
-                All floor plans, unit measurements, structural layout diagrams, and specification sheets are now permanently unblurred for your active session.
+                All floor plans, unit measurements, and layout views are now unblurred for your active viewing session.
               </p>
             </div>
 

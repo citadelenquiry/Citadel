@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Citadel Group</title>
+  <script>
+    // GitHub Pages SPA fallback: redirects back to the base project folder
+    var segmentCount = window.location.pathname.split('/').length;
+    var base = './';
+    if (window.location.hostname.endsWith('github.io')) {
+      var parts = window.location.pathname.split('/').filter(Boolean);
+      if (parts.length > 0) {
+        base = '/' + parts[0] + '/';
+      }
+    }
+    window.location.replace(base);
+  </script>
+</head>
+<body style="background:#FAF8F5;color:#1E1D1B;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+  <p>Loading Citadel Group...</p>
+</body>
+</html>

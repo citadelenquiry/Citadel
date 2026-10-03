@@ -214,9 +214,33 @@ function adminApiPlugin(): Plugin {
   };
 }
 
+function getDeploymentBase(): string {
+  // 1. Explicit VITE_BASE_PATH set in build environment
+  if (process.env.VITE_BASE_PATH) {
+    let b = process.env.VITE_BASE_PATH.trim();
+    if (b === './' || b === '.') return './';
+    if (!b.startsWith('/') && !b.startsWith('http')) b = '/' + b;
+    if (!b.endsWith('/')) b = b + '/';
+    return b.replace(/([^:]\/)\/+/g, '$1');
+  }
+
+  // 2. Automatically detected repository name in GitHub Actions
+  if (process.env.GITHUB_REPOSITORY) {
+    const parts = process.env.GITHUB_REPOSITORY.split('/');
+    const repo = parts[1];
+    if (repo && !repo.endsWith('.github.io')) {
+      return `/${repo}/`;
+    }
+    return '/';
+  }
+
+  // 3. Relative base for portable static hosting (Hostinger, Netlify, custom paths)
+  return './';
+}
+
 export default defineConfig(() => {
   return {
-    base: process.env.VITE_BASE_PATH || './',
+    base: getDeploymentBase(),
     plugins: [react(), tailwindcss(), adminApiPlugin()],
     resolve: {
       alias: {
