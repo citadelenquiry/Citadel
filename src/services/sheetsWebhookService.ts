@@ -1,3 +1,5 @@
+import { CITADEL_WHATSAPP_CONFIG, formatEnquiryForWhatsApp, createWhatsAppUrl } from '../utils/whatsapp';
+
 export interface LeadSubmissionPayload {
   formType: string;
   name: string;
@@ -6,6 +8,8 @@ export interface LeadSubmissionPayload {
   projectOrRole?: string;
   details?: string;
   message?: string;
+  notificationEmail?: string;
+  whatsappNumber?: string;
 }
 
 export interface StoredLeadRecord extends LeadSubmissionPayload {
@@ -113,6 +117,9 @@ class SheetsWebhookService {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     const leadId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
+    const notificationEmail = payload.notificationEmail || CITADEL_WHATSAPP_CONFIG.notificationEmail;
+    const whatsappNumber = payload.whatsappNumber || CITADEL_WHATSAPP_CONFIG.rawNumber;
+
     const leadRecord: StoredLeadRecord = {
       id: leadId,
       timestamp,
@@ -123,6 +130,8 @@ class SheetsWebhookService {
       projectOrRole: payload.projectOrRole || '',
       details: payload.details || '',
       message: payload.message || '',
+      notificationEmail,
+      whatsappNumber,
       status: 'synced',
     };
 
@@ -136,6 +145,8 @@ class SheetsWebhookService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...payload,
+          notificationEmail,
+          whatsappNumber,
           webhookUrl,
         }),
       });
@@ -171,6 +182,8 @@ class SheetsWebhookService {
             projectOrRole: leadRecord.projectOrRole,
             details: leadRecord.details,
             message: leadRecord.message,
+            notificationEmail: leadRecord.notificationEmail,
+            whatsappNumber: leadRecord.whatsappNumber,
           }),
         });
         sendSuccess = true;
@@ -274,6 +287,11 @@ class SheetsWebhookService {
       }
     }
     return { count, failed };
+  }
+
+  public getWhatsAppUrlForLead(lead: LeadSubmissionPayload): string {
+    const formatted = formatEnquiryForWhatsApp(lead);
+    return createWhatsAppUrl(formatted, lead.whatsappNumber || CITADEL_WHATSAPP_CONFIG.intlNumber);
   }
 
   public subscribe(listener: () => void): () => void {

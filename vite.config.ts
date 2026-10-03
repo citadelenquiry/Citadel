@@ -148,6 +148,8 @@ function adminApiPlugin(): Plugin {
                   projectOrRole: payload.projectOrRole || '',
                   details: payload.details || '',
                   message: payload.message || '',
+                  notificationEmail: payload.notificationEmail || 'citadelenquiry@gmail.com',
+                  whatsappNumber: payload.whatsappNumber || '7030818966',
                 }),
                 redirect: 'follow',
               });

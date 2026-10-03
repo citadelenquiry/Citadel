@@ -16,6 +16,7 @@ import { CareersPage } from './pages/CareersPage';
 import { EnquiryModal } from './components/EnquiryModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { WhatsAppChatWidget } from './components/WhatsAppChatWidget';
 import { adminAuthService } from './services/adminAuthService';
 
 export default function App() {
@@ -159,6 +160,12 @@ export default function App() {
         isOpen={isAdminPanelOpen}
         onClose={() => setIsAdminPanelOpen(false)}
         onSelectProjectOnSite={handleSelectProject}
+      />
+
+      {/* Floating Interactive WhatsApp Chat Assistant */}
+      <WhatsAppChatWidget
+        onSelectProject={handleSelectProject}
+        onOpenEnquiry={handleOpenEnquiry}
       />
     </div>
   );

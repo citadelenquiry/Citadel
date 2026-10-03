@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Download, FileText, CheckCircle, Mail, Phone, User, MessageSquare, Eye } from 'lucide-react';
+import { X, Download, FileText, CheckCircle, Mail, Phone, User, MessageSquare, Eye, MessageCircle } from 'lucide-react';
 import { Project } from '../types';
 import { sheetsWebhookService } from '../services/sheetsWebhookService';
+import { CITADEL_WHATSAPP_CONFIG } from '../utils/whatsapp';
 
 interface BrochureModalProps {
   isOpen: boolean;
@@ -51,6 +52,8 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
       projectOrRole: project.title,
       details: `Project Location: ${project.location} | Category: ${project.category} (${project.status})`,
       message: message || (mode === 'floorplans' ? 'Requested floor plans and layout access' : 'Downloaded project dossier'),
+      notificationEmail: CITADEL_WHATSAPP_CONFIG.notificationEmail,
+      whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
     });
 
     // Trigger instant client-side download of a formatted project dossier summary
@@ -166,7 +169,33 @@ Website: https://thecitadelgroup.co
                 All floor plans, unit measurements, structural layout diagrams, and specification sheets are now permanently unblurred for your active session.
               </p>
             </div>
-            <div className="space-y-2 pt-2">
+
+            <div className="bg-[#FAF8F5] p-3 rounded-xl border border-[#DDD6CE] text-left text-[11px] text-[#5C5752] space-y-1">
+              <div><strong>Status:</strong> Logged in Google Sheets &amp; Database</div>
+              <div><strong>Email Dispatch:</strong> {CITADEL_WHATSAPP_CONFIG.notificationEmail}</div>
+              <div><strong>Advisory Desk WhatsApp:</strong> {CITADEL_WHATSAPP_CONFIG.displayNumber}</div>
+            </div>
+
+            <div className="space-y-2 pt-1">
+              <a
+                href={sheetsWebhookService.getWhatsAppUrlForLead({
+                  formType: mode === 'floorplans' ? 'Architectural Plans Unlock' : 'Brochure Download',
+                  name: `${firstName} ${lastName}`.trim(),
+                  phone: phone,
+                  email: email,
+                  projectOrRole: project.title,
+                  details: `Project Location: ${project.location} | Category: ${project.category} (${project.status})`,
+                  message: message || (mode === 'floorplans' ? 'Requested floor plans and layout access' : 'Downloaded project dossier'),
+                  whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-full transition-colors cursor-pointer shadow-md"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Send Copy on WhatsApp ({CITADEL_WHATSAPP_CONFIG.displayNumber})</span>
+              </a>
+
               <button
                 onClick={handleReset}
                 className="w-full inline-flex items-center justify-center gap-2 bg-[#1E1D1B] hover:bg-[#33312E] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-full transition-colors cursor-pointer"

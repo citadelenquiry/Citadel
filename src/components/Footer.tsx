@@ -179,8 +179,14 @@ export const Footer: React.FC<FooterProps> = ({
               </p>
               <div className="pt-2">
                 <a
-                  href="mailto:enquiry@thecitadelgroup.co"
+                  href="mailto:citadelenquiry@gmail.com"
                   className="text-xs sm:text-sm text-[#242321] font-medium hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all"
+                >
+                  citadelenquiry@gmail.com
+                </a>
+                <a
+                  href="mailto:enquiry@thecitadelgroup.co"
+                  className="text-xs text-[#6B6661] hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all mt-0.5"
                 >
                   enquiry@thecitadelgroup.co
                 </a>
@@ -188,7 +194,7 @@ export const Footer: React.FC<FooterProps> = ({
                   href="tel:+918779975270"
                   className="text-xs text-[#6B6661] hover:text-[#A05C3B] mt-1 block"
                 >
-                  +91 8779975270
+                  +91 8779975270 (Sales)
                 </a>
               </div>
             </div>
@@ -197,7 +203,7 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Column 3: Socials */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-[#1E1D1B]">
-              SOCIALS
+              SOCIALS & CHAT
             </h4>
             <div className="space-y-2.5">
               <a
@@ -209,12 +215,12 @@ export const Footer: React.FC<FooterProps> = ({
                 Facebook
               </a>
               <a
-                href="https://wa.me/918779975270?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
+                href="https://wa.me/917030818966?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs sm:text-sm text-[#3E3C38] hover:text-[#A05C3B] underline underline-offset-2 block transition-colors"
+                className="text-xs sm:text-sm text-emerald-700 hover:text-emerald-800 font-semibold underline underline-offset-2 block transition-colors"
               >
-                WhatsApp Inquiry
+                WhatsApp (+91 70308 18966)
               </a>
             </div>
           </div>

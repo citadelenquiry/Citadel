@@ -83,6 +83,25 @@ function doPost(e) {
       data.details || "",
       data.message || ""
     ]);
+
+    // Automatically send instant email notification to citadelenquiry@gmail.com
+    try {
+      var notifyEmail = data.notificationEmail || "citadelenquiry@gmail.com";
+      var subject = "🏛️ New Citadel Lead: " + (data.name || "Website Visitor") + " [" + (data.projectOrRole || "General") + "]";
+      var emailBody = "NEW CITADEL GROUP WEBSITE ENQUIRY:\n\n" +
+        "• Name: " + (data.name || "Not provided") + "\n" +
+        "• Phone: " + (data.phone || "Not provided") + "\n" +
+        "• Email: " + (data.email || "Not provided") + "\n" +
+        "• Project / Interest: " + (data.projectOrRole || "General") + "\n" +
+        "• Requirements: " + (data.details || "N/A") + "\n" +
+        "• Message: " + (data.message || "None") + "\n" +
+        "• Form Type: " + (data.formType || "Website Lead") + "\n" +
+        "• Timestamp: " + timestamp + "\n\n" +
+        "Primary WhatsApp Desk: +91 70308 18966";
+      MailApp.sendEmail(notifyEmail, subject, emailBody);
+    } catch (mailError) {
+      // MailApp is optional; ignore if quota exceeded
+    }
     
     return ContentService
       .createTextOutput(JSON.stringify({ status: "success", message: "Lead row added successfully" }))

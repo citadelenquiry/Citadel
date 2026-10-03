@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, ArrowRight, Phone, Mail, User } from 'lucide-react';
+import { X, CheckCircle, ArrowRight, Phone, Mail, User, MessageCircle } from 'lucide-react';
 import { projectsData } from '../data/projectsData';
 import { sheetsWebhookService } from '../services/sheetsWebhookService';
+import { CITADEL_WHATSAPP_CONFIG } from '../utils/whatsapp';
 
 interface EnquiryModalProps {
   isOpen: boolean;
@@ -114,12 +115,33 @@ export const EnquiryModal: React.FC<EnquiryModalProps> = ({
               )} has been received. Our relationship team will connect with you shortly via{' '}
               <span className="font-medium text-[#1E1D1B]">{formData.phone}</span>.
             </p>
-            <div className="bg-[#EFE9E2] rounded-xl p-4 text-xs text-[#5C5752] text-left space-y-1">
-              <div><strong>Reference ID:</strong> CTD-{Math.floor(100000 + Math.random() * 900000)}</div>
-              <div><strong>Direct Desk:</strong> enquiry@thecitadelgroup.co</div>
+            <div className="bg-[#EFE9E2] rounded-xl p-4 text-xs text-[#5C5752] text-left space-y-1.5 border border-[#DDD6CE]">
+              <div><strong>Status:</strong> Logged in Citadel Lead Database & Google Sheets</div>
+              <div><strong>Notification Dispatched To:</strong> {CITADEL_WHATSAPP_CONFIG.notificationEmail}</div>
+              <div><strong>Direct WhatsApp Desk:</strong> {CITADEL_WHATSAPP_CONFIG.displayNumber}</div>
               <div><strong>Office:</strong> Swapnapurti Apts, Prabhat Road Lane 8, Erandwane, Pune</div>
             </div>
-            <div className="pt-3">
+
+            <div className="pt-2 space-y-2">
+              <a
+                href={sheetsWebhookService.getWhatsAppUrlForLead({
+                  formType: 'Get a Quote / Project Consultation',
+                  name: formData.fullName,
+                  phone: formData.phone,
+                  email: formData.email,
+                  projectOrRole: matchedProject ? matchedProject.title : (formData.projectId || 'Citadel Developments'),
+                  details: `Looking For: ${formData.lookingFor}${formData.unitType ? ` | Unit: ${formData.unitType}` : ''}`,
+                  message: formData.message || '',
+                  whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-full shadow-md transition-all cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Send Copy to WhatsApp ({CITADEL_WHATSAPP_CONFIG.displayNumber})</span>
+              </a>
+
               <button
                 id="finish-enquiry-btn"
                 onClick={resetAndClose}

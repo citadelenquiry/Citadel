@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Page } from '../types';
 import { projectsData } from '../data/projectsData';
 import { sheetsWebhookService } from '../services/sheetsWebhookService';
+import { CITADEL_WHATSAPP_CONFIG } from '../utils/whatsapp';
 import {
   MapPin,
   Mail,
@@ -11,6 +12,7 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
+  MessageCircle,
   Building,
   ArrowRight,
   HelpCircle,
@@ -56,6 +58,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
       projectOrRole: formData.project || 'General Inquiry',
       details,
       message: formData.message || '',
+      notificationEmail: CITADEL_WHATSAPP_CONFIG.notificationEmail,
+      whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
     });
 
     setLoading(false);
@@ -138,10 +142,16 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     <div>
                       <strong className="text-[#1E1D1B] block">Email Desk:</strong>
                       <a
-                        href="mailto:enquiry@thecitadelgroup.co"
+                        href="mailto:citadelenquiry@gmail.com"
                         className="text-[#8A563D] hover:underline font-medium break-all block"
                       >
-                        enquiry@thecitadelgroup.co
+                        citadelenquiry@gmail.com (Enquiries)
+                      </a>
+                      <a
+                        href="mailto:enquiry@thecitadelgroup.co"
+                        className="text-xs text-[#6B6661] hover:underline break-all block mt-0.5"
+                      >
+                        enquiry@thecitadelgroup.co (Corporate)
                       </a>
                     </div>
                   </div>
@@ -151,9 +161,18 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       <Phone className="w-4 h-4" />
                     </div>
                     <div>
-                      <strong className="text-[#1E1D1B] block">Telephones:</strong>
+                      <strong className="text-[#1E1D1B] block">Telephones & WhatsApp:</strong>
+                      <a
+                        href={`https://wa.me/${CITADEL_WHATSAPP_CONFIG.intlNumber}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1.5 my-1"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                        <span>WhatsApp: {CITADEL_WHATSAPP_CONFIG.displayNumber}</span>
+                      </a>
                       <a href="tel:+918779975270" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
-                        +91 8779975270 (Direct / Sales)
+                        +91 8779975270 (Sales Call)
                       </a>
                       <a href="tel:+912025440000" className="hover:text-[#8A563D] block text-xs text-[#7A7570]">
                         +91 (020) 2544-0000 (Board Desk)
@@ -244,10 +263,36 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     <p className="text-xs text-[#7A7570]">
                       Our sales advisor will call you shortly at <span className="font-bold text-[#1E1D1B]">{formData.phone}</span>.
                     </p>
-                    <div className="pt-4">
+
+                    <div className="bg-[#FAF8F5] rounded-xl p-4 text-xs text-[#5C5752] text-left space-y-1.5 border border-[#DDD6CE] max-w-md mx-auto">
+                      <div><strong>Status:</strong> Saved to Citadel Google Sheet &amp; Database</div>
+                      <div><strong>Email Notification:</strong> {CITADEL_WHATSAPP_CONFIG.notificationEmail}</div>
+                      <div><strong>Direct WhatsApp Line:</strong> {CITADEL_WHATSAPP_CONFIG.displayNumber}</div>
+                    </div>
+
+                    <div className="pt-2 space-y-2.5 max-w-md mx-auto">
+                      <a
+                        href={sheetsWebhookService.getWhatsAppUrlForLead({
+                          formType: `Contact Page - ${formData.inquiryType || 'General Inquiry'}`,
+                          name: formData.name,
+                          phone: formData.phone,
+                          email: formData.email,
+                          projectOrRole: formData.project || 'General Inquiry',
+                          details: `Looking For: ${formData.lookingFor}${formData.preferredDate ? ` | Preferred Date: ${formData.preferredDate}` : ''}`,
+                          message: formData.message || '',
+                          whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-full shadow-md transition-all cursor-pointer"
+                      >
+                        <MessageCircle className="w-4 h-4 fill-current" />
+                        <span>Send Copy on WhatsApp ({CITADEL_WHATSAPP_CONFIG.displayNumber})</span>
+                      </a>
+
                       <button
                         onClick={() => setSubmitted(false)}
-                        className="bg-[#E8C2AF] hover:bg-[#DFB29D] text-[#1E1D1B] font-bold text-xs uppercase tracking-wider px-8 py-3 rounded-full transition-colors cursor-pointer"
+                        className="w-full bg-[#E8C2AF] hover:bg-[#DFB29D] text-[#1E1D1B] font-bold text-xs uppercase tracking-wider py-3 rounded-full transition-colors cursor-pointer"
                       >
                         Submit Another Inquiry
                       </button>
