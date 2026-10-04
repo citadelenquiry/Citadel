@@ -66,6 +66,13 @@ jobs:
           echo "=== 2. Checking if public_html directory exists inside FTP Root ==="
           curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/public_html/" || echo "Note: /public_html does not exist or cannot be listed"
 
+      - name: Reset Remote Sync Cache
+        run: |
+          CLEAN_SERVER="${{ steps.prepare-ftp.outputs.server }}"
+          echo "Resetting any cached sync state to force a fresh upload of all files into public_html..."
+          curl -s --max-time 10 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" -Q "DELE public_html/.ftp-deploy-sync-state.json" "ftp://${CLEAN_SERVER}/" || true
+          curl -s --max-time 10 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" -Q "DELE .ftp-deploy-sync-state.json" "ftp://${CLEAN_SERVER}/" || true
+
       - name: Deploy dist folder to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -76,7 +83,13 @@ jobs:
           protocol: ${{ secrets.HOSTINGER_PROTOCOL || 'ftp' }}
           # Local built files
           local-dir: ./dist/
-          # Deploy directly to the root of the FTP account (which is public_html)
-          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || './' }}
+          # Deploy directly into public_html/ where Hostinger web server serves your site
+          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || 'public_html/' }}
           # Keep files clean and sync efficiently
           dangerous-clean-slate: false
+
+      - name: Verify public_html/index.html on Server
+        run: |
+          CLEAN_SERVER="${{ steps.prepare-ftp.outputs.server }}"
+          echo "=== Verifying public_html Contents After Deploy ==="
+          curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/public_html/"
