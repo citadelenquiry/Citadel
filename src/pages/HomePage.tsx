@@ -63,7 +63,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </h1>
 
           <p className="text-base sm:text-xl font-light text-[#E6E1DC] max-w-2xl mx-auto leading-relaxed">
-            Trusted & Reliable Builders, transforming metropolitan living across Pune and Mumbai.
+            Trusted & Reliable Builders, transforming metropolitan living across Pune.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -90,7 +90,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Quick Stats Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 mt-6 border-t border-white/15 max-w-3xl mx-auto text-center sm:text-left">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-12 mt-6 border-t border-white/15 max-w-4xl mx-auto text-center sm:text-left">
             <div>
               <div className="font-editorial text-3xl sm:text-4xl font-bold text-[#E8C2AF]">
                 {companyProfileData.stats.yearsExperience}
@@ -105,6 +105,14 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
               <div className="text-[11px] uppercase tracking-wider text-[#B8B2AA] mt-0.5">
                 Sq. Ft. Ongoing (Pune)
+              </div>
+            </div>
+            <div>
+              <div className="font-editorial text-3xl sm:text-4xl font-bold text-[#E8C2AF]">
+                {companyProfileData.stats.upcomingSqFt}
+              </div>
+              <div className="text-[11px] uppercase tracking-wider text-[#B8B2AA] mt-0.5">
+                Sq. Ft. Upcoming (Pune)
               </div>
             </div>
             <div>

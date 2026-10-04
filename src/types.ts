@@ -7,7 +7,7 @@ export interface ProjectLiveUpdate {
   title: string;
   description: string;
   image: string;
-  date: string;
+  date?: string;
   stage: string;
 }
 

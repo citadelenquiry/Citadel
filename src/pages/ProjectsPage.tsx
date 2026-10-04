@@ -911,9 +911,6 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                           <div className="absolute top-2.5 left-2.5 bg-[#1E1D1B]/85 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                             {update.stage}
                           </div>
-                          <div className="absolute bottom-2.5 right-2.5 bg-black/60 backdrop-blur-xs text-[#E8C2AF] text-[10px] font-medium px-2 py-0.5 rounded">
-                            {update.date}
-                          </div>
                         </div>
 
                         <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
@@ -1156,22 +1153,22 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   <div className="grid grid-cols-2 gap-4 bg-[#F8F6F3] p-4 rounded-xl border border-[#EBE5DE]">
                     <div>
                       <span className="text-[11px] text-[#7A7570] block">
-                        {activeFloorPlan.bedrooms > 0 ? 'Total / Built-Up Area' : 'Super Built-up Area'}
+                        RERA Carpet Area
                       </span>
                       <span className="text-lg font-bold text-[#1E1D1B]">
-                        {activeFloorPlan.areaSqFt ? `${activeFloorPlan.areaSqFt} sq. ft.` : 'Available on Request'}
+                        {activeFloorPlan.carpetAreaSqFt
+                          ? `${activeFloorPlan.carpetAreaSqFt} sq. ft.`
+                          : activeFloorPlan.areaSqFt
+                          ? `${activeFloorPlan.areaSqFt} sq. ft.`
+                          : 'Available on Request'}
                       </span>
                     </div>
                     <div>
                       <span className="text-[11px] text-[#7A7570] block">
-                        {activeFloorPlan.carpetAreaSqFt && activeFloorPlan.carpetAreaSqFt !== activeFloorPlan.areaSqFt
-                          ? 'Carpet Area'
-                          : 'Configuration'}
+                        Configuration
                       </span>
                       <span className="text-base sm:text-lg font-bold text-[#1E1D1B]">
-                        {activeFloorPlan.carpetAreaSqFt && activeFloorPlan.carpetAreaSqFt !== activeFloorPlan.areaSqFt
-                          ? `${activeFloorPlan.carpetAreaSqFt} sq. ft.`
-                          : activeFloorPlan.type}
+                        {activeFloorPlan.type || activeFloorPlan.name}
                       </span>
                     </div>
                     {activeFloorPlan.bedrooms > 0 ? (
@@ -1181,8 +1178,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                           <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.bedrooms} Bed / {activeFloorPlan.bathrooms} Bath</span>
                         </div>
                         <div>
-                          <span className="text-[11px] text-[#7A7570] block">Balconies</span>
-                          <span className="text-sm font-semibold text-[#1E1D1B]">{activeFloorPlan.balconies} Private Sit-outs</span>
+                          <span className="text-[11px] text-[#7A7570] block">Sit-out Balconies</span>
+                          <span className="text-sm font-semibold text-[#1E1D1B]">
+                            {activeFloorPlan.balconies} {activeFloorPlan.balconies === 1 ? 'Sit-out Balcony' : 'Sit-outs'}
+                          </span>
                         </div>
                       </>
                     ) : (

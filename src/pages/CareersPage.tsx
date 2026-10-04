@@ -36,6 +36,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ setCurrentPage }) => {
       projectOrRole: formData.role || 'Job Applicant',
       details,
       message: formData.message || '',
+      notificationEmail: 'citadelgroupenquiry@gmail.com',
     });
 
     setIsSubmitting(false);
@@ -105,8 +106,8 @@ export const CareersPage: React.FC<CareersPageProps> = ({ setCurrentPage }) => {
             </div>
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-[#8A563D]" />
-              <a href="mailto:careers@thecitadelgroup.co" className="hover:text-[#8A563D] underline">
-                careers@thecitadelgroup.co
+              <a href="mailto:enquiry@thecitadelgroup.co" className="hover:text-[#8A563D] underline">
+                enquiry@thecitadelgroup.co
               </a>
             </div>
           </div>

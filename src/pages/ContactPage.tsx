@@ -69,7 +69,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   const faqs = [
     {
       q: 'Where is Citadel Group’s Corporate Head Office located?',
-      a: 'Our Head Office is situated at Swapnapurti Apartments, Apt 2, 35/13+14C, Opp Hotel President, Prabhat Road, Lane 8, Erandwane, Pune – 411 004. You are welcome to visit Monday through Saturday between 9:30 AM and 7:00 PM.',
+      a: 'Our Head Office is situated at Swapnapurti Apartments, Apt 2, 35/13+14C, Opp Hotel President, Prabhat Road, Lane 8, Erandwane, Pune – 411 004. You are welcome to visit Monday through Saturday between 9:30 AM and 6:30 PM.',
     },
     {
       q: 'How do I schedule a site walkthrough for Janki Shreyas CHS?',
@@ -174,9 +174,6 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       <a href="tel:+918779975270" className="hover:text-[#8A563D] block font-medium text-[#1E1D1B]">
                         +91 8779975270 (Sales Call)
                       </a>
-                      <a href="tel:+912025440000" className="hover:text-[#8A563D] block text-xs text-[#7A7570]">
-                        +91 (020) 2544-0000 (Board Desk)
-                      </a>
                     </div>
                   </div>
 
@@ -186,10 +183,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     </div>
                     <div>
                       <strong className="text-[#1E1D1B] block">Business Hours:</strong>
-                      <span>Monday – Saturday: 9:30 AM – 7:00 PM</span>
-                      <span className="block text-[11px] text-[#7A7570]">
-                        Sunday: Site visits open by appointment.
-                      </span>
+                      <span>Monday – Saturday: 9:30 AM – 6:30 PM</span>
                     </div>
                   </div>
                 </div>
