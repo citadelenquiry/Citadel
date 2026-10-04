@@ -22,11 +22,16 @@ import {
   RefreshCw,
   AlertTriangle,
   Code2,
+  Globe,
+  Power,
+  Eye,
+  ShieldCheck,
 } from 'lucide-react';
 import { Project, ProjectLiveUpdate } from '../types';
 import { projectsData } from '../data/projectsData';
 import { projectUpdatesService } from '../services/projectUpdatesService';
 import { adminAuthService } from '../services/adminAuthService';
+import { maintenanceService } from '../services/maintenanceService';
 import {
   sheetsWebhookService,
   StoredLeadRecord,
@@ -162,9 +167,21 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projectsData[0]?.id || '');
   const [updates, setUpdates] = useState<ProjectLiveUpdate[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'manager' | 'code' | 'leads'>('manager');
+  const [activeTab, setActiveTab] = useState<'manager' | 'code' | 'leads' | 'status'>('manager');
   const [copied, setCopied] = useState(false);
+  const [copiedPreviewLink, setCopiedPreviewLink] = useState(false);
+  const [isMaintenanceActive, setIsMaintenanceActive] = useState<boolean>(() =>
+    maintenanceService.isMaintenanceActive()
+  );
   const [feedbackMsg, setFeedbackMsg] = useState('');
+
+  // Subscribe to maintenance mode changes
+  useEffect(() => {
+    const unsub = maintenanceService.subscribe(() => {
+      setIsMaintenanceActive(maintenanceService.isMaintenanceActive());
+    });
+    return unsub;
+  }, []);
 
   // Leads & Google Sheet Webhook State
   const [storedLeads, setStoredLeads] = useState<StoredLeadRecord[]>([]);
@@ -541,6 +558,19 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 }`}
               >
                 Code Snippet
+              </button>
+              <button
+                onClick={() => setActiveTab('status')}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+                  activeTab === 'status'
+                    ? 'bg-white text-[#1E1D1B] shadow-xs'
+                    : 'text-[#6E6A65] hover:text-[#1E1D1B]'
+                }`}
+              >
+                <Globe className={`w-3.5 h-3.5 ${isMaintenanceActive ? 'text-amber-600' : 'text-emerald-600'}`} />
+                <span>
+                  Site Status {isMaintenanceActive ? '🟡' : '🟢'}
+                </span>
               </button>
             </div>
 
@@ -1267,7 +1297,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 )}
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'code' ? (
             /* CODE EXPORT VIEW */
             <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0EBE6] pb-4">
@@ -1305,6 +1335,160 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 <pre className="bg-[#1E1D1B] text-[#E8C2AF] text-xs p-4 rounded-xl overflow-x-auto max-h-[380px] font-mono leading-relaxed select-all">
                   {projectUpdatesService.generateCodeSnippet(selectedProjectId)}
                 </pre>
+              </div>
+            </div>
+          ) : (
+            /* SITE STATUS & MAINTENANCE TEST CONTROL VIEW */
+            <div className="space-y-6">
+              {/* 1. Main Status Switch Card */}
+              <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#F0EBE6] pb-5">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${isMaintenanceActive ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      <Globe className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D]">
+                          GLOBAL WEBSITE VISIBILITY
+                        </span>
+                        <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full ${isMaintenanceActive ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                          <span className={`w-2 h-2 rounded-full ${isMaintenanceActive ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                          {isMaintenanceActive ? 'MAINTENANCE / TEST MODE' : 'LIVE & PUBLIC'}
+                        </span>
+                      </div>
+                      <h3 className="font-editorial text-xl font-bold text-[#1E1D1B] mt-1">
+                        {isMaintenanceActive
+                          ? 'Site is In Maintenance & Testing Mode'
+                          : 'Website is Fully Live to the Public'}
+                      </h3>
+                      <p className="text-xs text-[#6E6A65] mt-1 max-w-xl">
+                        {isMaintenanceActive
+                          ? 'Public visitors see a luxury Citadel "Scheduled System Upgrades & Testing" page with direct WhatsApp Concierge links. Authorized team members can browse and test normally.'
+                          : 'The website is visible to all visitors worldwide. All pages, floor plans, calculators, and booking channels are active.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    {isMaintenanceActive ? (
+                      <button
+                        onClick={() => {
+                          maintenanceService.setMaintenanceMode(false);
+                          showFeedback('Website is now LIVE to the public!');
+                        }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer"
+                      >
+                        <Power className="w-4 h-4" />
+                        <span>Publish Site Live</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          maintenanceService.setMaintenanceMode(true);
+                          showFeedback('Maintenance Mode activated! Public sees maintenance page.');
+                        }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer"
+                      >
+                        <Power className="w-4 h-4" />
+                        <span>Turn ON Maintenance / Test Mode</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* 2. Private Preview & Testing Link */}
+                <div className="mt-5 p-4 rounded-xl bg-[#FAF8F5] border border-[#EAE4DC] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E1D1B]">
+                      <Eye className="w-4 h-4 text-[#8A563D]" />
+                      <span>Private Preview & Stakeholder Testing Link</span>
+                    </div>
+                    <p className="text-[11px] text-[#6E6A65]">
+                      Use this link or share it with clients to test the live website even when Maintenance Mode is ON.
+                    </p>
+                    <code className="text-xs bg-white px-2 py-1 rounded border border-[#DDD6CE] text-[#8A563D] font-mono block select-all">
+                      {typeof window !== 'undefined' ? `${window.location.origin}/?preview=true` : '/?preview=true'}
+                    </code>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => {
+                        const link = `${window.location.origin}/?preview=true`;
+                        navigator.clipboard.writeText(link);
+                        setCopiedPreviewLink(true);
+                        setTimeout(() => setCopiedPreviewLink(false), 2500);
+                        showFeedback('Preview link copied to clipboard!');
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#D8D1C7] hover:bg-[#F2ECE6] text-xs font-semibold text-[#1E1D1B] rounded-lg transition-colors cursor-pointer"
+                    >
+                      {copiedPreviewLink ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5 text-[#8A563D]" />
+                          <span>Copy Link</span>
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href="/?preview=true"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-lg transition-colors shadow-xs"
+                    >
+                      <span>Open Preview</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Hostinger Deployment & Secrets Verification Guide */}
+              <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
+                <div className="flex items-center gap-3 border-b border-[#F0EBE6] pb-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#E8C2AF]/30 text-[#8A563D] flex items-center justify-center">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-editorial text-base font-bold text-[#1E1D1B]">
+                      Hostinger Deployment & Secrets Setup
+                    </h4>
+                    <span className="text-[11px] text-[#6E6A65]">
+                      How changes reach your Hostinger Premium hosting automatically
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE4DC] space-y-1.5">
+                    <span className="w-5 h-5 rounded-full bg-[#8A563D] text-white flex items-center justify-center text-[10px] font-bold">1</span>
+                    <h5 className="font-bold text-[#1E1D1B]">Triggering Deployment</h5>
+                    <p className="text-[#6E6A65] leading-relaxed">
+                      Now that your 3 secrets are configured in GitHub Settings &rarr; Secrets, simply push any commit or click <strong>Run workflow</strong> under GitHub &rarr; <strong>Actions</strong> &rarr; <strong>Deploy to Hostinger</strong>.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE4DC] space-y-1.5">
+                    <span className="w-5 h-5 rounded-full bg-[#8A563D] text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                    <h5 className="font-bold text-[#1E1D1B]">Automatic FTPS Sync</h5>
+                    <p className="text-[#6E6A65] leading-relaxed">
+                      The workflow runs <code className="bg-white px-1 rounded text-[#8A563D]">npm run build</code> and securely uploads the compiled <code className="bg-white px-1 rounded text-[#8A563D]">dist/</code> files directly to your Hostinger <code className="bg-white px-1 rounded text-[#8A563D]">public_html/</code> directory.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#EAE4DC] space-y-1.5">
+                    <span className="w-5 h-5 rounded-full bg-[#8A563D] text-white flex items-center justify-center text-[10px] font-bold">3</span>
+                    <h5 className="font-bold text-[#1E1D1B]">Hostinger hPanel Control</h5>
+                    <p className="text-[#6E6A65] leading-relaxed">
+                      You can also toggle maintenance mode directly in Hostinger hPanel under <strong>Websites &rarr; Manage &rarr; Maintenance Mode</strong> whenever you need a server-level block.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}

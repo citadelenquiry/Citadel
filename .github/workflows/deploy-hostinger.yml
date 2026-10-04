@@ -1,0 +1,51 @@
+name: Deploy to Hostinger
+
+# Triggers automatically on push to main or master, or manually from Actions tab
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: "hostinger-deploy"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Hostinger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application for Production
+        run: npm run build
+        env:
+          # Root base path for custom domain hosting on Hostinger
+          VITE_BASE_PATH: /
+
+      - name: Deploy dist folder to Hostinger via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          # Local built files
+          local-dir: ./dist/
+          # Target directory on Hostinger (default: public_html/)
+          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || 'public_html/' }}
+          # Keep files clean and sync efficiently
+          dangerous-clean-slate: false

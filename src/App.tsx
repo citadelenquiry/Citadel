@@ -17,7 +17,10 @@ import { EnquiryModal } from './components/EnquiryModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { WhatsAppChatWidget } from './components/WhatsAppChatWidget';
+import { MaintenancePage } from './components/MaintenancePage';
+import { MaintenanceBanner } from './components/MaintenanceBanner';
 import { adminAuthService } from './services/adminAuthService';
+import { maintenanceService } from './services/maintenanceService';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -28,6 +31,22 @@ export default function App() {
   const [enquiryProjectId, setEnquiryProjectId] = useState<string>('');
   const [isAdminAuthOpen, setIsAdminAuthOpen] = useState<boolean>(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState<boolean>(false);
+
+  // Maintenance mode reactive state
+  const [showMaintenance, setShowMaintenance] = useState<boolean>(() =>
+    maintenanceService.shouldShowMaintenanceScreen()
+  );
+  const [isMaintenanceActive, setIsMaintenanceActive] = useState<boolean>(() =>
+    maintenanceService.isMaintenanceActive()
+  );
+
+  React.useEffect(() => {
+    const unsub = maintenanceService.subscribe(() => {
+      setShowMaintenance(maintenanceService.shouldShowMaintenanceScreen());
+      setIsMaintenanceActive(maintenanceService.isMaintenanceActive());
+    });
+    return unsub;
+  }, []);
 
   const handleOpenAdmin = () => {
     if (adminAuthService.isAuthenticated()) {
@@ -65,8 +84,23 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  if (showMaintenance) {
+    return (
+      <MaintenancePage
+        onUnlockSuccess={() => {
+          setShowMaintenance(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F6F3] text-[#1E1D1B]">
+      {/* Top Banner when in Maintenance / Test Mode with preview access */}
+      {isMaintenanceActive && (
+        <MaintenanceBanner onOpenAdmin={handleOpenAdmin} />
+      )}
+
       {/* Top Main Navigation */}
       <Navbar
         currentPage={currentPage}
