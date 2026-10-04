@@ -35,17 +35,40 @@ jobs:
           # Root base path for custom domain hosting on Hostinger
           VITE_BASE_PATH: /
 
-      - name: Deploy dist folder to Hostinger via FTPS
+      - name: Verify Built Files in dist
+        run: |
+          echo "Listing compiled distribution files to be uploaded:"
+          ls -la dist/
+          if [ ! -f "dist/index.html" ]; then
+            echo "ERROR: index.html not found in dist!"
+            exit 1
+          fi
+
+      - name: Sanitize Hostinger FTP Server Input
+        id: prepare-ftp
+        run: |
+          RAW_SERVER="${{ secrets.HOSTINGER_FTP_SERVER }}"
+          # Strip protocol (ftp://, ftps://, https://, http://)
+          CLEAN_SERVER=$(echo "$RAW_SERVER" | sed -E 's|^[a-zA-Z0-9]+://||')
+          # Strip trailing path (/public_html or /)
+          CLEAN_SERVER=$(echo "$CLEAN_SERVER" | cut -d'/' -f1)
+          # Strip port if user added :21
+          CLEAN_SERVER=$(echo "$CLEAN_SERVER" | cut -d':' -f1)
+          # Remove all spaces/newlines
+          CLEAN_SERVER=$(echo "$CLEAN_SERVER" | tr -d '[:space:]')
+          echo "server=$CLEAN_SERVER" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy dist folder to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          server: ${{ steps.prepare-ftp.outputs.server }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
           port: 21
-          protocol: ftps
+          protocol: ${{ secrets.HOSTINGER_PROTOCOL || 'ftp' }}
           # Local built files
           local-dir: ./dist/
-          # Target directory on Hostinger (default: public_html/)
-          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || 'public_html/' }}
+          # Deploy directly to the root of the FTP account (which is public_html)
+          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || './' }}
           # Keep files clean and sync efficiently
           dangerous-clean-slate: false
