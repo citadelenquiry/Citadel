@@ -69,7 +69,8 @@ jobs:
       - name: Reset Remote Sync Cache
         run: |
           CLEAN_SERVER="${{ steps.prepare-ftp.outputs.server }}"
-          echo "Resetting any cached sync state to force a fresh upload of all files into public_html..."
+          echo "Resetting any cached sync state to force a fresh upload of all files into domains/thecitadelgroup.in/public_html..."
+          curl -s --max-time 10 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" -Q "DELE domains/thecitadelgroup.in/public_html/.ftp-deploy-sync-state.json" "ftp://${CLEAN_SERVER}/" || true
           curl -s --max-time 10 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" -Q "DELE public_html/.ftp-deploy-sync-state.json" "ftp://${CLEAN_SERVER}/" || true
           curl -s --max-time 10 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" -Q "DELE .ftp-deploy-sync-state.json" "ftp://${CLEAN_SERVER}/" || true
 
@@ -83,13 +84,13 @@ jobs:
           protocol: ${{ secrets.HOSTINGER_PROTOCOL || 'ftp' }}
           # Local built files
           local-dir: ./dist/
-          # Deploy directly into public_html/ where Hostinger web server serves your site
-          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || 'public_html/' }}
+          # Deploy directly into the actual domain public_html folder
+          server-dir: ${{ secrets.HOSTINGER_SERVER_DIR || 'domains/thecitadelgroup.in/public_html/' }}
           # Keep files clean and sync efficiently
           dangerous-clean-slate: false
 
-      - name: Verify public_html/index.html on Server
+      - name: Verify domains/thecitadelgroup.in/public_html Contents After Deploy
         run: |
           CLEAN_SERVER="${{ steps.prepare-ftp.outputs.server }}"
-          echo "=== Verifying public_html Contents After Deploy ==="
-          curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/public_html/"
+          echo "=== Verifying domains/thecitadelgroup.in/public_html Contents After Deploy ==="
+          curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/domains/thecitadelgroup.in/public_html/"
