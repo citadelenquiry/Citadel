@@ -58,6 +58,14 @@ jobs:
           CLEAN_SERVER=$(echo "$CLEAN_SERVER" | tr -d '[:space:]')
           echo "server=$CLEAN_SERVER" >> "$GITHUB_OUTPUT"
 
+      - name: Diagnose Remote Hostinger FTP Directories
+        run: |
+          CLEAN_SERVER="${{ steps.prepare-ftp.outputs.server }}"
+          echo "=== 1. Checking FTP Root (/) Contents ==="
+          curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/" || echo "Note: Could not list /"
+          echo "=== 2. Checking if public_html directory exists inside FTP Root ==="
+          curl -s --max-time 15 --user "${{ secrets.HOSTINGER_FTP_USERNAME }}:${{ secrets.HOSTINGER_FTP_PASSWORD }}" "ftp://${CLEAN_SERVER}/public_html/" || echo "Note: /public_html does not exist or cannot be listed"
+
       - name: Deploy dist folder to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
