@@ -60,7 +60,7 @@ export const MaintenancePage: React.FC<MaintenancePageProps> = ({ onUnlockSucces
     const message = encodeURIComponent(
       'Hello Citadel Landmarks, I am visiting your website during maintenance and would like to enquire about your luxury projects.'
     );
-    window.open(`https://wa.me/917030818966?text=${message}`, '_blank');
+    window.open(`https://wa.me/918779975270?text=${message}`, '_blank');
   };
 
   return (
@@ -129,19 +129,19 @@ export const MaintenancePage: React.FC<MaintenancePageProps> = ({ onUnlockSucces
             </button>
 
             <a
-              href="tel:+917030818966"
+              href="tel:+918779975270"
               className="bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-white/10 text-sm"
             >
               <Phone className="w-4 h-4 text-[#C5A880]" />
-              <span>+91 70308 18966</span>
+              <span>+91 87799 75270</span>
             </a>
 
             <a
-              href="mailto:citadelgroupenquiry@gmail.com"
+              href="mailto:enquiry@thecitadelgroup.co"
               className="bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition border border-white/10 text-sm"
             >
               <Mail className="w-4 h-4 text-[#C5A880]" />
-              <span>Email Desk</span>
+              <span>enquiry@thecitadelgroup.co</span>
             </a>
           </div>
 

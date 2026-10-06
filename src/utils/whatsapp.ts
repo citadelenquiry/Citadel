@@ -1,19 +1,19 @@
 /**
  * WhatsApp integration utilities for Citadel Group
- * Configured Phone: 7030818966 (India: +91 70308 18966)
- * Configured Notification Email: citadelenquiry@gmail.com
+ * Configured Phone: 8779975270 (Sales: +91 87799 75270)
+ * Dual Notification Emails: citadelenquiry@gmail.com, enquiry@thecitadelgroup.co
  */
 
 export const CITADEL_WHATSAPP_CONFIG = {
-  rawNumber: '7030818966',
-  intlNumber: '917030818966',
-  displayNumber: '+91 70308 18966',
-  notificationEmail: 'citadelenquiry@gmail.com',
+  rawNumber: '8779975270',
+  intlNumber: '918779975270',
+  displayNumber: '+91 87799 75270',
+  notificationEmail: 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co',
   officialAddress: 'Swapnapurti Apts, Prabhat Road, Lane 8, Erandwane, Pune – 411 004',
 };
 
 /**
- * Creates a WhatsApp click-to-chat URL with pre-filled message
+ * Creates a WhatsApp click-to-chat URL with pre-filled message (clean URL encoded)
  */
 export function createWhatsAppUrl(message: string, customPhone?: string): string {
   const phone = customPhone || CITADEL_WHATSAPP_CONFIG.intlNumber;
@@ -21,7 +21,7 @@ export function createWhatsAppUrl(message: string, customPhone?: string): string
 }
 
 /**
- * Formats full enquiry submission details into a clean WhatsApp text format
+ * Formats full enquiry submission details into clean, readable plain text (no emojis or broken unicode symbols)
  */
 export function formatEnquiryForWhatsApp(lead: {
   name: string;
@@ -39,18 +39,18 @@ export function formatEnquiryForWhatsApp(lead: {
   });
 
   return [
-    `*🏛️ NEW ENQUIRY — CITADEL GROUP*`,
-    `━━━━━━━━━━━━━━━━━━━━━━`,
-    `👤 *Name:* ${lead.name || 'Not provided'}`,
-    `📞 *Phone:* ${lead.phone || 'Not provided'}`,
-    `✉️ *Email:* ${lead.email || 'Not provided'}`,
-    `🏢 *Project / Interest:* ${lead.projectOrRole || 'Citadel Developments'}`,
-    lead.details ? `📋 *Specifications:* ${lead.details}` : null,
-    lead.message ? `💬 *Message:* "${lead.message}"` : null,
-    `📁 *Source:* ${lead.formType || 'Website Enquiry Form'}`,
-    `🗓️ *Submitted:* ${now} IST`,
-    `━━━━━━━━━━━━━━━━━━━━━━`,
-    `_Forwarded directly from Citadel Group Web Portal_`,
+    `*NEW ENQUIRY - CITADEL GROUP*`,
+    `----------------------------------------`,
+    `*Name:* ${lead.name || 'Not provided'}`,
+    `*Phone:* ${lead.phone || 'Not provided'}`,
+    `*Email:* ${lead.email || 'Not provided'}`,
+    `*Project / Interest:* ${lead.projectOrRole || 'Citadel Developments'}`,
+    lead.details ? `*Specifications:* ${lead.details}` : null,
+    lead.message ? `*Message:* "${lead.message}"` : null,
+    `*Source:* ${lead.formType || 'Website Enquiry Form'}`,
+    `*Submitted:* ${now} IST`,
+    `----------------------------------------`,
+    `Forwarded from Citadel Group Web Portal (thecitadelgroup.in)`,
   ]
     .filter(Boolean)
     .join('\n');

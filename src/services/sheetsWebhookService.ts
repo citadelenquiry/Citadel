@@ -1,5 +1,22 @@
 import { CITADEL_WHATSAPP_CONFIG, formatEnquiryForWhatsApp, createWhatsAppUrl } from '../utils/whatsapp';
 
+export type DeliveryMode = 'dual' | 'sheets_only' | 'email_only';
+
+export interface SmtpConfig {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  secure?: 'ssl' | 'tls';
+}
+
+export interface DirectEmailResult {
+  success: boolean;
+  mode?: string;
+  message?: string;
+  error?: string;
+}
+
 export interface LeadSubmissionPayload {
   formType: string;
   name: string;
@@ -17,6 +34,7 @@ export interface StoredLeadRecord extends LeadSubmissionPayload {
   timestamp: string;
   status: 'synced' | 'local_only';
   errorDetails?: string;
+  deliveryChannels?: string[];
 }
 
 export interface WebhookTestResult {
@@ -31,9 +49,61 @@ const DEFAULT_WEBHOOK_URL =
 
 const STORAGE_KEY_LEADS = 'citadel_recorded_leads';
 const STORAGE_KEY_CUSTOM_URL = 'citadel_custom_sheets_webhook_url';
+const STORAGE_KEY_DELIVERY_MODE = 'citadel_delivery_mode';
+const STORAGE_KEY_SMTP_CONFIG = 'citadel_smtp_config';
+const STORAGE_KEY_NOTIFY_EMAIL = 'citadel_notification_email';
 
 class SheetsWebhookService {
   private listeners: (() => void)[] = [];
+
+  // ==================== CONFIGURATION ====================
+
+  public getDeliveryMode(): DeliveryMode {
+    const mode = localStorage.getItem(STORAGE_KEY_DELIVERY_MODE);
+    if (mode === 'sheets_only' || mode === 'email_only' || mode === 'dual') {
+      return mode;
+    }
+    return 'dual'; // Default for maximum 100% operational resiliency
+  }
+
+  public setDeliveryMode(mode: DeliveryMode): void {
+    localStorage.setItem(STORAGE_KEY_DELIVERY_MODE, mode);
+    this.notify();
+  }
+
+  public getNotificationEmail(): string {
+    const saved = localStorage.getItem(STORAGE_KEY_NOTIFY_EMAIL);
+    if (saved && saved.trim()) return saved.trim();
+    return CITADEL_WHATSAPP_CONFIG.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co';
+  }
+
+  public setNotificationEmail(email: string): void {
+    if (!email || !email.trim()) {
+      localStorage.removeItem(STORAGE_KEY_NOTIFY_EMAIL);
+    } else {
+      localStorage.setItem(STORAGE_KEY_NOTIFY_EMAIL, email.trim());
+    }
+    this.notify();
+  }
+
+  public getSmtpConfig(): SmtpConfig | null {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY_SMTP_CONFIG);
+      if (!data) return null;
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
+  }
+
+  public setSmtpConfig(config: SmtpConfig | null): void {
+    if (!config) {
+      localStorage.removeItem(STORAGE_KEY_SMTP_CONFIG);
+    } else {
+      localStorage.setItem(STORAGE_KEY_SMTP_CONFIG, JSON.stringify(config));
+    }
+    this.notify();
+  }
 
   public getWebhookUrl(): string {
     const custom = localStorage.getItem(STORAGE_KEY_CUSTOM_URL);
@@ -61,6 +131,8 @@ class SheetsWebhookService {
     this.notify();
   }
 
+  // ==================== STORED LEADS ====================
+
   public getStoredLeads(): StoredLeadRecord[] {
     try {
       const data = localStorage.getItem(STORAGE_KEY_LEADS);
@@ -75,6 +147,79 @@ class SheetsWebhookService {
     localStorage.removeItem(STORAGE_KEY_LEADS);
     this.notify();
   }
+
+  // ==================== DIRECT SERVER / SMTP EMAIL ====================
+
+  public async sendDirectEmail(payload: LeadSubmissionPayload): Promise<DirectEmailResult> {
+    const notificationEmail = payload.notificationEmail || this.getNotificationEmail();
+    const smtp = this.getSmtpConfig();
+
+    try {
+      const resp = await fetch('/api/send-email.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          notificationEmail,
+          smtp,
+        }),
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        return data;
+      }
+
+      return {
+        success: false,
+        error: `Server responded with HTTP ${resp.status}`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Network error reaching email dispatch service',
+      };
+    }
+  }
+
+  public async testDirectEmail(customSmtp?: SmtpConfig): Promise<DirectEmailResult> {
+    const recipient = this.getNotificationEmail();
+    const smtp = customSmtp !== undefined ? customSmtp : this.getSmtpConfig();
+
+    try {
+      const resp = await fetch('/api/send-email.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Citadel Operations Probe',
+          phone: '+91 87799 75270',
+          email: 'diagnostics@thecitadelgroup.in',
+          projectOrRole: 'Connectivity Test',
+          formType: 'Diagnostic Email Test',
+          details: 'Direct Server Mail / SMTP Resilience Test',
+          message: 'Verifying instant delivery to ' + recipient,
+          notificationEmail: recipient,
+          smtp,
+        }),
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        return data;
+      }
+      return {
+        success: false,
+        error: `HTTP ${resp.status}: Unable to reach server email script`,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message || 'Network error executing email probe',
+      };
+    }
+  }
+
+  // ==================== GOOGLE SHEETS TEST ====================
 
   public async testWebhookConnection(customUrl?: string): Promise<WebhookTestResult> {
     const targetUrl = customUrl || this.getWebhookUrl();
@@ -112,13 +257,98 @@ class SheetsWebhookService {
     }
   }
 
+  // ==================== RESILIENT LEAD SUBMISSION ====================
+
   public async submitLead(payload: LeadSubmissionPayload): Promise<{ success: boolean; error?: string }> {
     const webhookUrl = this.getWebhookUrl();
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     const leadId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
-    const notificationEmail = payload.notificationEmail || CITADEL_WHATSAPP_CONFIG.notificationEmail;
+    const notificationEmail = payload.notificationEmail || this.getNotificationEmail();
     const whatsappNumber = payload.whatsappNumber || CITADEL_WHATSAPP_CONFIG.rawNumber;
+    const mode = this.getDeliveryMode();
+
+    const deliveredChannels: string[] = [];
+    let sheetsSuccess = false;
+    let emailSuccess = false;
+    let errorMessage: string | undefined;
+
+    // 1. Google Sheets Dispatch (if mode is 'dual' or 'sheets_only')
+    if (mode === 'dual' || mode === 'sheets_only') {
+      try {
+        const apiResp = await fetch('/api/lead/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...payload,
+            notificationEmail,
+            whatsappNumber,
+            webhookUrl,
+          }),
+        });
+
+        if (apiResp.ok) {
+          const data = await apiResp.json();
+          if (data.success) {
+            sheetsSuccess = true;
+            deliveredChannels.push('Google Sheets');
+          } else {
+            errorMessage = data.error;
+          }
+        }
+      } catch {
+        // Direct browser no-cors fallback
+        try {
+          await fetch(webhookUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              formType: payload.formType,
+              name: payload.name,
+              phone: payload.phone,
+              email: payload.email,
+              projectOrRole: payload.projectOrRole,
+              details: payload.details,
+              message: payload.message,
+              notificationEmail,
+              whatsappNumber,
+            }),
+          });
+          sheetsSuccess = true;
+          deliveredChannels.push('Google Sheets (Direct)');
+        } catch (directErr: any) {
+          errorMessage = directErr?.message || 'Google Sheets dispatch error';
+        }
+      }
+    }
+
+    // 2. Direct Server / SMTP Email Dispatch (if mode is 'dual' or 'email_only')
+    if (mode === 'dual' || mode === 'email_only') {
+      try {
+        const emailResult = await this.sendDirectEmail({
+          ...payload,
+          notificationEmail,
+        });
+        if (emailResult.success) {
+          emailSuccess = true;
+          deliveredChannels.push(emailResult.mode === 'smtp' ? 'Custom SMTP' : 'Hostinger Direct Mail');
+        } else if (!errorMessage) {
+          errorMessage = emailResult.error;
+        }
+      } catch (e: any) {
+        if (!errorMessage) errorMessage = e?.message;
+      }
+    }
+
+    // Determine overall success:
+    // In dual mode, if AT LEAST ONE succeeded, the lead is safely recorded and delivered!
+    const overallSuccess =
+      mode === 'dual'
+        ? sheetsSuccess || emailSuccess
+        : mode === 'sheets_only'
+        ? sheetsSuccess
+        : emailSuccess;
 
     const leadRecord: StoredLeadRecord = {
       id: leadId,
@@ -132,70 +362,10 @@ class SheetsWebhookService {
       message: payload.message || '',
       notificationEmail,
       whatsappNumber,
-      status: 'synced',
+      status: overallSuccess ? 'synced' : 'local_only',
+      errorDetails: overallSuccess ? undefined : errorMessage,
+      deliveryChannels: deliveredChannels,
     };
-
-    let sendSuccess = true;
-    let errorMessage: string | undefined;
-
-    // 1. Try via server proxy endpoint for verified delivery and accurate status
-    try {
-      const apiResp = await fetch('/api/lead/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...payload,
-          notificationEmail,
-          whatsappNumber,
-          webhookUrl,
-        }),
-      });
-
-      if (apiResp.ok) {
-        const data = await apiResp.json();
-        if (data.success) {
-          sendSuccess = true;
-          leadRecord.status = 'synced';
-        } else {
-          sendSuccess = false;
-          errorMessage = data.error || 'Google Sheets Webhook rejected transmission';
-          leadRecord.status = 'local_only';
-          leadRecord.errorDetails = errorMessage;
-        }
-      } else {
-        throw new Error(`Server returned HTTP ${apiResp.status}`);
-      }
-    } catch (proxyErr: any) {
-      // 2. Direct browser fallback using no-cors
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-          body: JSON.stringify({
-            formType: leadRecord.formType,
-            name: leadRecord.name,
-            phone: leadRecord.phone,
-            email: leadRecord.email,
-            projectOrRole: leadRecord.projectOrRole,
-            details: leadRecord.details,
-            message: leadRecord.message,
-            notificationEmail: leadRecord.notificationEmail,
-            whatsappNumber: leadRecord.whatsappNumber,
-          }),
-        });
-        sendSuccess = true;
-        leadRecord.status = 'synced';
-      } catch (err: any) {
-        console.warn('Direct webhook transmission encountered an issue:', err);
-        sendSuccess = false;
-        errorMessage = err?.message || 'Network issue during submission';
-        leadRecord.status = 'local_only';
-        leadRecord.errorDetails = errorMessage;
-      }
-    }
 
     // Always preserve lead record in local storage for safety and auditability
     try {
@@ -208,7 +378,7 @@ class SheetsWebhookService {
       console.error('Failed to store lead locally:', e);
     }
 
-    return { success: sendSuccess, error: errorMessage };
+    return { success: overallSuccess, error: errorMessage };
   }
 
   public async retryLead(leadId: string): Promise<{ success: boolean; error?: string }> {
@@ -217,59 +387,20 @@ class SheetsWebhookService {
     if (targetIndex === -1) return { success: false, error: 'Lead not found' };
 
     const lead = leads[targetIndex];
-    const webhookUrl = this.getWebhookUrl();
+    const res = await this.submitLead(lead);
 
-    try {
-      const apiResp = await fetch('/api/lead/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          formType: lead.formType,
-          name: lead.name,
-          phone: lead.phone,
-          email: lead.email,
-          projectOrRole: lead.projectOrRole,
-          details: lead.details,
-          message: lead.message,
-          webhookUrl,
-        }),
-      });
-
-      if (apiResp.ok) {
-        const data = await apiResp.json();
-        if (data.success) {
-          leads[targetIndex].status = 'synced';
-          leads[targetIndex].errorDetails = undefined;
-          localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
-          this.notify();
-          return { success: true };
-        } else {
-          leads[targetIndex].errorDetails = data.error;
-          localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
-          this.notify();
-          return { success: false, error: data.error };
-        }
-      }
-    } catch (err: any) {
-      // Direct browser fallback
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(lead),
-        });
-        leads[targetIndex].status = 'synced';
-        leads[targetIndex].errorDetails = undefined;
-        localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
-        this.notify();
-        return { success: true };
-      } catch (directErr: any) {
-        return { success: false, error: directErr?.message };
-      }
+    if (res.success) {
+      leads[targetIndex].status = 'synced';
+      leads[targetIndex].errorDetails = undefined;
+      localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+      this.notify();
+      return { success: true };
+    } else {
+      leads[targetIndex].errorDetails = res.error;
+      localStorage.setItem(STORAGE_KEY_LEADS, JSON.stringify(leads));
+      this.notify();
+      return { success: false, error: res.error };
     }
-
-    return { success: false, error: 'Transmission failed' };
   }
 
   public async retryAllPending(): Promise<{ count: number; failed: number }> {
@@ -313,4 +444,3 @@ class SheetsWebhookService {
 }
 
 export const sheetsWebhookService = new SheetsWebhookService();
-

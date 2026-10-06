@@ -26,6 +26,10 @@ import {
   Power,
   Eye,
   ShieldCheck,
+  Mail,
+  Server,
+  Shield,
+  Settings,
 } from 'lucide-react';
 import { Project, ProjectLiveUpdate } from '../types';
 import { projectsData } from '../data/projectsData';
@@ -36,6 +40,9 @@ import {
   sheetsWebhookService,
   StoredLeadRecord,
   WebhookTestResult,
+  DeliveryMode,
+  SmtpConfig,
+  DirectEmailResult,
 } from '../services/sheetsWebhookService';
 
 interface AdminPanelModalProps {
@@ -89,10 +96,10 @@ function doPost(e) {
       data.message || ""
     ]);
 
-    // Automatically send instant email notification to citadelenquiry@gmail.com
+    // Automatically send instant email notification to dual inboxes
     try {
-      var notifyEmail = data.notificationEmail || "citadelenquiry@gmail.com";
-      var subject = "🏛️ New Citadel Lead: " + (data.name || "Website Visitor") + " [" + (data.projectOrRole || "General") + "]";
+      var notifyEmail = data.notificationEmail || "citadelenquiry@gmail.com, enquiry@thecitadelgroup.co";
+      var subject = "New Citadel Lead: " + (data.name || "Website Visitor") + " [" + (data.projectOrRole || "General") + "]";
       var emailBody = "NEW CITADEL GROUP WEBSITE ENQUIRY:\n\n" +
         "• Name: " + (data.name || "Not provided") + "\n" +
         "• Phone: " + (data.phone || "Not provided") + "\n" +
@@ -102,7 +109,7 @@ function doPost(e) {
         "• Message: " + (data.message || "None") + "\n" +
         "• Form Type: " + (data.formType || "Website Lead") + "\n" +
         "• Timestamp: " + timestamp + "\n\n" +
-        "Primary WhatsApp Desk: +91 70308 18966";
+        "Primary Sales Desk: +91 87799 75270";
       MailApp.sendEmail(notifyEmail, subject, emailBody);
     } catch (mailError) {
       // MailApp is optional; ignore if quota exceeded
@@ -196,6 +203,22 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [isRetryingAll, setIsRetryingAll] = useState(false);
   const [leadsFilter, setLeadsFilter] = useState('all');
 
+  // Resilient Delivery Strategy & Direct Email State
+  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode>('dual');
+  const [notificationEmailInput, setNotificationEmailInput] = useState('');
+  const [isEditingNotificationEmail, setIsEditingNotificationEmail] = useState(false);
+  const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
+  const [showSmtpConfig, setShowSmtpConfig] = useState(false);
+  const [isTestingEmail, setIsTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState<DirectEmailResult | null>(null);
+  const [smtpForm, setSmtpForm] = useState({
+    host: '',
+    port: 465,
+    user: '',
+    pass: '',
+    secure: 'ssl' as 'ssl' | 'tls',
+  });
+
   // Form State
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [formTitle, setFormTitle] = useState('');
@@ -226,14 +249,31 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     return unsub;
   }, [selectedProjectId]);
 
-  // Load and subscribe to stored leads
+  // Load and subscribe to stored leads & resilience settings
   useEffect(() => {
     if (isOpen) {
       setStoredLeads(sheetsWebhookService.getStoredLeads());
       setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+      setDeliveryMode(sheetsWebhookService.getDeliveryMode());
+      setNotificationEmailInput(sheetsWebhookService.getNotificationEmail());
+      const existingSmtp = sheetsWebhookService.getSmtpConfig();
+      setSmtpConfig(existingSmtp);
+      if (existingSmtp) {
+        setSmtpForm({
+          host: existingSmtp.host || '',
+          port: existingSmtp.port || 465,
+          user: existingSmtp.user || '',
+          pass: existingSmtp.pass || '',
+          secure: existingSmtp.secure || 'ssl',
+        });
+      }
+
       const unsub = sheetsWebhookService.subscribe(() => {
         setStoredLeads(sheetsWebhookService.getStoredLeads());
         setWebhookUrlInput(sheetsWebhookService.getWebhookUrl());
+        setDeliveryMode(sheetsWebhookService.getDeliveryMode());
+        setNotificationEmailInput(sheetsWebhookService.getNotificationEmail());
+        setSmtpConfig(sheetsWebhookService.getSmtpConfig());
       });
       return unsub;
     }
@@ -313,6 +353,61 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     setIsEditingWebhookUrl(false);
     setFeedbackMsg('Webhook URL reset to primary deployment default.');
     setTimeout(() => setFeedbackMsg(''), 3000);
+  };
+
+  const handleSaveDeliveryMode = (mode: DeliveryMode) => {
+    setDeliveryMode(mode);
+    sheetsWebhookService.setDeliveryMode(mode);
+    showFeedback(
+      `Delivery mode: ${
+        mode === 'dual'
+          ? 'Dual Resilient (Google Sheets + Direct Server Email)'
+          : mode === 'sheets_only'
+          ? 'Google Sheets Only'
+          : 'Direct Email / SMTP Only'
+      }`
+    );
+  };
+
+  const handleSaveNotificationEmail = () => {
+    if (notificationEmailInput.trim()) {
+      sheetsWebhookService.setNotificationEmail(notificationEmailInput.trim());
+      setIsEditingNotificationEmail(false);
+      showFeedback('Notification recipient updated!');
+    }
+  };
+
+  const handleTestDirectEmail = async () => {
+    setIsTestingEmail(true);
+    setEmailTestResult(null);
+    const res = await sheetsWebhookService.testDirectEmail();
+    setEmailTestResult(res);
+    setIsTestingEmail(false);
+  };
+
+  const handleSaveSmtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!smtpForm.host.trim() || !smtpForm.user.trim() || !smtpForm.pass.trim()) {
+      alert('Please fill in Host, Username, and Password');
+      return;
+    }
+    const cfg: SmtpConfig = {
+      host: smtpForm.host.trim(),
+      port: Number(smtpForm.port) || 465,
+      user: smtpForm.user.trim(),
+      pass: smtpForm.pass,
+      secure: smtpForm.secure,
+    };
+    sheetsWebhookService.setSmtpConfig(cfg);
+    setSmtpConfig(cfg);
+    showFeedback('Custom SMTP configuration saved!');
+  };
+
+  const handleClearSmtp = () => {
+    sheetsWebhookService.setSmtpConfig(null);
+    setSmtpConfig(null);
+    setSmtpForm({ host: '', port: 465, user: '', pass: '', secure: 'ssl' });
+    showFeedback('Custom SMTP removed. Using server native mail.');
   };
 
   const handleExportLeadsCsv = () => {
@@ -1105,6 +1200,312 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                 </div>
               </div>
 
+              {/* LEAD DELIVERY RESILIENCE ENGINE (DIRECT EMAIL & SMTP) */}
+              <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-5">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#F0EBE6] pb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#8A563D] text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D]">
+                          FAIL-SAFE RESILIENCE ENGINE
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                          {deliveryMode === 'dual' ? 'Dual-Channel Active' : deliveryMode === 'sheets_only' ? 'Google Sheets Only' : 'Direct Email Only'}
+                        </span>
+                      </div>
+                      <h3 className="font-editorial text-xl font-bold text-[#1E1D1B]">
+                        Direct Server Email & SMTP Redundancy
+                      </h3>
+                      <p className="text-xs text-[#6E6A65] mt-0.5">
+                        Guarantees you never miss an inquiry by dispatching emails directly from Hostinger even if Google Sheets experiences downtime or quota limits.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleTestDirectEmail}
+                      disabled={isTestingEmail}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF8F5] border border-[#D8D1C7] hover:bg-[#F2ECE6] text-[#1E1D1B] text-xs font-semibold rounded-xl transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 text-[#8A563D] ${isTestingEmail ? 'animate-spin' : ''}`} />
+                      <span>{isTestingEmail ? 'Testing Email...' : 'Test Server Email'}</span>
+                    </button>
+                    <button
+                      onClick={() => setShowSmtpConfig(!showSmtpConfig)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer ${
+                        smtpConfig
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                          : 'bg-[#FAF8F5] border-[#D8D1C7] text-[#1E1D1B] hover:bg-[#F2ECE6]'
+                      }`}
+                    >
+                      <Settings className="w-3.5 h-3.5 text-[#8A563D]" />
+                      <span>{smtpConfig ? 'Custom SMTP (Configured)' : 'Configure Custom SMTP'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Email Test Diagnostic Banner */}
+                {emailTestResult && (
+                  <div
+                    className={`p-4 rounded-xl border text-xs leading-relaxed flex items-start gap-3 ${
+                      emailTestResult.success
+                        ? 'bg-[#EBF9EE] border-[#C3ECCB] text-[#1E7E34]'
+                        : 'bg-[#FFF5F0] border-[#F4D2C3] text-[#8A563D]'
+                    }`}
+                  >
+                    {emailTestResult.success ? (
+                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-[#1E7E34]" />
+                    ) : (
+                      <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#8A563D]" />
+                    )}
+                    <div className="flex-1 space-y-0.5">
+                      <div className="font-bold text-sm">
+                        {emailTestResult.success
+                          ? `Email Dispatch Confirmed [${emailTestResult.mode || 'Direct Engine'}]`
+                          : 'Email Dispatch Failed'}
+                      </div>
+                      <p>{emailTestResult.message || emailTestResult.error}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 1. Delivery Strategy Mode Cards */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#3C3A36] uppercase tracking-wider block">
+                    Choose Delivery Strategy:
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Option A: Dual Dispatch */}
+                    <div
+                      onClick={() => handleSaveDeliveryMode('dual')}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                        deliveryMode === 'dual'
+                          ? 'bg-[#FAF8F5] border-[#8A563D] ring-2 ring-[#8A563D]/20 shadow-xs'
+                          : 'bg-white border-[#E6E1DC] hover:border-[#8A563D]/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-[#1E1D1B]">
+                          <ShieldCheck className="w-4 h-4 text-[#8A563D]" />
+                          <span>Dual Dispatch (Resilient)</span>
+                        </div>
+                        <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">
+                          Recommended
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#6E6A65] leading-relaxed">
+                        Simultaneously logs to <strong>Google Sheets</strong> AND dispatches direct server email. If Google has quota limits or delay, your email notification still arrives instantly.
+                      </p>
+                    </div>
+
+                    {/* Option B: Google Sheets Only */}
+                    <div
+                      onClick={() => handleSaveDeliveryMode('sheets_only')}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                        deliveryMode === 'sheets_only'
+                          ? 'bg-[#FAF8F5] border-[#8A563D] ring-2 ring-[#8A563D]/20 shadow-xs'
+                          : 'bg-white border-[#E6E1DC] hover:border-[#8A563D]/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-[#1E1D1B]">
+                          <FileSpreadsheet className="w-4 h-4 text-[#1E7E34]" />
+                          <span>Google Sheets Only</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-[#6E6A65] leading-relaxed">
+                        Delivers only through the Google Apps Script Webhook into your Google Sheet and Google’s MailApp.
+                      </p>
+                    </div>
+
+                    {/* Option C: Direct Server Email Only */}
+                    <div
+                      onClick={() => handleSaveDeliveryMode('email_only')}
+                      className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                        deliveryMode === 'email_only'
+                          ? 'bg-[#FAF8F5] border-[#8A563D] ring-2 ring-[#8A563D]/20 shadow-xs'
+                          : 'bg-white border-[#E6E1DC] hover:border-[#8A563D]/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-[#1E1D1B]">
+                          <Mail className="w-4 h-4 text-[#8A563D]" />
+                          <span>Direct Email / SMTP Only</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-[#6E6A65] leading-relaxed">
+                        Bypasses Google Sheets completely and dispatches inquiries directly via Hostinger server mail or custom SMTP.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Notification Recipient Email */}
+                <div className="p-3.5 bg-[#FAF8F5] border border-[#E6E1DC] rounded-xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-[#3C3A36]">Lead Notification Email Inbox:</span>
+                    {!isEditingNotificationEmail ? (
+                      <button
+                        onClick={() => setIsEditingNotificationEmail(true)}
+                        className="text-xs font-semibold text-[#8A563D] hover:underline cursor-pointer"
+                      >
+                        Change Email
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleSaveNotificationEmail}
+                          className="text-xs font-bold text-[#1E7E34] hover:underline cursor-pointer"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setNotificationEmailInput(sheetsWebhookService.getNotificationEmail());
+                            setIsEditingNotificationEmail(false);
+                          }}
+                          className="text-xs font-semibold text-[#6E6A65] hover:underline cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {!isEditingNotificationEmail ? (
+                    <div className="flex items-center gap-2 text-xs font-mono bg-white border border-[#D8D1C7] px-3 py-2 rounded-lg text-[#1E1D1B]">
+                      <Mail className="w-3.5 h-3.5 text-[#8A563D]" />
+                      <span>{notificationEmailInput || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co'}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={notificationEmailInput}
+                        onChange={(e) => setNotificationEmailInput(e.target.value)}
+                        placeholder="citadelenquiry@gmail.com, enquiry@thecitadelgroup.co"
+                        className="flex-1 px-3 py-2 bg-white border border-[#8A563D] rounded-lg text-xs font-mono text-[#1E1D1B] focus:outline-hidden"
+                      />
+                      <button
+                        onClick={handleSaveNotificationEmail}
+                        className="px-3.5 py-2 bg-[#8A563D] text-white text-xs font-semibold rounded-lg"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Optional Custom SMTP Settings Box (Collapsible) */}
+                {showSmtpConfig && (
+                  <form onSubmit={handleSaveSmtp} className="p-4 bg-[#F5F2ED] border border-[#DDD6CE] rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-[#E0D9D0] pb-2">
+                      <div className="flex items-center gap-2">
+                        <Server className="w-4 h-4 text-[#8A563D]" />
+                        <h4 className="font-bold text-xs text-[#1E1D1B]">
+                          Custom SMTP Server Credentials (Optional)
+                        </h4>
+                      </div>
+                      <span className="text-[10px] text-[#6E6A65]">
+                        Leave blank to use Hostinger’s built-in server mail
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+                      <div>
+                        <label className="text-[10px] font-bold text-[#6E6A65] uppercase block mb-1">
+                          SMTP Host
+                        </label>
+                        <input
+                          type="text"
+                          value={smtpForm.host}
+                          onChange={(e) => setSmtpForm({ ...smtpForm, host: e.target.value })}
+                          placeholder="smtp.hostinger.com"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#D8D1C7] rounded-lg text-xs font-mono text-[#1E1D1B]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-[#6E6A65] uppercase block mb-1">
+                          Port
+                        </label>
+                        <input
+                          type="number"
+                          value={smtpForm.port}
+                          onChange={(e) => setSmtpForm({ ...smtpForm, port: Number(e.target.value) })}
+                          placeholder="465"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#D8D1C7] rounded-lg text-xs font-mono text-[#1E1D1B]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-[#6E6A65] uppercase block mb-1">
+                          Security
+                        </label>
+                        <select
+                          value={smtpForm.secure}
+                          onChange={(e) => setSmtpForm({ ...smtpForm, secure: e.target.value as 'ssl' | 'tls' })}
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#D8D1C7] rounded-lg text-xs font-semibold text-[#1E1D1B]"
+                        >
+                          <option value="ssl">SSL (Port 465)</option>
+                          <option value="tls">STARTTLS (Port 587)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-[#6E6A65] uppercase block mb-1">
+                          SMTP Username / Email
+                        </label>
+                        <input
+                          type="text"
+                          value={smtpForm.user}
+                          onChange={(e) => setSmtpForm({ ...smtpForm, user: e.target.value })}
+                          placeholder="sales@thecitadelgroup.in"
+                          className="w-full px-2.5 py-1.5 bg-white border border-[#D8D1C7] rounded-lg text-xs font-mono text-[#1E1D1B]"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-[#6E6A65] uppercase block mb-1">
+                        SMTP Password
+                      </label>
+                      <input
+                        type="password"
+                        value={smtpForm.pass}
+                        onChange={(e) => setSmtpForm({ ...smtpForm, pass: e.target.value })}
+                        placeholder="••••••••••••"
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#D8D1C7] rounded-lg text-xs font-mono text-[#1E1D1B]"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="text-[11px] text-[#6E6A65]">
+                        Supported: Hostinger Titan Mail (<code>smtp.titan.email</code>), Hostinger Webmail, Gmail App Passwords, or Amazon SES.
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {smtpConfig && (
+                          <button
+                            type="button"
+                            onClick={handleClearSmtp}
+                            className="px-3 py-1.5 text-xs text-red-600 hover:underline cursor-pointer"
+                          >
+                            Remove Custom SMTP
+                          </button>
+                        )}
+                        <button
+                          type="submit"
+                          className="px-4 py-1.5 bg-[#8A563D] hover:bg-[#734732] text-white text-xs font-semibold rounded-lg shadow-xs cursor-pointer"
+                        >
+                          Save SMTP Credentials
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </div>
+
               {/* Recorded Leads Feed & History */}
               <div className="bg-white rounded-2xl p-6 border border-[#E6E1DC] shadow-xs space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#F0EBE6] pb-3">
@@ -1251,6 +1652,21 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                               )}
                             </div>
                           </div>
+
+                          {/* Delivery channels badges */}
+                          {lead.deliveryChannels && lead.deliveryChannels.length > 0 && (
+                            <div className="flex items-center gap-1.5 pt-1">
+                              <span className="text-[10px] text-[#8C8781] font-medium">Dispatched via:</span>
+                              {lead.deliveryChannels.map((channel) => (
+                                <span
+                                  key={channel}
+                                  className="text-[9px] font-semibold px-2 py-0.5 bg-[#FAF8F5] border border-[#DDD6CE] text-[#3C3A36] rounded-md shadow-2xs"
+                                >
+                                  {channel}
+                                </span>
+                              ))}
+                            </div>
+                          )}
 
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-[#5C5752] pt-1">
                             <div>

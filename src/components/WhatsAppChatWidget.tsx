@@ -133,7 +133,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       case 'connect':
       default:
         return [
-          'Connect on WhatsApp (+91 70308 18966)',
+          'Connect on WhatsApp (+91 87799 75270)',
           'Schedule an In-Person Site Visit',
           'Request Cost Sheet & Pricing',
           'Explore Another Location',
@@ -171,7 +171,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
     ) {
       return {
         replyText:
-          'I would be happy to connect you directly with our senior relationship manager at Citadel Group. You can chat one-on-one with our advisory desk on WhatsApp at +91 70308 18966, or share your contact number below.',
+          'I would be happy to connect you directly with our senior relationship manager at Citadel Group. You can chat one-on-one with our advisory desk on WhatsApp at +91 87799 75270, or share your contact number below.',
         showConnectCard: true,
         nextStep: 'connect',
       };
@@ -419,7 +419,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
     // Default polite response
     return {
       replyText:
-        `Thank you for asking about "${userQuery}". Citadel Group develops landmark luxury residences and commercial spaces in Pune across Prabhat Road, Law College Road, and Walvekar Nagar / Parvati.\n\nWould you like to connect with our advisory desk on WhatsApp (+91 70308 18966) for detailed information?`,
+        `Thank you for asking about "${userQuery}". Citadel Group develops landmark luxury residences and commercial spaces in Pune across Prabhat Road, Law College Road, and Walvekar Nagar / Parvati.\n\nWould you like to connect with our advisory desk on WhatsApp (+91 87799 75270) for detailed information?`,
       showConnectCard: true,
       nextStep: 'connect',
     };
@@ -482,19 +482,19 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
     const projectSummary = interestedProjects.length > 0 ? interestedProjects.join(', ') : 'Citadel Developments';
 
     const conversationText = [
-      `🏛️ INQUIRY VIA WEBSITE CHATBOT — CITADEL GROUP`,
-      `━━━━━━━━━━━━━━━━━━━━━━`,
+      `INQUIRY VIA WEBSITE CHATBOT - CITADEL GROUP`,
+      `----------------------------------------`,
       `Name: ${userName.trim() || 'Website Visitor'}`,
       userPhone.trim() ? `Phone: ${userPhone.trim()}` : null,
       `Inquiry Focus: ${projectSummary}`,
-      userQuestions.length > 0 ? `Topics Discussed:\n${userQuestions.map((q) => `• "${q}"`).join('\n')}` : null,
-      `━━━━━━━━━━━━━━━━━━━━━━`,
-      `Connected via Citadel Web Concierge to +91 70308 18966`,
+      userQuestions.length > 0 ? `Topics Discussed:\n${userQuestions.map((q) => `- "${q}"`).join('\n')}` : null,
+      `----------------------------------------`,
+      `Connected via Citadel Web Concierge to +91 87799 75270`,
     ]
       .filter(Boolean)
       .join('\n');
 
-    // Asynchronously log to Google Sheets webhook & notify citadelenquiry@gmail.com
+    // Asynchronously log to Google Sheets webhook & notify dual inboxes
     sheetsWebhookService
       .submitLead({
         formType: 'Website Interactive Chatbot',
@@ -531,7 +531,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
           <button
             onClick={() => setIsOpen(true)}
             aria-label="Chat on WhatsApp"
-            title="Chat with Citadel Group on WhatsApp (+91 70308 18966)"
+            title="Chat with Citadel Group on WhatsApp (+91 87799 75270)"
             className="w-12 h-12 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer border border-white/80 relative"
           >
             <MessageCircle className="w-6 h-6 fill-current" />
@@ -634,7 +634,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
                         <span>Connect on WhatsApp</span>
                       </div>
                       <p className="text-[10px] text-[#6E6A65] leading-tight">
-                        Send this conversation directly to our senior advisory desk (+91 70308 18966):
+                        Send this conversation directly to our senior advisory desk (+91 87799 75270):
                       </p>
 
                       <div className="grid grid-cols-2 gap-1.5 pt-0.5">

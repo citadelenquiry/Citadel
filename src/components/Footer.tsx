@@ -179,14 +179,8 @@ export const Footer: React.FC<FooterProps> = ({
               </p>
               <div className="pt-2">
                 <a
-                  href="mailto:citadelenquiry@gmail.com"
-                  className="text-xs sm:text-sm text-[#242321] font-medium hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all"
-                >
-                  citadelenquiry@gmail.com
-                </a>
-                <a
                   href="mailto:enquiry@thecitadelgroup.co"
-                  className="text-xs text-[#6B6661] hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all mt-0.5"
+                  className="text-xs sm:text-sm text-[#242321] font-medium hover:text-[#A05C3B] underline underline-offset-2 transition-colors block break-all"
                 >
                   enquiry@thecitadelgroup.co
                 </a>
@@ -215,12 +209,12 @@ export const Footer: React.FC<FooterProps> = ({
                 Facebook
               </a>
               <a
-                href="https://wa.me/917030818966?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
+                href="https://wa.me/918779975270?text=Hello%20Citadel%20Group,%20I%20would%20like%20to%20know%20more%20about%20your%20projects."
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs sm:text-sm text-emerald-700 hover:text-emerald-800 font-semibold underline underline-offset-2 block transition-colors"
               >
-                WhatsApp (+91 70308 18966)
+                WhatsApp (+91 87799 75270)
               </a>
             </div>
           </div>

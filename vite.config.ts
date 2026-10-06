@@ -148,8 +148,8 @@ function adminApiPlugin(): Plugin {
                   projectOrRole: payload.projectOrRole || '',
                   details: payload.details || '',
                   message: payload.message || '',
-                  notificationEmail: payload.notificationEmail || 'citadelenquiry@gmail.com',
-                  whatsappNumber: payload.whatsappNumber || '7030818966',
+                  notificationEmail: payload.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co',
+                  whatsappNumber: payload.whatsappNumber || '8779975270',
                 }),
                 redirect: 'follow',
               });
@@ -203,6 +203,35 @@ function adminApiPlugin(): Plugin {
                   error: err?.message || 'Network error reaching Google Apps Script',
                 })
               );
+            }
+          });
+        } else {
+          res.statusCode = 405;
+          res.end('Method Not Allowed');
+        }
+      });
+
+      server.middlewares.use('/api/send-email.php', (req, res) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk;
+          });
+          req.on('end', () => {
+            res.setHeader('Content-Type', 'application/json');
+            try {
+              const data = JSON.parse(body || '{}');
+              res.statusCode = 200;
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  mode: data.smtp?.host ? 'smtp_simulated' : 'php_mail_simulated',
+                  message: `Dev Environment: Email payload validated for ${data.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co'}. On Hostinger production, this dispatches via live PHP mail / SMTP.`,
+                })
+              );
+            } catch {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ success: false, error: 'Invalid JSON payload' }));
             }
           });
         } else {

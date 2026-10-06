@@ -142,16 +142,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     <div>
                       <strong className="text-[#1E1D1B] block">Email Desk:</strong>
                       <a
-                        href="mailto:citadelenquiry@gmail.com"
+                        href="mailto:enquiry@thecitadelgroup.co"
                         className="text-[#8A563D] hover:underline font-medium break-all block"
                       >
-                        citadelenquiry@gmail.com (Enquiries)
-                      </a>
-                      <a
-                        href="mailto:enquiry@thecitadelgroup.co"
-                        className="text-xs text-[#6B6661] hover:underline break-all block mt-0.5"
-                      >
-                        enquiry@thecitadelgroup.co (Corporate)
+                        enquiry@thecitadelgroup.co
                       </a>
                     </div>
                   </div>
