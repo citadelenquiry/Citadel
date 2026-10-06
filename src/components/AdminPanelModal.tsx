@@ -98,7 +98,7 @@ function doPost(e) {
 
     // Automatically send instant email notification to dual inboxes
     try {
-      var notifyEmail = data.notificationEmail || "citadelenquiry@gmail.com, enquiry@thecitadelgroup.co";
+      var notifyEmail = data.notificationEmail || "citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co";
       var subject = "New Citadel Lead: " + (data.name || "Website Visitor") + " [" + (data.projectOrRole || "General") + "]";
       var emailBody = "NEW CITADEL GROUP WEBSITE ENQUIRY:\n\n" +
         "• Name: " + (data.name || "Not provided") + "\n" +
@@ -1379,7 +1379,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   {!isEditingNotificationEmail ? (
                     <div className="flex items-center gap-2 text-xs font-mono bg-white border border-[#D8D1C7] px-3 py-2 rounded-lg text-[#1E1D1B]">
                       <Mail className="w-3.5 h-3.5 text-[#8A563D]" />
-                      <span>{notificationEmailInput || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co'}</span>
+                      <span>{notificationEmailInput || 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co'}</span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
@@ -1387,7 +1387,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                         type="text"
                         value={notificationEmailInput}
                         onChange={(e) => setNotificationEmailInput(e.target.value)}
-                        placeholder="citadelenquiry@gmail.com, enquiry@thecitadelgroup.co"
+                        placeholder="citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co"
                         className="flex-1 px-3 py-2 bg-white border border-[#8A563D] rounded-lg text-xs font-mono text-[#1E1D1B] focus:outline-hidden"
                       />
                       <button

@@ -74,7 +74,7 @@ class SheetsWebhookService {
   public getNotificationEmail(): string {
     const saved = localStorage.getItem(STORAGE_KEY_NOTIFY_EMAIL);
     if (saved && saved.trim()) return saved.trim();
-    return CITADEL_WHATSAPP_CONFIG.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co';
+    return CITADEL_WHATSAPP_CONFIG.notificationEmail || 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co';
   }
 
   public setNotificationEmail(email: string): void {

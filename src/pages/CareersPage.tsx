@@ -36,7 +36,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ setCurrentPage }) => {
       projectOrRole: formData.role || 'Job Applicant',
       details,
       message: formData.message || '',
-      notificationEmail: 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co',
+      notificationEmail: 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co',
     });
 
     setIsSubmitting(false);

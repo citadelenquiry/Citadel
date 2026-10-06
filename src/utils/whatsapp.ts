@@ -1,14 +1,14 @@
 /**
  * WhatsApp integration utilities for Citadel Group
  * Configured Phone: 8779975270 (Sales: +91 87799 75270)
- * Dual Notification Emails: citadelenquiry@gmail.com, enquiry@thecitadelgroup.co
+ * Dual Notification Emails: citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co
  */
 
 export const CITADEL_WHATSAPP_CONFIG = {
   rawNumber: '8779975270',
   intlNumber: '918779975270',
   displayNumber: '+91 87799 75270',
-  notificationEmail: 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co',
+  notificationEmail: 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co',
   officialAddress: 'Swapnapurti Apts, Prabhat Road, Lane 8, Erandwane, Pune – 411 004',
 };
 

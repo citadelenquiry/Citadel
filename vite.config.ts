@@ -148,7 +148,7 @@ function adminApiPlugin(): Plugin {
                   projectOrRole: payload.projectOrRole || '',
                   details: payload.details || '',
                   message: payload.message || '',
-                  notificationEmail: payload.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co',
+                  notificationEmail: payload.notificationEmail || 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co',
                   whatsappNumber: payload.whatsappNumber || '8779975270',
                 }),
                 redirect: 'follow',
@@ -226,7 +226,7 @@ function adminApiPlugin(): Plugin {
                 JSON.stringify({
                   success: true,
                   mode: data.smtp?.host ? 'smtp_simulated' : 'php_mail_simulated',
-                  message: `Dev Environment: Email payload validated for ${data.notificationEmail || 'citadelenquiry@gmail.com, enquiry@thecitadelgroup.co'}. On Hostinger production, this dispatches via live PHP mail / SMTP.`,
+                  message: `Dev Environment: Email payload validated for ${data.notificationEmail || 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co'}. On Hostinger production, this dispatches via live PHP mail / SMTP.`,
                 })
               );
             } catch {

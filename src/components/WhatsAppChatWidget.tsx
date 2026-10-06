@@ -500,7 +500,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
         formType: 'Website Interactive Chatbot',
         name: userName.trim() || 'Website Visitor',
         phone: userPhone.trim() || 'Connected via WhatsApp',
-        email: 'citadelenquiry@gmail.com',
+        email: 'citadelgroupenquiry@gmail.com',
         projectOrRole: projectSummary,
         details: `Chat summary: ${userQuestions.join('; ')}`,
         message: conversationText,

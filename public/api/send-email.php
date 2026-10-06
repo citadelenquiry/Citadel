@@ -1,7 +1,7 @@
 <?php
 /**
  * Citadel Group - Production Resilient Email Dispatcher
- * Dispatches website inquiries to dual inboxes: citadelenquiry@gmail.com, enquiry@thecitadelgroup.co
+ * Dispatches website inquiries to dual inboxes: citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co
  * Supports both Hostinger Native PHP mail() and Custom SMTP (Hostinger Mail, Titan, Gmail).
  */
 
@@ -52,7 +52,7 @@ if ($recipientInput) {
     }
 }
 if (empty($recipientsList)) {
-    $recipientsList = ['citadelenquiry@gmail.com', 'enquiry@thecitadelgroup.co'];
+    $recipientsList = ['citadelgroupenquiry@gmail.com', 'enquiry@thecitadelgroup.co'];
 }
 $recipientString = implode(', ', $recipientsList);
 
