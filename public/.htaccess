@@ -1,5 +1,22 @@
 DirectoryIndex index.php index.html default.php
 
+# 1. Strict Cache-Control: Tell Browsers, LiteSpeed, and Hostinger CDN (hcdn) to NEVER cache HTML entry points
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|htm|php)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+    Header set X-LiteSpeed-Cache-Control "no-cache"
+    Header set X-Accel-Expires "0"
+  </FilesMatch>
+
+  # Cache versioned/hashed assets (js, css, images) with unique Vite hashes
+  <FilesMatch "\.(js|css|webp|avif|jpg|jpeg|png|gif|svg|woff|woff2|ttf|eot|mp4)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# 2. React SPA Fallback Routing
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
