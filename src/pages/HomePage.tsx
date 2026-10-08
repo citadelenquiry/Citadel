@@ -144,7 +144,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </h2>
 
             <p className="text-lg sm:text-2xl font-medium text-[#F4EFEA] leading-snug max-w-2xl mx-auto">
-              We offer exceptional residential and commercial spaces that meet the highest standards to our clients.
+              We offer exceptional residential and commercial spaces that meet the highest standards of our clients.
             </p>
 
             <p className="text-sm sm:text-base text-[#D4CFC9] leading-relaxed max-w-2xl mx-auto font-light">

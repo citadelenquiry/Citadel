@@ -166,8 +166,8 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 className="bg-white rounded-3xl p-8 border border-[#E6E1DC] shadow-xs flex flex-col justify-between space-y-6"
               >
                 <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-18 h-22 sm:w-20 sm:h-24 rounded-2xl overflow-hidden bg-[#FAF1EC] border-2 border-[#E8C2AF] text-[#8A563D] shrink-0 shadow-xs flex items-center justify-center">
+                  <div className="flex items-center gap-4.5">
+                    <div className="relative w-20 h-26 sm:w-22 sm:h-28 rounded-2xl overflow-hidden bg-[#FAF1EC] border-2 border-[#E8C2AF] text-[#8A563D] shrink-0 shadow-xs flex items-center justify-center">
                       <span className="font-editorial text-2xl font-bold select-none">
                         {partner.initials}
                       </span>
@@ -175,21 +175,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                         <img
                           src={getAssetUrl(partner.photo)}
                           alt={partner.name}
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-cover object-top"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />
                       )}
                     </div>
-                    <div>
-                      <h3 className="font-editorial text-2xl font-bold text-[#1E1D1B]">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-editorial text-2xl font-bold text-[#1E1D1B] truncate">
                         {partner.name}
                       </h3>
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#8A563D] block">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#8A563D] block mt-0.5">
                         {partner.role}
                       </span>
-                      <span className="text-[11px] text-[#7A7570] block mt-0.5 font-medium">
+                      <span className="text-[11px] text-[#7A7570] block mt-1 font-medium">
                         {partner.qualifications} &bull; {partner.experienceYears} Years Experience
                       </span>
                     </div>

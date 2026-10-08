@@ -42,7 +42,7 @@ export const companyProfileData = {
   missionStatements: [
     {
       title: 'Highest Standards of Excellence',
-      description: 'To offer exceptional spaces that meet the highest standards to our clients.',
+      description: 'To offer exceptional spaces that meet the highest standards of our clients.',
     },
     {
       title: 'Outstanding Creations',
