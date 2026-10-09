@@ -627,10 +627,10 @@ const rawProjectsData: Project[] = [
         bedrooms: 3,
         bathrooms: 3,
         balconies: 2,
-        image: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+        image: '/floor-plans/prabhat96/prabhat96-placeholder.png',
         images: [
           {
-            url: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+            url: '/floor-plans/prabhat96/prabhat96-placeholder.png',
             title: '3 BHK Flat 1 Architectural Floor Plan (1,420 Sq. Ft.)',
             badge: 'Floors 1 to 3 Layout',
             description: '1st to 3rd floors feature 2 flats of 3 BHK per floor. Flat 1 offers 1,420 sq. ft. RERA carpet area with master suite, living-dining salon, and sit-out balcony overlooking tree-lined Prabhat Road.',
@@ -654,10 +654,10 @@ const rawProjectsData: Project[] = [
         bedrooms: 3,
         bathrooms: 3,
         balconies: 2,
-        image: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+        image: '/floor-plans/prabhat96/prabhat96-placeholder.png',
         images: [
           {
-            url: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+            url: '/floor-plans/prabhat96/prabhat96-placeholder.png',
             title: '3 BHK Flat 2 Architectural Floor Plan (1,485 Sq. Ft.)',
             badge: 'Floors 1 to 3 Layout',
             description: '1st to 3rd floors feature 2 flats of 3 BHK per floor. Flat 2 offers 1,485 sq. ft. RERA carpet area with expansive living-dining hall, 3 ensuite bedrooms, and private viewing terrace.',

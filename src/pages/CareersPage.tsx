@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Page } from '../types';
 import { Briefcase, Send, CheckCircle2, Mail, MapPin } from 'lucide-react';
 import { sheetsWebhookService } from '../services/sheetsWebhookService';
+import { CITADEL_NOTIFICATION_EMAILS } from '../config/integrations';
 
 interface CareersPageProps {
   setCurrentPage?: (page: Page) => void;
@@ -36,7 +37,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ setCurrentPage }) => {
       projectOrRole: formData.role || 'Job Applicant',
       details,
       message: formData.message || '',
-      notificationEmail: 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co',
+      notificationEmail: CITADEL_NOTIFICATION_EMAILS,
     });
 
     setIsSubmitting(false);

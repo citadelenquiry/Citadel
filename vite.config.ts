@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, Plugin} from 'vite';
+import { CITADEL_APPS_SCRIPT_WEBHOOK_URL } from './src/config/integrations';
 
 function adminApiPlugin(): Plugin {
   return {
@@ -48,7 +49,7 @@ function adminApiPlugin(): Plugin {
               const targetUrl =
                 webhookUrl ||
                 process.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL ||
-                'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
+                CITADEL_APPS_SCRIPT_WEBHOOK_URL;
 
               const gRes = await fetch(targetUrl, {
                 method: 'POST',
@@ -135,7 +136,7 @@ function adminApiPlugin(): Plugin {
               const targetUrl =
                 payload.webhookUrl ||
                 process.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL ||
-                'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
+                CITADEL_APPS_SCRIPT_WEBHOOK_URL;
 
               const gRes = await fetch(targetUrl, {
                 method: 'POST',

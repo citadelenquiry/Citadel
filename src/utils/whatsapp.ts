@@ -4,11 +4,13 @@
  * Dual Notification Emails: citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co
  */
 
+import { CITADEL_NOTIFICATION_EMAILS } from '../config/integrations';
+
 export const CITADEL_WHATSAPP_CONFIG = {
   rawNumber: '8779975270',
   intlNumber: '918779975270',
   displayNumber: '+91 87799 75270',
-  notificationEmail: 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co',
+  notificationEmail: CITADEL_NOTIFICATION_EMAILS,
   officialAddress: 'Swapnapurti Apts, Prabhat Road, Lane 8, Erandwane, Pune – 411 004',
 };
 

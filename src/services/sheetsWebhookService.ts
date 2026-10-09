@@ -37,6 +37,8 @@ export interface StoredLeadRecord extends LeadSubmissionPayload {
   deliveryChannels?: string[];
 }
 
+import { CITADEL_APPS_SCRIPT_WEBHOOK_URL, CITADEL_NOTIFICATION_EMAILS } from '../config/integrations';
+
 export interface WebhookTestResult {
   success: boolean;
   statusCode?: number;
@@ -44,8 +46,7 @@ export interface WebhookTestResult {
   error?: string;
 }
 
-const DEFAULT_WEBHOOK_URL =
-  'https://script.google.com/macros/s/AKfycbz8cRvGuCHxi6sr-T0S3laRAwM7jmuNbvv303AtC5YwmFOYBiNVOTeYbw8HateV8tzdoA/exec';
+const DEFAULT_WEBHOOK_URL = CITADEL_APPS_SCRIPT_WEBHOOK_URL;
 
 const STORAGE_KEY_LEADS = 'citadel_recorded_leads';
 const STORAGE_KEY_CUSTOM_URL = 'citadel_custom_sheets_webhook_url';
@@ -74,7 +75,7 @@ class SheetsWebhookService {
   public getNotificationEmail(): string {
     const saved = localStorage.getItem(STORAGE_KEY_NOTIFY_EMAIL);
     if (saved && saved.trim()) return saved.trim();
-    return CITADEL_WHATSAPP_CONFIG.notificationEmail || 'citadelgroupenquiry@gmail.com, enquiry@thecitadelgroup.co';
+    return CITADEL_WHATSAPP_CONFIG.notificationEmail || CITADEL_NOTIFICATION_EMAILS;
   }
 
   public setNotificationEmail(email: string): void {
