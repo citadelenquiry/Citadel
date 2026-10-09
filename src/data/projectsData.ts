@@ -681,12 +681,12 @@ const rawProjectsData: Project[] = [
         bedrooms: 5,
         bathrooms: 6,
         balconies: 4,
-        image: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+        image: '/floor-plans/prabhat96/prabhat96-5bhk-placeholder.png',
         images: [
           {
-            url: '/floor-plans/prabhat96/prabhat96-floorplan.png',
+            url: '/floor-plans/prabhat96/prabhat96-5bhk-placeholder.png',
             title: '5 BHK Single-Floor Sky Residence Plan (3,100 Sq. Ft.)',
-            badge: 'Floors 4-13 & 15-16 Layout',
+            badge: '5 BHK Architectural Plan',
             description: '4th to 13th floors & 15th to 16th floors feature 1 single 5 BHK flat per floor (3,100 sq. ft. RERA carpet). Private elevator opens directly into your residence foyer with full 360-degree perimeter views.',
           },
         ],

@@ -1,0 +1,158 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1100' width='1600' height='1100'>
+  <defs>
+    <pattern id='grid' width='40' height='40' patternUnits='userSpaceOnUse'>
+      <path d='M 40 0 L 0 0 0 40' fill='none' stroke='#EAE3D9' stroke-width='0.75'/>
+    </pattern>
+    <pattern id='fineGrid' width='10' height='10' patternUnits='userSpaceOnUse'>
+      <path d='M 10 0 L 0 0 0 10' fill='none' stroke='#F2EDE5' stroke-width='0.5'/>
+    </pattern>
+    <linearGradient id='bgGradient' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#FAF8F5'/>
+      <stop offset='100%' stop-color='#F3EFEA'/>
+    </linearGradient>
+    <linearGradient id='goldGradient' x1='0' y1='0' x2='1' y2='0'>
+      <stop offset='0%' stop-color='#8A563D'/>
+      <stop offset='100%' stop-color='#B07455'/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width='1600' height='1100' fill='url(#bgGradient)'/>
+  <rect width='1600' height='1100' fill='url(#fineGrid)' opacity='0.7'/>
+  <rect width='1600' height='1100' fill='url(#grid)' opacity='0.85'/>
+
+  <!-- Border & Frames -->
+  <rect x='40' y='40' width='1520' height='1020' fill='none' stroke='#DDD5CA' stroke-width='2'/>
+  <rect x='48' y='48' width='1504' height='1004' fill='none' stroke='#8A563D' stroke-width='1' stroke-opacity='0.4'/>
+  <rect x='54' y='54' width='1492' height='992' fill='none' stroke='#E8E2D8' stroke-width='1'/>
+
+  <!-- Corner Ornaments -->
+  <path d='M 40 70 L 70 70 L 70 40' fill='none' stroke='#8A563D' stroke-width='2.5'/>
+  <path d='M 1560 70 L 1530 70 L 1530 40' fill='none' stroke='#8A563D' stroke-width='2.5'/>
+  <path d='M 40 1030 L 70 1030 L 70 1060' fill='none' stroke='#8A563D' stroke-width='2.5'/>
+  <path d='M 1560 1030 L 1530 1030 L 1530 1060' fill='none' stroke='#8A563D' stroke-width='2.5'/>
+
+  <!-- Header Banner -->
+  <g transform='translate(80, 80)'>
+    <text x='0' y='28' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='700' letter-spacing='4' fill='#8A563D'>CITADEL GROUP • ARCHITECTURAL CAD SCHEMATIC</text>
+    <text x='0' y='72' font-family='Cormorant Garamond, serif' font-size='44' font-weight='600' fill='#1E1D1B' letter-spacing='1'>96 PRABHAT — 5 BHK SKY RESIDENCE</text>
+    <text x='0' y='104' font-family='Plus Jakarta Sans, sans-serif' font-size='15' font-weight='500' fill='#6E6862'>Lane 2, Prabhat Road, Erandwane, Pune 411004 • Full Floor Plate</text>
+  </g>
+
+  <!-- Metric Badges Top Right -->
+  <g transform='translate(1090, 80)'>
+    <rect x='0' y='0' width='430' height='95' rx='12' fill='#FFFFFF' stroke='#E2D9CE' stroke-width='1.5' filter='drop-shadow(0 4px 12px rgba(0,0,0,0.03))'/>
+    <text x='24' y='32' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='2' fill='#8A563D'>RERA CARPET AREA</text>
+    <text x='24' y='68' font-family='Cormorant Garamond, serif' font-size='38' font-weight='700' fill='#1E1D1B'>3,100 SQ. FT.</text>
+    <rect x='280' y='22' width='125' height='50' rx='8' fill='#FAF1EC' stroke='#E8C2AF' stroke-width='1'/>
+    <text x='342' y='42' font-family='Plus Jakarta Sans, sans-serif' font-size='10' font-weight='700' fill='#8A563D' text-anchor='middle'>FLOORS 4–13 &amp; 15–16</text>
+    <text x='342' y='58' font-family='Plus Jakarta Sans, sans-serif' font-size='9' font-weight='600' fill='#5A544E' text-anchor='middle'>1 FLAT PER FLOOR</text>
+  </g>
+
+  <!-- Central Floor Plan Schematic Illustration -->
+  <g transform='translate(100, 225)'>
+    <!-- Outer Building Perimeter -->
+    <rect x='0' y='0' width='1400' height='580' rx='8' fill='#FFFFFF' stroke='#1E1D1B' stroke-width='3'/>
+    
+    <!-- Outer balcony perimeters (dotted) -->
+    <rect x='-20' y='80' width='20' height='420' fill='#F6F2EC' stroke='#8A563D' stroke-width='1.5' stroke-dasharray='4,4'/>
+    <text x='-10' y='300' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='600' fill='#8A563D' transform='rotate(-90, -10, 300)' text-anchor='middle'>WEST VIEWING TERRACE</text>
+    
+    <rect x='1400' y='80' width='20' height='420' fill='#F6F2EC' stroke='#8A563D' stroke-width='1.5' stroke-dasharray='4,4'/>
+    <text x='1410' y='300' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='600' fill='#8A563D' transform='rotate(90, 1410, 300)' text-anchor='middle'>EAST TREE-LINED BALCONY</text>
+
+    <!-- Zone 1: Private Elevator Lobby & Foyer (Center Core) -->
+    <rect x='580' y='20' width='240' height='160' fill='#FAF1EC' stroke='#8A563D' stroke-width='2'/>
+    <text x='700' y='65' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='700' fill='#8A563D' text-anchor='middle'>EXCLUSIVE ELEVATOR</text>
+    <text x='700' y='85' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='600' fill='#1E1D1B' text-anchor='middle'>PRIVATE ENTRY FOYER</text>
+    <text x='700' y='110' font-family='Plus Jakarta Sans, sans-serif' font-size='10' font-weight='500' fill='#7A726A' text-anchor='middle'>Direct Lift Access into Home</text>
+    <!-- Elevator symbols -->
+    <rect x='610' y='130' width='80' height='35' rx='4' fill='#FFFFFF' stroke='#DDD5CA'/>
+    <text x='650' y='152' font-family='Plus Jakarta Sans, sans-serif' font-size='9' font-weight='700' fill='#8A563D' text-anchor='middle'>LIFT 1</text>
+    <rect x='710' y='130' width='80' height='35' rx='4' fill='#FFFFFF' stroke='#DDD5CA'/>
+    <text x='750' y='152' font-family='Plus Jakarta Sans, sans-serif' font-size='9' font-weight='700' fill='#8A563D' text-anchor='middle'>LIFT 2</text>
+
+    <!-- Zone 2: Grand Palatial Living Salon & Dining (Center South) -->
+    <rect x='480' y='200' width='440' height='360' fill='#FAF8F5' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='700' y='260' font-family='Cormorant Garamond, serif' font-size='26' font-weight='700' fill='#1E1D1B' text-anchor='middle'>GRAND LIVING SALON</text>
+    <text x='700' y='290' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='600' fill='#8A563D' text-anchor='middle'>&amp; BANQUET DINING AREA</text>
+    <text x='700' y='325' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='500' fill='#6E6862' text-anchor='middle'>Sprawling Double-Width Entertainment Suite</text>
+    <!-- Extended Sit-out Deck Indicator -->
+    <rect x='520' y='460' width='360' height='80' rx='6' fill='#FFFFFF' stroke='#8A563D' stroke-width='1.5' stroke-dasharray='5,5'/>
+    <text x='700' y='505' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='600' fill='#8A563D' text-anchor='middle'>EXTENDED SIT-OUT TERRACE OVERLOOKING PRABHAT ROAD</text>
+
+    <!-- Zone 3: Master Suite 1 & Bedroom 2 (Left / West Wing) -->
+    <rect x='20' y='20' width='440' height='260' fill='#FFFFFF' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='240' y='120' font-family='Cormorant Garamond, serif' font-size='22' font-weight='700' fill='#1E1D1B' text-anchor='middle'>PRESIDENTIAL MASTER SUITE</text>
+    <text x='240' y='150' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='600' fill='#8A563D' text-anchor='middle'>Walk-in Dressing Gallery &amp; Spa Bath</text>
+    <text x='240' y='180' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='500' fill='#7A726A' text-anchor='middle'>Attached Private Sunset Sit-out</text>
+
+    <rect x='20' y='300' width='440' height='260' fill='#FFFFFF' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='240' y='410' font-family='Cormorant Garamond, serif' font-size='20' font-weight='700' fill='#1E1D1B' text-anchor='middle'>BEDROOM 2 (ENSUITE)</text>
+    <text x='240' y='440' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='600' fill='#6E6862' text-anchor='middle'>Spacious Family Bedroom with Balcony</text>
+    <text x='240' y='465' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='500' fill='#7A726A' text-anchor='middle'>Designer Bathroom &amp; Wardrobe Niche</text>
+
+    <!-- Zone 4: Bedrooms 3, 4 & 5 + Gourmet Kitchen (Right / East Wing) -->
+    <rect x='940' y='20' width='440' height='170' fill='#FFFFFF' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='1160' y='90' font-family='Cormorant Garamond, serif' font-size='20' font-weight='700' fill='#1E1D1B' text-anchor='middle'>BEDROOM 3 (ENSUITE)</text>
+    <text x='1160' y='115' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='500' fill='#6E6862' text-anchor='middle'>Attached Luxury Washroom &amp; Balcony</text>
+
+    <rect x='940' y='210' width='440' height='160' fill='#FFFFFF' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='1160' y='275' font-family='Cormorant Garamond, serif' font-size='20' font-weight='700' fill='#1E1D1B' text-anchor='middle'>BEDROOM 4 &amp; 5 (ENSUITE)</text>
+    <text x='1160' y='305' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='500' fill='#6E6862' text-anchor='middle'>Guest Suites / Study Lounge with Bathrooms</text>
+
+    <rect x='940' y='390' width='440' height='170' fill='#FFFFFF' stroke='#CFC5B8' stroke-width='2'/>
+    <text x='1160' y='460' font-family='Cormorant Garamond, serif' font-size='20' font-weight='700' fill='#1E1D1B' text-anchor='middle'>CHEF’S GOURMET KITCHEN</text>
+    <text x='1160' y='485' font-family='Plus Jakarta Sans, sans-serif' font-size='12' font-weight='500' fill='#6E6862' text-anchor='middle'>Connected Utility, Dry Balcony &amp; Pantry</text>
+
+    <!-- Center Architectural Watermark / Stamp -->
+    <g transform='translate(500, 360)' opacity='0.92'>
+      <rect x='0' y='0' width='400' height='70' rx='8' fill='#1E1D1B' filter='drop-shadow(0 6px 16px rgba(0,0,0,0.15))'/>
+      <text x='200' y='28' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='2.5' fill='#E8C2AF' text-anchor='middle'>ARCHITECTURAL FLOOR PLAN</text>
+      <text x='200' y='50' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='600' fill='#FFFFFF' text-anchor='middle'>FINAL DETAILED CAD IN RERA PREPARATION</text>
+    </g>
+  </g>
+
+  <!-- Bottom Specifications Bar -->
+  <g transform='translate(100, 835)'>
+    <rect x='0' y='0' width='1400' height='170' rx='12' fill='#FFFFFF' stroke='#DDD5CA' stroke-width='1.5'/>
+    
+    <!-- Col 1 -->
+    <g transform='translate(40, 28)'>
+      <text x='0' y='18' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='1.5' fill='#8A563D'>FLOOR CONFIGURATION</text>
+      <text x='0' y='46' font-family='Plus Jakarta Sans, sans-serif' font-size='15' font-weight='700' fill='#1E1D1B'>Floors 4 to 13 &amp; 15 to 16</text>
+      <text x='0' y='72' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>1 Single 5 BHK flat per floor</text>
+      <text x='0' y='96' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Complete floor plate privacy</text>
+    </g>
+
+    <line x1='370' y1='25' x2='370' y2='145' stroke='#EDE7DF' stroke-width='1.5'/>
+
+    <!-- Col 2 -->
+    <g transform='translate(410, 28)'>
+      <text x='0' y='18' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='1.5' fill='#8A563D'>PRIVATE ACCESS</text>
+      <text x='0' y='46' font-family='Plus Jakarta Sans, sans-serif' font-size='15' font-weight='700' fill='#1E1D1B'>Direct Elevator Entry</text>
+      <text x='0' y='72' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Private elevator opens directly into foyer</text>
+      <text x='0' y='96' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Zero shared corridors on residences</text>
+    </g>
+
+    <line x1='770' y1='25' x2='770' y2='145' stroke='#EDE7DF' stroke-width='1.5'/>
+
+    <!-- Col 3 -->
+    <g transform='translate(810, 28)'>
+      <text x='0' y='18' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='1.5' fill='#8A563D'>LIFESTYLE &amp; AMENITIES</text>
+      <text x='0' y='46' font-family='Plus Jakarta Sans, sans-serif' font-size='15' font-weight='700' fill='#1E1D1B'>14th Floor Recreational Club</text>
+      <text x='0' y='72' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Dedicated floor: Gym, Yoga &amp; Banquet Hall</text>
+      <text x='0' y='96' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Panoramic views across Prabhat Road</text>
+    </g>
+
+    <line x1='1170' y1='25' x2='1170' y2='145' stroke='#EDE7DF' stroke-width='1.5'/>
+
+    <!-- Col 4 -->
+    <g transform='translate(1210, 28)'>
+      <text x='0' y='18' font-family='Plus Jakarta Sans, sans-serif' font-size='11' font-weight='700' letter-spacing='1.5' fill='#8A563D'>VAASTU &amp; ORIENTATION</text>
+      <text x='0' y='46' font-family='Plus Jakarta Sans, sans-serif' font-size='15' font-weight='700' fill='#1E1D1B'>100% Vaastu Compliant</text>
+      <text x='0' y='72' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#6E6862'>Cross-ventilation on all 4 directions</text>
+      <text x='0' y='96' font-family='Plus Jakarta Sans, sans-serif' font-size='13' font-weight='500' fill='#8A563D'>P + 16 Storey Landmark Tower</text>
+    </g>
+  </g>
+</svg>
