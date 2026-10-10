@@ -594,10 +594,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-3.5 left-3.5 bg-[#1E1D1B]/80 backdrop-blur-xs text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">
-                        {project.category}
-                      </div>
-                      <div className="absolute top-3.5 right-3.5 bg-[#E8C2AF] text-[#1E1D1B] text-[10px] font-bold uppercase px-3 py-1 rounded-full shadow-xs">
                         {project.status}
+                      </div>
+                      <div className="absolute top-3.5 right-3.5 bg-[#E8C2AF] text-[#1E1D1B] text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
+                        {project.category === 'Redevelopment' ? 'Residential' : project.category}
                       </div>
                     </div>
 
@@ -617,22 +617,22 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                       </div>
 
                       <div className="space-y-3 pt-3 border-t border-[#F0EBE6]">
-                        <div className="flex items-center justify-between text-xs text-[#5C5752]">
-                          <span className="text-[11px] font-medium text-[#8C8781]">Structure</span>
-                          <span className="font-semibold text-[#1E1D1B]">{project.floors}</span>
+                        <div className="flex items-center justify-between text-xs text-[#5C5752] gap-4">
+                          <span className="text-[11px] font-medium text-[#8C8781] shrink-0">Structure</span>
+                          <span className="font-semibold text-[#1E1D1B] text-right ml-auto">{project.floors}</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-[#5C5752]">
-                          <span className="text-[11px] font-medium text-[#8C8781]">Units / Layout</span>
-                          <span className="font-semibold text-[#1E1D1B]">{project.unitsCount}</span>
+                        <div className="flex items-start justify-between text-xs text-[#5C5752] gap-4">
+                          <span className="text-[11px] font-medium text-[#8C8781] shrink-0">Units / Layout</span>
+                          <span className="font-semibold text-[#1E1D1B] text-right ml-auto">{project.unitsCount}</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-[#5C5752]">
-                          <span className="text-[11px] font-medium text-[#8C8781]">Total Area</span>
-                          <span className="font-bold text-[#8A563D]">{project.areaSqFt}</span>
+                        <div className="flex items-center justify-between text-xs text-[#5C5752] gap-4">
+                          <span className="text-[11px] font-medium text-[#8C8781] shrink-0">Total Area</span>
+                          <span className="font-bold text-[#8A563D] text-right ml-auto">{project.areaSqFt}</span>
                         </div>
                         {project.reraNumber && (
-                          <div className="flex items-center justify-between text-xs text-[#5C5752]">
-                            <span className="text-[11px] font-medium text-[#8C8781]">MahaRERA</span>
-                            <span className="font-bold text-[#8A563D] text-[11px]">{project.reraNumber}</span>
+                          <div className="flex items-center justify-between text-xs text-[#5C5752] gap-4">
+                            <span className="text-[11px] font-medium text-[#8C8781] shrink-0">MahaRERA</span>
+                            <span className="font-bold text-[#8A563D] text-[11px] text-right ml-auto">{project.reraNumber}</span>
                           </div>
                         )}
 

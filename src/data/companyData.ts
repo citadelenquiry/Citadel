@@ -76,7 +76,7 @@ export const companyProfileData = {
       role: 'Partner',
       category: 'partner' as const,
       experienceYears: 11,
-      qualifications: 'Partner',
+      qualifications: 'B.A',
       initials: 'SM',
       photo: '/partners/suvarna-mahajani.jpeg',
       responsibilities: [
