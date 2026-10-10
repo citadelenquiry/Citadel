@@ -1,4 +1,4 @@
-export const ASSET_VERSION = '20261009-v2';
+export const ASSET_VERSION = '20261010-v3';
 
 /**
  * Resolves static asset URLs so they work across all hosting environments:

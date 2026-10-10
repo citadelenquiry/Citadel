@@ -267,7 +267,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       const proj = projectsData.find((p) => p.id === '96-prabhat');
       return {
         replyText:
-          '96 Prabhat (Lane 2, Prabhat Road, Erandwane, Pune 411004):\n\n• Configurations: 3 BHK (Floors 1-3, 2 flats per floor: 1,420 & 1,485 sq. ft. RERA carpet) & Palatial 5 BHK Single-Floor Sky Residences (Floors 4-13 & 15-16: 3,100 sq. ft. RERA carpet).\n• Total Structure: P + 16 Floors.\n• Status: Upcoming luxury residential landmark.\n• Key Highlights: Heritage Lane 2 location, private elevator opening directly into residence foyer, 14th-floor dedicated recreational floor with gym/yoga/hall, and unobstructed 360-degree views.\n\nWould you like floor plans, amenities, or to connect on WhatsApp?',
+          '96 Prabhat (Lane 2, Prabhat Road, Erandwane, Pune 411004):\n\n• Configurations: 3 BHK (Floors 1-3, 2 flats per floor: 1,336.35 & 1,382.85 sq. ft. RERA carpet) & Palatial 5 BHK Single-Floor Sky Residences (Floors 4-13 & 15-16: 3,702.71 sq. ft. RERA carpet).\n• Total Structure: P + 16 Floors.\n• Status: Upcoming luxury residential landmark.\n• Key Highlights: Heritage Lane 2 location, private elevator opening directly into residence foyer, 14th-floor dedicated recreational floor with gym/yoga/hall, and unobstructed 360-degree views.\n\nWould you like floor plans, amenities, or to connect on WhatsApp?',
         projectId: proj?.id,
         nextStep: 'details',
         nextProject: proj,
@@ -385,14 +385,14 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       if (currentSelectedProject?.id === '96-prabhat' || q.includes('prabhat') || q.includes('96')) {
         return {
           replyText:
-            '96 Prabhat (Prabhat Road, Lane 2) Floor Plans:\n• 1st to 3rd Floors (2 flats of 3 BHK per floor):\n  - Flat 1: 1,420 Sq. Ft. RERA Carpet (Living lounge, open sit-out, master suite)\n  - Flat 2: 1,485 Sq. Ft. RERA Carpet (Grand living salon, viewing balcony, 3 ensuite bedrooms)\n• 4th to 13th & 15th to 16th Floors (1 Single 5 BHK flat per floor):\n  - Palatial Sky Residence: 3,100 Sq. Ft. RERA Carpet with private elevator directly into your residence foyer\n• 14th Floor: Dedicated recreational club floor with gym, yoga studio and banquet hall.',
+            '96 Prabhat (Prabhat Road, Lane 2) Floor Plans:\n• 1st to 3rd Floors (2 flats of 3 BHK per floor):\n  - Flat 1: 1,336.35 Sq. Ft. RERA Carpet (Living lounge, open sit-out, master suite)\n  - Flat 2: 1,382.85 Sq. Ft. RERA Carpet (Grand living salon, viewing balcony, 3 ensuite bedrooms)\n• 4th to 13th & 15th to 16th Floors (1 Single 5 BHK flat per floor):\n  - Palatial Sky Residence: 3,702.71 Sq. Ft. RERA Carpet with private elevator directly into your residence foyer\n• 14th Floor: Dedicated recreational club floor with gym, yoga studio and banquet hall.',
           showConnectCard: true,
           nextStep: 'connect',
         };
       }
       return {
         replyText:
-          'Citadel Group floor plans are engineered with zero dead circulation space:\n• Law College Road: 2, 3 & 4 BHK at Janki Shreyas CHS (881 to 1530.96 Sq. Ft. RERA Carpet)\n• Prabhat Road (Lane 2): 3 & 5 BHK at 96 Prabhat (1,420, 1,485 & 3,100 Sq. Ft. RERA Carpet across P+16 floors)\n• Walvekar Nagar / Parvati: 2 & 3 BHK at Friends CHS (932 & 1270 Sq. Ft. RERA Carpet), 5 BHK at Manisha CHS (2344.4 Sq. Ft. RERA Carpet), 2 & 3 BHK at Anandshree CHS (906 & 1225 Sq. Ft. RERA Carpet), and Grade-A Retail/Offices at Walvekar Commercials.\n\nShall I connect you with our advisory desk on WhatsApp to receive the complete CAD drawings dossier?',
+          'Citadel Group floor plans are engineered with zero dead circulation space:\n• Law College Road: 2, 3 & 4 BHK at Janki Shreyas CHS (881 to 1530.96 Sq. Ft. RERA Carpet)\n• Prabhat Road (Lane 2): 3 & 5 BHK at 96 Prabhat (1,336.35, 1,382.85 & 3,702.71 Sq. Ft. RERA Carpet across P+16 floors)\n• Walvekar Nagar / Parvati: 2 & 3 BHK at Friends CHS (932 & 1270 Sq. Ft. RERA Carpet), 5 BHK at Manisha CHS (2344.4 Sq. Ft. RERA Carpet), 2 & 3 BHK at Anandshree CHS (906 & 1225 Sq. Ft. RERA Carpet), and Grade-A Retail/Offices at Walvekar Commercials.\n\nShall I connect you with our advisory desk on WhatsApp to receive the complete CAD drawings dossier?',
         showConnectCard: true,
         nextStep: 'connect',
       };

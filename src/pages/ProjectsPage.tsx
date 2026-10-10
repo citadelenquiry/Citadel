@@ -1145,7 +1145,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A563D] bg-[#E8C2AF]/40 px-2.5 py-1 rounded-md">
                       {activeFloorPlan.type}
                     </span>
-                    <h3 className="font-editorial text-3xl font-bold text-[#1E1D1B] mt-2">
+                    <h3 className="font-sans text-xl sm:text-2xl lg:text-[26px] font-bold text-[#1E1D1B] tracking-tight mt-2.5 leading-snug">
                       {activeFloorPlan.name}
                     </h3>
                   </div>

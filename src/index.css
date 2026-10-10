@@ -11,6 +11,18 @@
   --color-citadel-muted: #5C5A56;
 }
 
+/* Enforce lining numerals globally so numbers never dip or jump baseline */
+html,
+body,
+*,
+*::before,
+*::after {
+  font-variant-numeric: lining-nums tabular-nums;
+  -moz-font-feature-settings: "lnum" 1, "tnum" 1;
+  -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: #F8F6F3;
@@ -20,10 +32,14 @@ body {
 
 .font-editorial {
   font-family: var(--font-serif);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
 .font-brand {
   font-family: var(--font-cinzel);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
 }
 
 /* Custom scrollbar */
