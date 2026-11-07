@@ -28,6 +28,7 @@ import {
   X,
 } from 'lucide-react';
 import { BrochureModal } from '../components/BrochureModal';
+import { getAssetUrl } from '../utils/assets';
 
 interface ProjectsPageProps {
   selectedProjectId: string;
@@ -126,32 +127,40 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   const handleBrochureClick = async (projectToDownload: Project = currentProject) => {
     if (isUnlocked) {
       try {
-        const elevationUrl = projectToDownload.heroImage || projectToDownload.gallery[0];
-        const resp = await fetch(elevationUrl);
+        const isPdf = Boolean(projectToDownload.brochureUrl);
+        const downloadUrl = projectToDownload.brochureUrl
+          ? getAssetUrl(projectToDownload.brochureUrl)
+          : getAssetUrl(projectToDownload.heroImage || projectToDownload.gallery[0]);
+
+        const resp = await fetch(downloadUrl);
         if (resp.ok) {
           const blob = await resp.blob();
           const blobUrl = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = blobUrl;
-          const ext = elevationUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg';
-          link.download = `${projectToDownload.slug}-elevation.${ext}`;
+          const ext = isPdf ? 'pdf' : (downloadUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg');
+          link.download = isPdf ? `${projectToDownload.slug}-brochure.pdf` : `${projectToDownload.slug}-elevation.${ext}`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(blobUrl);
         } else {
           const link = document.createElement('a');
-          link.href = elevationUrl;
-          link.download = `${projectToDownload.slug}-elevation.jpeg`;
+          link.href = downloadUrl;
+          link.download = isPdf ? `${projectToDownload.slug}-brochure.pdf` : `${projectToDownload.slug}-elevation.jpeg`;
           link.target = '_blank';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         }
       } catch {
+        const isPdf = Boolean(projectToDownload.brochureUrl);
+        const downloadUrl = projectToDownload.brochureUrl
+          ? getAssetUrl(projectToDownload.brochureUrl)
+          : getAssetUrl(projectToDownload.heroImage || projectToDownload.gallery[0]);
         const link = document.createElement('a');
-        link.href = projectToDownload.heroImage || projectToDownload.gallery[0];
-        link.download = `${projectToDownload.slug}-elevation.jpeg`;
+        link.href = downloadUrl;
+        link.download = isPdf ? `${projectToDownload.slug}-brochure.pdf` : `${projectToDownload.slug}-elevation.jpeg`;
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
@@ -948,7 +957,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                 </h2>
                 <p className="text-xs sm:text-sm text-[#6E6A65] mt-2">
                   {currentProject.id === 'walvekar-commercial'
-                    ? 'Explore delivered commercial office suites and showroom floor layouts at Walvekar Commercial.'
+                    ? 'Explore delivered commercial office suites and showroom floor layouts at Citadel Commercial.'
                     : 'Explore master layouts designed with zero dead space and optimal cross-ventilation.'}
                 </p>
               </div>

@@ -3,6 +3,7 @@ import { X, Download, FileText, CheckCircle, Mail, Phone, User, MessageSquare, E
 import { Project } from '../types';
 import { sheetsWebhookService } from '../services/sheetsWebhookService';
 import { CITADEL_WHATSAPP_CONFIG } from '../utils/whatsapp';
+import { getAssetUrl } from '../utils/assets';
 
 interface BrochureModalProps {
   isOpen: boolean;
@@ -50,34 +51,42 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
       whatsappNumber: CITADEL_WHATSAPP_CONFIG.rawNumber,
     });
 
-    // Trigger instant client-side download of the official architectural elevation image
+    // Trigger instant client-side download of the official project PDF brochure (or elevation render)
     try {
-      const elevationUrl = project.heroImage || project.gallery[0];
-      const resp = await fetch(elevationUrl);
+      const isPdf = Boolean(project.brochureUrl);
+      const targetUrl = project.brochureUrl
+        ? getAssetUrl(project.brochureUrl)
+        : getAssetUrl(project.heroImage || project.gallery[0]);
+
+      const resp = await fetch(targetUrl);
       if (resp.ok) {
         const blob = await resp.blob();
         const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = blobUrl;
-        const ext = elevationUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg';
-        link.download = `${project.slug}-elevation.${ext}`;
+        const ext = isPdf ? 'pdf' : (targetUrl.toLowerCase().includes('.png') ? 'png' : 'jpeg');
+        link.download = isPdf ? `${project.slug}-brochure.pdf` : `${project.slug}-elevation.${ext}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(blobUrl);
       } else {
         const link = document.createElement('a');
-        link.href = elevationUrl;
-        link.download = `${project.slug}-elevation.jpeg`;
+        link.href = targetUrl;
+        link.download = isPdf ? `${project.slug}-brochure.pdf` : `${project.slug}-elevation.jpeg`;
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       }
     } catch {
+      const isPdf = Boolean(project.brochureUrl);
+      const targetUrl = project.brochureUrl
+        ? getAssetUrl(project.brochureUrl)
+        : getAssetUrl(project.heroImage || project.gallery[0]);
       const link = document.createElement('a');
-      link.href = project.heroImage || project.gallery[0];
-      link.download = `${project.slug}-elevation.jpeg`;
+      link.href = targetUrl;
+      link.download = isPdf ? `${project.slug}-brochure.pdf` : `${project.slug}-elevation.jpeg`;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
@@ -118,15 +127,22 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({
               <CheckCircle className="w-8 h-8 text-[#A05C3B]" />
             </div>
             <h3 className="font-editorial text-2xl font-bold text-[#1E1D1B]">
-              {mode === 'floorplans' ? 'Floor Plans Unlocked!' : 'Elevation Image & Dossier Downloaded!'}
+              {mode === 'floorplans'
+                ? 'Floor Plans Unlocked!'
+                : project.brochureUrl
+                ? 'Project Brochure Downloaded!'
+                : 'Elevation Image & Dossier Downloaded!'}
             </h3>
             <p className="text-xs text-[#5C5752] leading-relaxed">
-              Thank you, <strong className="text-[#1E1D1B]">{firstName}</strong>! The official architectural elevation render for <strong>{project.title}</strong> has been downloaded to your device, and floor plans are now unlocked.
+              Thank you, <strong className="text-[#1E1D1B]">{firstName}</strong>!{' '}
+              {project.brochureUrl
+                ? `The official brochure PDF for ${project.title} has been downloaded to your device, and full floor plans are now unlocked.`
+                : `The official architectural elevation render for ${project.title} has been downloaded to your device, and floor plans are now unlocked.`}
             </p>
             <div className="bg-[#EFE9E2] p-4 rounded-xl text-left text-xs space-y-2 border border-[#E2DBD3]">
               <div className="flex items-center gap-2 text-[#1E1D1B] font-semibold">
                 <FileText className="w-4 h-4 text-[#A05C3B]" />
-                <span>{project.title} - Architectural Elevation & Plans</span>
+                <span>{project.title} - {project.brochureUrl ? 'Official Project Brochure (PDF)' : 'Architectural Elevation & Plans'}</span>
               </div>
               <p className="text-[11px] text-[#6B6661]">
                 All floor plans, unit measurements, and layout views are now unblurred for your active viewing session.

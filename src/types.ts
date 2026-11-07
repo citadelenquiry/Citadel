@@ -47,6 +47,7 @@ export interface Project {
   reraNumber: string;
   hidden?: boolean;
   heroImage: string;
+  brochureUrl?: string;
   gallery: string[];
   overviewText: string;
   detailedDescription: string;

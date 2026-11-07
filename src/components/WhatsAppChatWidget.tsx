@@ -109,7 +109,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
           return [
             'Friends CHS (2 & 3 BHK)',
             'Manisha CHS (5 BHK Sky Villa)',
-            'Walvekar Commercials (Offices & Retail)',
+            'Citadel Commercial (Offices & Retail)',
             'Anandshree CHS (2 & 3 BHK Completed)',
             'Connect with us on WhatsApp',
           ];
@@ -118,7 +118,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
           '96 Prabhat (Prabhat Road)',
           'Janki Shreyas CHS (Law College Road)',
           'Friends CHS (Walvekar Nagar)',
-          'Walvekar Commercials (Walvekar Nagar)',
+          'Citadel Commercial (Walvekar Nagar)',
           'Anandshree CHS (Walvekar Nagar)',
         ];
 
@@ -227,7 +227,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
         const proj = projectsData.find((p) => p.id === 'walvekar-commercial');
         return {
           replyText:
-            'Walvekar Commercials (Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Status: Completed & operational boutique commercial complex (20,000 sq. ft., P + 5 floors).\n• 1st Floor Retail: 1,905.22 Sq. Ft. RERA Carpet (Single grand anchor showroom with road frontage)\n• 2nd Floor Executive Office: 1,905.22 Sq. Ft. RERA Carpet (Full corporate floor plate)\n• 3rd to 5th Floors: 2 Corporate Offices per floor (Office 1: 913.86 & Office 2: 980.60 Sq. Ft. RERA Carpet)\n• Highlights: High footfall corridor, perimeter glass glazing, dedicated elevator, and ample parking.\n\nWould you like floor plans, or to connect on WhatsApp?',
+            'Citadel Commercial (Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Status: Completed & operational boutique commercial complex (20,000 sq. ft., P + 5 floors).\n• 1st Floor Retail: 1,905.22 Sq. Ft. RERA Carpet (Single grand anchor showroom with road frontage)\n• 2nd Floor Executive Office: 1,905.22 Sq. Ft. RERA Carpet (Full corporate floor plate)\n• 3rd to 5th Floors: 2 Corporate Offices per floor (Office 1: 913.86 & Office 2: 980.60 Sq. Ft. RERA Carpet)\n• Highlights: High footfall corridor, perimeter glass glazing, dedicated elevator, and ample parking.\n\nWould you like floor plans, or to connect on WhatsApp?',
           projectId: proj?.id,
           nextStep: 'details',
           nextProject: proj,
@@ -247,7 +247,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
 
       return {
         replyText:
-          'Walvekar Nagar / Parvati, Pune:\nA thriving central zone where Citadel Group has delivered and is currently developing landmark residential and commercial schemes.\n\nProjects in this location:\n1. Friends CHS — Ongoing 2 & 3 BHK residential redevelopment (Walvekar Path, RERA: P52100078109)\n2. Manisha — Ongoing palatial 5 BHK single-floor sky residences (Sant Nagar)\n3. Walvekar Commercials — Completed commercial centre (High-street retail & corporate offices)\n4. Anandshree CHS — Completed 2 & 3 BHK residences (100% OC issued, Sri Ashok Pawar Path)\n5. Jai Rajkiran CHS — Delivered P+14 storey landmark tower (100% OC issued)\n\nWhich project would you like to explore?',
+          'Walvekar Nagar / Parvati, Pune:\nA thriving central zone where Citadel Group has delivered and is currently developing landmark residential and commercial schemes.\n\nProjects in this location:\n1. Friends CHS — Ongoing 2 & 3 BHK residential redevelopment (Walvekar Path, RERA: P52100078109)\n2. Manisha — Ongoing palatial 5 BHK single-floor sky residences (Sant Nagar)\n3. Citadel Commercial — Completed commercial centre (High-street retail & corporate offices)\n4. Anandshree CHS — Completed 2 & 3 BHK residences (100% OC issued, Sri Ashok Pawar Path)\n5. Jairajkiran CHS — Delivered P+14 storey landmark tower (100% OC issued)\n\nWhich project would you like to explore?',
         nextStep: 'projects',
         nextLocation: 'walvekar',
       };
@@ -256,7 +256,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
     if (q.includes('all pune') || (q.includes('all') && q.includes('location'))) {
       return {
         replyText:
-          'Citadel Group has prestigious developments across prime Pune locations:\n\n• Prabhat Road: 96 Prabhat (3 & 5 BHK Luxury Residences across P+16 floors)\n• Law College Road: Janki Shreyas CHS (2, 3 & 4 BHK Luxury Residences, 881 to 1530.96 sq. ft.)\n• Walvekar Nagar / Parvati:\n  - Friends CHS (2 & 3 BHK Ongoing Redevelopment)\n  - Manisha (5 BHK Sky Residences in Sant Nagar)\n  - Walvekar Commercials (Completed Retail & Corporate Offices)\n  - Anandshree CHS (Completed 2 & 3 BHK, 100% OC)\n  - Jai Rajkiran CHS (Completed P+14 Tower, 100% OC)\n\nWhich location or project would you like to explore?',
+          'Citadel Group has prestigious developments across prime Pune locations:\n\n• Prabhat Road: 96 Prabhat (3 & 5 BHK Luxury Residences across P+16 floors)\n• Law College Road: Janki Shreyas CHS (2, 3 & 4 BHK Luxury Residences, 881 to 1530.96 sq. ft.)\n• Walvekar Nagar / Parvati:\n  - Friends CHS (2 & 3 BHK Ongoing Redevelopment)\n  - Manisha (5 BHK Sky Residences in Sant Nagar)\n  - Citadel Commercial (Completed Retail & Corporate Offices)\n  - Anandshree CHS (Completed 2 & 3 BHK, 100% OC)\n  - Jairajkiran CHS (Completed P+14 Tower, 100% OC)\n\nWhich location or project would you like to explore?',
         nextStep: 'projects',
         nextLocation: 'all',
       };
@@ -307,11 +307,11 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       };
     }
 
-    if (q.includes('walvekar commercial') || q.includes('commercial')) {
+    if (q.includes('citadel commercial') || q.includes('walvekar commercial') || q.includes('commercial')) {
       const proj = projectsData.find((p) => p.id === 'walvekar-commercial');
       return {
         replyText:
-          'Walvekar Commercials (Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Status: Completed & operational commercial centre (20,000 sq. ft., P + 5 floors).\n• 1st Floor Retail: 1,905.22 Sq. Ft. RERA Carpet (Single grand anchor showroom with road-facing glass facade)\n• 2nd Floor Corporate Office: 1,905.22 Sq. Ft. RERA Carpet (Full continuous floor plate)\n• 3rd to 5th Floors: 2 Offices per floor (Office 1: 913.86 & Office 2: 980.60 Sq. Ft. RERA Carpet each)\n• Key Highlights: High street retail visibility, dedicated commercial elevators, and ample parking.\n\nWould you like layout plans or to connect on WhatsApp?',
+          'Citadel Commercial (Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Status: Completed & operational commercial centre (20,000 sq. ft., P + 5 floors).\n• 1st Floor Retail: 1,905.22 Sq. Ft. RERA Carpet (Single grand anchor showroom with road-facing glass facade)\n• 2nd Floor Corporate Office: 1,905.22 Sq. Ft. RERA Carpet (Full continuous floor plate)\n• 3rd to 5th Floors: 2 Offices per floor (Office 1: 913.86 & Office 2: 980.60 Sq. Ft. RERA Carpet each)\n• Key Highlights: High street retail visibility, dedicated commercial elevators, and ample parking.\n\nWould you like layout plans or to connect on WhatsApp?',
         projectId: proj?.id,
         nextStep: 'details',
         nextProject: proj,
@@ -329,11 +329,11 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       };
     }
 
-    if (q.includes('rajkiran') || q.includes('jai rajkiran')) {
+    if (q.includes('jairajkiran') || q.includes('rajkiran') || q.includes('jai rajkiran')) {
       const proj = projectsData.find((p) => p.id === 'jai-rajkiran-chs');
       return {
         replyText:
-          'Jai Rajkiran CHS (43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Configurations: 43 delivered luxury residences in 3 & 4 BHK layouts (906 to 1520 sq. ft. RERA carpet).\n• Status: Completed & delivered landmark (100% Occupancy Certificate granted).\n• Total Development: 70,000 sq. ft. across P + 14 floors.\n• Key Highlights: Automated pit car parking system, solar water heating, and 100% occupied.\n\nWould you like floor plans or to connect on WhatsApp?',
+          'Jairajkiran CHS (43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune 411009):\n\n• Configurations: 43 delivered luxury residences in 3 & 4 BHK layouts (906 to 1520 sq. ft. RERA carpet).\n• Status: Completed & delivered landmark (100% Occupancy Certificate granted).\n• Total Development: 70,000 sq. ft. across P + 14 floors.\n• Key Highlights: Automated pit car parking system, solar water heating, and 100% occupied.\n\nWould you like floor plans or to connect on WhatsApp?',
         projectId: proj?.id,
         nextStep: 'details',
         nextProject: proj,
@@ -345,7 +345,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       if (currentSelectedProject?.id === 'walvekar-commercial' || q.includes('commercial')) {
         return {
           replyText:
-            'Walvekar Commercials (Walvekar Nagar) Floor Layouts:\n• 1st Floor: 1 Retail Shop with 1905.22 Sq. Ft. RERA Carpet Area\n• 2nd Floor: 1 Corporate Office with 1905.22 Sq. Ft. RERA Carpet Area\n• 3rd to 5th Floors: 2 Offices per floor (Office 1: 913.86 Sq. Ft. & Office 2: 980.60 Sq. Ft. RERA Carpet)\n\nFull architectural drawings are available. Would you like to connect on WhatsApp to receive the complete floor plate PDF dossier?',
+            'Citadel Commercial (Walvekar Nagar) Floor Layouts:\n• 1st Floor: 1 Retail Shop with 1905.22 Sq. Ft. RERA Carpet Area\n• 2nd Floor: 1 Corporate Office with 1905.22 Sq. Ft. RERA Carpet Area\n• 3rd to 5th Floors: 2 Offices per floor (Office 1: 913.86 Sq. Ft. & Office 2: 980.60 Sq. Ft. RERA Carpet)\n\nFull architectural drawings are available. Would you like to connect on WhatsApp to receive the complete floor plate PDF dossier?',
           showConnectCard: true,
           nextStep: 'connect',
         };
@@ -392,7 +392,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
       }
       return {
         replyText:
-          'Citadel Group floor plans are engineered with zero dead circulation space:\n• Law College Road: 2, 3 & 4 BHK at Janki Shreyas CHS (881 to 1530.96 Sq. Ft. RERA Carpet)\n• Prabhat Road (Lane 2): 3 & 5 BHK at 96 Prabhat (1,336.35, 1,382.85 & 3,702.71 Sq. Ft. RERA Carpet across P+16 floors)\n• Walvekar Nagar / Sant Nagar: 2 & 3 BHK at Friends CHS (932 & 1270 Sq. Ft. RERA Carpet), 5 BHK at Manisha (2344.4 Sq. Ft. RERA Carpet), 2 & 3 BHK at Anandshree CHS (906 & 1225 Sq. Ft. RERA Carpet), and Grade-A Retail/Offices at Walvekar Commercials.\n\nShall I connect you with our advisory desk on WhatsApp to receive the complete CAD drawings dossier?',
+          'Citadel Group floor plans are engineered with zero dead circulation space:\n• Law College Road: 2, 3 & 4 BHK at Janki Shreyas CHS (881 to 1530.96 Sq. Ft. RERA Carpet)\n• Prabhat Road (Lane 2): 3 & 5 BHK at 96 Prabhat (1,336.35, 1,382.85 & 3,702.71 Sq. Ft. RERA Carpet across P+16 floors)\n• Walvekar Nagar / Sant Nagar: 2 & 3 BHK at Friends CHS (932 & 1270 Sq. Ft. RERA Carpet), 5 BHK at Manisha (2344.4 Sq. Ft. RERA Carpet), 2 & 3 BHK at Anandshree CHS (906 & 1225 Sq. Ft. RERA Carpet), and Grade-A Retail/Offices at Citadel Commercial.\n\nShall I connect you with our advisory desk on WhatsApp to receive the complete CAD drawings dossier?',
         showConnectCard: true,
         nextStep: 'connect',
       };
@@ -401,7 +401,7 @@ export const WhatsAppChatWidget: React.FC<WhatsAppChatWidgetProps> = ({
     if (q.includes('possession') || q.includes('timeline') || q.includes('status') || q.includes('oc')) {
       return {
         replyText:
-          'Citadel Group Project Status & Timelines:\n\n• Ongoing Developments:\n  - Janki Shreyas CHS (Law College Road): Active construction (RERA: PR1260002601082)\n  - Friends CHS (Walvekar Nagar): Superstructure underway (RERA: P52100078109)\n  - Manisha (Sant Nagar): P+7 RCC framework in progress\n\n• Upcoming Projects:\n  - 96 Prabhat (Prabhat Road, Lane 2): Upcoming luxury landmark (P+16 Floors, 3 & 5 BHK)\n\n• Completed Landmarks (100% OC Delivered):\n  - Walvekar Commercials (Walvekar Nagar): Fully operational commercial complex\n  - Anandshree CHS (Walvekar Nagar): Successfully handed over with complete OC\n  - Jai Rajkiran CHS (Walvekar Nagar): Delivered 14-storey tower with complete OC (43 residences)\n\nWould you like to connect on WhatsApp for latest progress photos, cost sheets, or site visits?',
+          'Citadel Group Project Status & Timelines:\n\n• Ongoing Developments:\n  - Janki Shreyas CHS (Law College Road): Active construction (RERA: PR1260002601082)\n  - Friends CHS (Walvekar Nagar): Superstructure underway (RERA: P52100078109)\n  - Manisha (Sant Nagar): P+7 RCC framework in progress\n\n• Upcoming Projects:\n  - 96 Prabhat (Prabhat Road, Lane 2): Upcoming luxury landmark (P+16 Floors, 3 & 5 BHK)\n\n• Completed Landmarks (100% OC Delivered):\n  - Citadel Commercial (Walvekar Nagar): Fully operational commercial complex\n  - Anandshree CHS (Walvekar Nagar): Successfully handed over with complete OC\n  - Jairajkiran CHS (Walvekar Nagar): Delivered 14-storey tower with complete OC (43 residences)\n\nWould you like to connect on WhatsApp for latest progress photos, cost sheets, or site visits?',
         showConnectCard: true,
         nextStep: 'connect',
       };

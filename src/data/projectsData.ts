@@ -19,6 +19,7 @@ const rawProjectsData: Project[] = [
     unitsCount: 'Premium 2, 3 & 4 BHK Residences',
     reraNumber: 'PR1260002601082',
     heroImage: '/janki-shreyas-elevation.jpg',
+    brochureUrl: '/brochures/janki-shreyas-brochure.pdf',
     gallery: [
       '/janki-shreyas-elevation.jpg',
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
@@ -252,6 +253,7 @@ const rawProjectsData: Project[] = [
     unitsCount: '35 Premium 2 & 3 BHK Apartments',
     reraNumber: 'P52100078109',
     heroImage: '/friends-chs-elevation.jpeg',
+    brochureUrl: '/brochures/friends-chs-brochure.pdf',
     gallery: [
       '/friends-chs-elevation.jpeg',
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
@@ -455,6 +457,7 @@ const rawProjectsData: Project[] = [
     unitsCount: 'Exclusive Single-Floor 5 BHK Residences',
     reraNumber: '',
     heroImage: '/manisha-chs-elevation.jpeg',
+    brochureUrl: '/brochures/manisha-brochure.pdf',
     gallery: [
       '/manisha-chs-elevation.jpeg',
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
@@ -777,12 +780,12 @@ const rawProjectsData: Project[] = [
   {
     id: 'jai-rajkiran-chs',
     slug: 'jai-rajkiran-chs',
-    title: 'Jai Rajkiran CHS',
+    title: 'Jairajkiran CHS',
     tagline: 'Delivered P+14 Landmark Redevelopment at Walvekar Nagar',
     category: 'Residential',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    fullAddress: 'Jairajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '70,000 sq. ft.',
     floors: 'P + 14 Floors',
     unitsCount: '43 Delivered Premium Residences',
@@ -793,11 +796,11 @@ const rawProjectsData: Project[] = [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
     ],
     overviewText:
-      'Jai Rajkiran CHS is a 70,000 sq. ft., P+14 storey completed society redevelopment project delivered by Citadel Group in Walvekar Nagar, Pune. 43 delivered residences, 100% occupied with complete Occupancy Certificate.',
+      'Jairajkiran CHS is a 70,000 sq. ft., P+14 storey completed society redevelopment project delivered by Citadel Group in Walvekar Nagar, Pune. 43 delivered residences, 100% occupied with complete Occupancy Certificate.',
     detailedDescription:
       'Successfully revitalized an older society into an iconic 14-storey tower with earthquake-resistant structure, solar water heating, pit car parking, and beautiful landscaped terraces.',
     mapEmbedQuery: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: 'Jai rajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    mapAddressDisplay: 'Jairajkiran Society, 43, Sri Ashok Pawar Path, Walvekar Nagar, Parvati Paytha, Pune – 411009',
     googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Jai+rajkiran+Society%2C+43%2C+Sri+Ashok+Pawar+Path%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
@@ -898,12 +901,12 @@ const rawProjectsData: Project[] = [
   {
     id: 'walvekar-commercial',
     slug: 'walvekar-commercial',
-    title: 'Walvekar Commercials',
+    title: 'Citadel Commercial',
     tagline: 'P+5 Grade-A Delivered Commercial Centre at Walvekar Nagar',
     category: 'Commercial',
     status: 'Completed',
     location: 'Walvekar Nagar, Pune',
-    fullAddress: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
+    fullAddress: 'Citadel Commercial, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
     areaSqFt: '20,000 sq. ft.',
     floors: 'P + 5 Floors',
     unitsCount: 'Retail Showrooms & Professional Corporate Offices',
@@ -914,11 +917,11 @@ const rawProjectsData: Project[] = [
       '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
     ],
     overviewText:
-      'Walvekar Commercial is a 20,000 sq. ft., P+5 storey boutique commercial complex in Walvekar Nagar, Pune. Delivered as a Joint Venture project housing bustling retail shops and offices.',
+      'Citadel Commercial is a 20,000 sq. ft., P+5 storey boutique commercial complex in Walvekar Nagar, Pune. Delivered as a Joint Venture project housing bustling retail shops and offices.',
     detailedDescription:
       'Features high street glass retail frontage, modern elevator systems, and dedicated commercial car parking for corporate occupants and visiting clientele.',
     mapEmbedQuery: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune, Maharashtra 411009',
-    mapAddressDisplay: 'Walvekar Commercials, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune – 411009',
+    mapAddressDisplay: 'Citadel Commercial, FVJ4+WQX, Vasant Baug, Walvekar Nagar, Parvati Paytha, Pune – 411009',
     googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Walvekar+Commercials%2C+FVJ4%2BWQX%2C+Vasant+Baug%2C+Walvekar+Nagar%2C+Parvati+Paytha%2C+Pune%2C+Maharashtra+411009',
     liveUpdates: [
       {
@@ -950,7 +953,7 @@ const rawProjectsData: Project[] = [
           },
           {
             url: '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
-            title: 'Walvekar Commercial Complex — Interior View',
+            title: 'Citadel Commercial — Interior View',
             badge: 'Delivered Commercial Space',
             description: 'Delivered P+5 boutique commercial centre in prime Walvekar Nagar with dedicated elevator access.',
           },
@@ -982,7 +985,7 @@ const rawProjectsData: Project[] = [
           },
           {
             url: '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
-            title: 'Walvekar Commercial Complex — Finished Office Floor',
+            title: 'Citadel Commercial — Finished Office Floor',
             badge: 'Delivered Commercial Space',
             description: 'Ready-to-occupy corporate office suites with generous natural illumination and modern fixtures.',
           },
@@ -1014,7 +1017,7 @@ const rawProjectsData: Project[] = [
           },
           {
             url: '/floor-plans/walvekar/Walvekar-office-spaces.jpg',
-            title: 'Walvekar Commercial Complex — Office Interior View',
+            title: 'Citadel Commercial — Office Interior View',
             badge: 'Delivered Commercial Space',
             description: 'Professional commercial office environments with high-quality electrical distribution and power backup.',
           },
